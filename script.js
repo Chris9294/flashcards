@@ -11,21 +11,22 @@ const flashcard = document.getElementById('flashcard');
 const cardContent = document.getElementById('cardContent');
 
 // ===== INITIALISATION =====
-if (data.themes.length === 0) {
-  themeSelect.innerHTML = '<option>Aucune série</option>';
-} else {
-  data.themes.forEach((theme, index) => {
-    const option = document.createElement('option');
-    option.value = theme.id;
-    option.textContent = theme.name;
-    themeSelect.appendChild(option);
-
-    if (index === 0) themeSelect.value = theme.id;
-  });
-
-  loadTheme();
+function init() {
+  if (data.themes.length === 0) {
+    themeSelect.innerHTML = '<option>Aucune série</option>';
+  } else {
+    themeSelect.innerHTML = '';
+    data.themes.forEach((theme, index) => {
+      const option = document.createElement('option');
+      option.value = theme.id;
+      option.textContent = theme.name;
+      themeSelect.appendChild(option);
+      if (index === 0) themeSelect.value = theme.id;
+    });
+    loadTheme();
+  }
 }
-
+init();
 themeSelect.onchange = loadTheme;
 
 // ===== CHARGER UNE SÉRIE =====
@@ -56,11 +57,14 @@ function toggleCard(card) {
 }
 
 function showImage() {
-  cardContent.style.backgroundImage = ''; // pas de flou global
+  cardContent.style.backgroundImage = '';
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
 
-  document.querySelector('.big-image').onclick = hideCard;
+  const bigImg = document.querySelector('.big-image');
+  if (bigImg) {
+    bigImg.onclick = hideCard;
+  }
 }
 
 function showWord() {
