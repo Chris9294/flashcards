@@ -95,8 +95,11 @@ document.getElementById('speakBtn').onclick = () => {
   if (!currentCard) return;
 
   if (currentCard.audio) {
-    new Audio(currentCard.audio).play();
+    // Crée un objet Audio à partir du fichier Base64
+    const audio = new Audio(currentCard.audio);
+    audio.play();
   } else {
+    // Sinon synthèse vocale
     const u = new SpeechSynthesisUtterance(currentCard.word);
     u.lang = 'en-GB';
     u.rate = 0.7;
