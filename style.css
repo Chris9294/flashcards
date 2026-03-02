@@ -58,7 +58,7 @@ h1 {
   max-width: 95%;
   max-height: 95%;
   color: black;      
-  font-size: 120px;  /* texte très gros */
+  font-size: 120px;  
   font-weight: bold;
   line-height: 1.1;
 }
@@ -90,7 +90,7 @@ h1 {
 
 /* Flèches navigation */
 .navArrow {
-  position: fixed;
+  position: absolute;   /* ✅ relatif au #flashcard */
   top: 50%;
   font-size: 48px;
   color: rgba(0,0,0,0.5);
@@ -101,14 +101,15 @@ h1 {
   line-height: 60px;
   text-align: center;
   cursor: pointer;
-  z-index: 5;
   user-select: none;
+  transform: translateY(-50%);
+  z-index: 3;
 }
 
 #leftArrow {
-  left: 10px;
+  left: 20px;
 }
 
 #rightArrow {
-  right: 10px;
+  right: 20px;
 }
