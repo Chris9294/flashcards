@@ -107,12 +107,10 @@ h1 {
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* Flèche gauche juste à gauche de l'image */
 #leftArrow {
-  left: -110px; /* ajuster si besoin */
+  left: 120px;
 }
 
-/* Flèche droite juste à droite de l'image */
 #rightArrow {
-  right: -110px; /* ajuster si besoin */
+  right: 120px;
 }
