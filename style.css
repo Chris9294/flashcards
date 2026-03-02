@@ -26,12 +26,13 @@ h1 {
 }
 
 #thumbnails img {
-  height: 80px;        /* taille miniatures */
+  height: 80px;
   width: 80px;
-  margin: 5px;         /* espace uniforme autour des miniatures */
+  margin: 5px;
   cursor: pointer;
   border: 2px solid #222;
-  object-fit: cover;
+  object-fit: contain;  /* <-- toute l'image est visible */
+  background: #fff;     /* optionnel : fond blanc si l'image est plus petite */
   flex-shrink: 0;      /* empêche rétrécissement automatique */
 }
 
