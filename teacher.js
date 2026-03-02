@@ -25,14 +25,19 @@ function addTheme() {
   const name = document.getElementById('themeName').value.trim();
   if (!name) return;
 
-  data.themes.push({
+  const newTheme = {
     id: Date.now().toString(),
     name: name,
     cards: []
-  });
+  };
 
+  data.themes.push(newTheme);
   document.getElementById('themeName').value = '';
   saveData();
+
+  // ✅ sélectionner automatiquement la nouvelle série
+  themeSelect.value = newTheme.id;
+  refreshCards();
 }
 
 function refreshThemes() {
@@ -44,15 +49,19 @@ function refreshThemes() {
     option.textContent = theme.name;
     themeSelect.appendChild(option);
 
-    if (index === 0) themeSelect.value = theme.id;
+    if (index === 0 && !themeSelect.value) themeSelect.value = theme.id;
   });
 }
+
+// ✅ Lien pour mettre à jour l’affichage des cartes quand on change de série
+themeSelect.onchange = refreshCards;
 
 // ================================
 // AJOUT DE CARTE
 // ================================
 function addCard() {
-  const theme = data.themes.find(t => t.id === themeSelect.value);
+  const themeId = themeSelect.value;
+  const theme = data.themes.find(t => t.id === themeId);
   if (!theme) return;
 
   const word = document.getElementById('wordInput').value.trim();
@@ -61,14 +70,10 @@ function addCard() {
 
   if (!word || !imageFile) return;
 
-  const card = {
-    word: word,
-    image: null,
-    audio: null
-  };
+  const card = { word: word, image: null, audio: null };
 
   const imgReader = new FileReader();
-  imgReader.onload = function (e) {
+  imgReader.onload = function(e) {
     card.image = e.target.result;
 
     if (audioFile) {
@@ -80,6 +85,7 @@ function addCard() {
   };
   imgReader.readAsDataURL(imageFile);
 
+  // vider les champs
   document.getElementById('wordInput').value = '';
   document.getElementById('imageInput').value = '';
   document.getElementById('audioInput').value = '';
@@ -90,9 +96,9 @@ function addCard() {
 // ================================
 function handleAudioUpload(file, card, theme) {
   const reader = new FileReader();
-  reader.onload = function (e) {
+  reader.onload = function(e) {
     card.audio = e.target.result;
-    theme.cards.push(card);
+    theme.cards.push(card); // ✅ ajouter à la bonne série
     saveData();
   };
   reader.readAsDataURL(file);
@@ -108,7 +114,7 @@ function addAudioToCard(cardIndex, file) {
   if (!theme) return;
 
   const reader = new FileReader();
-  reader.onload = function (e) {
+  reader.onload = function(e) {
     theme.cards[cardIndex].audio = e.target.result;
     saveData();
   };
@@ -141,7 +147,6 @@ function refreshCards() {
     const audioInput = document.createElement('input');
     audioInput.type = 'file';
     audioInput.accept = 'audio/*';
-
     audioInput.addEventListener('change', function () {
       addAudioToCard(index, audioInput.files[0]);
     });
@@ -161,6 +166,3 @@ function refreshCards() {
 // ================================
 refreshThemes();
 refreshCards();
-
-// ✅ LIGNE MANQUANTE À AJOUTER
-themeSelect.onchange = refreshCards;
