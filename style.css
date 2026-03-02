@@ -50,15 +50,15 @@ h1 {
   display: flex;
 }
 
-/* Texte ou image centrée */
+/* Contenu central : texte ou image */
 #cardContent {
   position: relative;
   z-index: 2;
   text-align: center;
   max-width: 95%;
   max-height: 95%;
-  color: black;      
-  font-size: 120px;  /* texte très gros */
+  color: black;
+  font-size: 120px;
   font-weight: bold;
   line-height: 1.1;
 }
@@ -88,10 +88,11 @@ h1 {
   padding: 10px;
 }
 
-/* Flèches navigation (placées de part et d'autre de l'image) */
-.navArrow {
-  position: absolute;   
+/* Flèches navigation : placées à l'intérieur du #cardContent */
+#cardContent .navArrow {
+  position: absolute;
   top: 50%;
+  transform: translateY(-50%);
   font-size: 48px;
   color: rgba(0,0,0,0.5);
   background: rgba(255,255,255,0.7);
@@ -102,16 +103,15 @@ h1 {
   text-align: center;
   cursor: pointer;
   user-select: none;
-  transform: translateY(-50%);
   z-index: 4;
 }
 
-/* Flèche gauche : juste à gauche de l'image */
-#leftArrow {
-  left: calc(50% - 50vw + 10px); 
+/* Flèche gauche */
+#cardContent #leftArrow {
+  left: -70px; /* 70px à gauche du contenu */
 }
 
-/* Flèche droite : juste à droite de l'image */
-#rightArrow {
-  right: calc(50% - 50vw + 10px); 
+/* Flèche droite */
+#cardContent #rightArrow {
+  right: -70px; /* 70px à droite du contenu */
 }
