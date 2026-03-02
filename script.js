@@ -1,8 +1,8 @@
-alert("SCRIPT VISUEL CHARGÉ");
+
 // ===================================
 // LECTURE DES DONNÉES ENSEIGNANT
 // ===================================
-const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
+alert("SCRIPT VISUEL CHARGÉ");
 
 // ===================================
 // VARIABLES
