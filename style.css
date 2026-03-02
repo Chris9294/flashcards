@@ -15,21 +15,24 @@ h1 {
   left: 0;
   right: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap;        /* permet plusieurs lignes */
+  justify-content: center;/* centre les miniatures sur chaque ligne */
   padding: 10px;
   background: #fff;
   overflow-x: auto;
-  height: 100px;
+  height: 120px;          /* un peu plus haut pour deux lignes */
   z-index: 999;
   border-top: 1px solid #ccc;
 }
 
 #thumbnails img {
-  height: 80px;
-  margin-right: 10px;
+  height: 50px;        /* taille miniatures */
+  width: 50px;
+  margin: 5px;         /* espace uniforme autour des miniatures */
   cursor: pointer;
   border: 2px solid #222;
   object-fit: cover;
+  flex-shrink: 0;      /* empêche rétrécissement automatique */
 }
 
 /* Flashcard plein écran avec fond blanc */
