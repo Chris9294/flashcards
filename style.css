@@ -49,18 +49,17 @@ h1 {
   background: #fff;
   z-index: 1000;
 }
-
 #flashcard.visible {
   display: flex;
 }
 
 /* Texte ou image centrée */
 #cardContent {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  max-width: 95%;
-  max-height: 95%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: black;      
   font-size: 120px;  
   font-weight: bold;
