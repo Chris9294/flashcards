@@ -1,135 +1,177 @@
-// ================================
-// DONNÉES
-// ================================
-const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
+/********************************
+ * RÉCUPÉRATION DES DONNÉES
+ ********************************/
+const data = JSON.parse(localStorage.getItem("flashcardData")) || {};
 
-// ================================
-// VARIABLES
-// ================================
-let currentCard = null;
-let showingWord = false;
+let currentSeries = [];
 let currentIndex = 0;
-let currentThemeCards = [];
+let showingWord = false;
 
-const themeSelect = document.getElementById('themeSelect');
-const thumbnails = document.getElementById('thumbnails');
-const flashcard = document.getElementById('flashcard');
-const cardContent = document.getElementById('cardContent');
+/********************************
+ * ÉLÉMENTS DOM
+ ********************************/
+const thumbnails = document.getElementById("thumbnails");
+const flashcard = document.getElementById("flashcard");
+const cardContent = document.getElementById("cardContent");
 
-const leftArrow = document.getElementById('leftArrow');
-const rightArrow = document.getElementById('rightArrow');
+const leftArrow = document.getElementById("leftArrow");
+const rightArrow = document.getElementById("rightArrow");
 
-// ================================
-// INITIALISATION
-// ================================
-function init() {
-  themeSelect.innerHTML = '';
+const flipButton = document.getElementById("flipButton");
+const audioButton = document.getElementById("audioButton");
 
-  if (data.themes.length === 0) {
-    const opt = document.createElement('option');
-    opt.textContent = 'Aucune série';
-    themeSelect.appendChild(opt);
+const seriesSelect = document.getElementById("seriesSelect");
+
+/********************************
+ * INITIALISATION
+ ********************************/
+initSeriesMenu();
+
+function initSeriesMenu() {
+  seriesSelect.innerHTML = "";
+
+  const seriesNames = Object.keys(data);
+  if (seriesNames.length === 0) {
+    seriesSelect.innerHTML = `<option>Aucune série</option>`;
     return;
   }
 
-  data.themes.forEach((theme, index) => {
-    const option = document.createElement('option');
-    option.value = theme.id;
-    option.textContent = theme.name;
-    themeSelect.appendChild(option);
-    if (index === 0) themeSelect.value = theme.id;
+  seriesNames.forEach(name => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    seriesSelect.appendChild(option);
   });
 
-  loadTheme();
+  loadSeries(seriesNames[0]);
 }
 
-init();
-themeSelect.onchange = loadTheme;
+/********************************
+ * CHARGEMENT SÉRIE
+ ********************************/
+function loadSeries(seriesName) {
+  currentSeries = data[seriesName] || [];
+  currentIndex = 0;
+  thumbnails.innerHTML = "";
+  flashcard.classList.remove("visible");
 
-// ================================
-// CHARGEMENT D’UNE SÉRIE
-// ================================
-function loadTheme() {
-  const theme = data.themes.find(t => t.id === themeSelect.value);
-  thumbnails.innerHTML = '';
-  closeCard();
-
-  if (!theme) return;
-
-  currentThemeCards = theme.cards;
-
-  theme.cards.forEach((card, index) => {
-    const img = document.createElement('img');
+  currentSeries.forEach((card, index) => {
+    const img = document.createElement("img");
     img.src = card.image;
-    img.onclick = () => openCardAtIndex(index);
+    img.onclick = () => openCard(index);
     thumbnails.appendChild(img);
   });
 }
 
-// ================================
-// AFFICHAGE CARTE
-// ================================
-function openCardAtIndex(index) {
+/********************************
+ * OUVRIR / FERMER CARTE
+ ********************************/
+function openCard(index) {
   currentIndex = index;
-  currentCard = currentThemeCards[currentIndex];
   showingWord = false;
+  flashcard.classList.add("visible");
   showImage();
-  updateArrows();
 }
 
+function closeCard() {
+  flashcard.classList.remove("visible");
+}
+
+/********************************
+ * IMAGE / MOT
+ ********************************/
 function showImage() {
-  cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
-  flashcard.classList.add('visible');
-  document.querySelector('.big-image').onclick = closeCard;
+  const card = currentSeries[currentIndex];
+
+  cardContent.innerHTML = `
+    <img src="${card.image}" class="big-image">
+    <div id="leftArrow">&#8592;</div>
+    <div id="rightArrow">&#8594;</div>
+  `;
+
+  cardContent.querySelector(".big-image").onclick = closeCard;
+
+  bindArrows();
+  showingWord = false;
   updateArrows();
 }
 
 function showWord() {
-  cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
-  cardContent.querySelector('.word').onclick = closeCard;
+  const card = currentSeries[currentIndex];
+
+  cardContent.innerHTML = `
+    <div class="word">${card.word}</div>
+    <div id="leftArrow">&#8592;</div>
+    <div id="rightArrow">&#8594;</div>
+  `;
+
+  cardContent.querySelector(".word").onclick = closeCard;
+
+  bindArrows();
+  showingWord = true;
   updateArrows();
 }
 
-function closeCard() {
-  flashcard.classList.remove('visible');
-  currentCard = null;
+/********************************
+ * FLÈCHES
+ ********************************/
+function bindArrows() {
+  document.getElementById("leftArrow").onclick = prevCard;
+  document.getElementById("rightArrow").onclick = nextCard;
 }
 
-// ================================
-// FLÈCHES NAVIGATION
-// ================================
-function updateArrows() {
-  leftArrow.style.display = currentIndex > 0 ? 'block' : 'none';
-  rightArrow.style.display = currentIndex < currentThemeCards.length - 1 ? 'block' : 'none';
-}
-
-leftArrow.onclick = () => {
-  if (currentIndex > 0) openCardAtIndex(currentIndex - 1);
-};
-
-rightArrow.onclick = () => {
-  if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1);
-};
-
-// ================================
-// BOUTONS
-// ================================
-document.getElementById('flipBtn').onclick = () => {
-  if (!currentCard) return;
-  showingWord = !showingWord;
-  showingWord ? showWord() : showImage();
-};
-
-document.getElementById('speakBtn').onclick = () => {
-  if (!currentCard) return;
-
-  if (currentCard.audio) {
-    new Audio(currentCard.audio).play();
-  } else {
-    const u = new SpeechSynthesisUtterance(currentCard.word);
-    u.lang = 'en-GB';
-    u.rate = 0.7;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
+function prevCard() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    showingWord ? showWord() : showImage();
   }
+}
+
+function nextCard() {
+  if (currentIndex < currentSeries.length - 1) {
+    currentIndex++;
+    showingWord ? showWord() : showImage();
+  }
+}
+
+function updateArrows() {
+  const left = document.getElementById("leftArrow");
+  const right = document.getElementById("rightArrow");
+
+  if (!left || !right) return;
+
+  left.style.display = currentIndex === 0 ? "none" : "block";
+  right.style.display = currentIndex === currentSeries.length - 1 ? "none" : "block";
+}
+
+/********************************
+ * BOUTONS
+ ********************************/
+flipButton.onclick = () => {
+  showingWord ? showImage() : showWord();
+};
+
+audioButton.onclick = playAudio;
+
+/********************************
+ * AUDIO
+ ********************************/
+function playAudio() {
+  const card = currentSeries[currentIndex];
+
+  if (card.audio) {
+    const audio = new Audio(card.audio);
+    audio.play();
+  } else {
+    const utterance = new SpeechSynthesisUtterance(card.word);
+    utterance.lang = "en-US";
+    speechSynthesis.speak(utterance);
+  }
+}
+
+/********************************
+ * MENU DÉROULANT
+ ********************************/
+seriesSelect.onchange = (e) => {
+  loadSeries(e.target.value);
 };
