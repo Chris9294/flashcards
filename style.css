@@ -44,20 +44,21 @@ button {
 
 /* ===== MINIATURES ===== */
 footer {
-  height: 120px;
+  height: 100px;
   background: #ddd;
   display: flex;
   align-items: center;
   overflow-x: auto;
-  padding: 10px;
-  border-top: 1px solid #bbb;
+  padding: 8px;
 }
 
 footer img {
-  height: 60px;
-  margin-right: 10px;
+  height: 55px !important;
+  width: auto;
+  margin-right: 8px;
   cursor: pointer;
   border: 2px solid transparent;
+  flex-shrink: 0;
 }
 
 footer img:hover {
