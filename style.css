@@ -19,15 +19,15 @@ header {
 #flashcard {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: none; /* NE PLUS MONTRER PAR DÉFAUT */
+  background: rgba(0,0,0,0.85);
+  display: none; /* cacher par défaut */
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
 #flashcard.visible {
-  display: flex; /* on montre seulement quand une carte est ouverte */
+  display: flex;
 }
 
 #cardContent {
@@ -74,8 +74,12 @@ header {
   cursor: pointer;
 }
 
-/* ===== MINIATURES ===== */
+/* ===== MINIATURES EN BAS ===== */
 footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 100px;
   background: #ddd;
   display: flex;
@@ -83,6 +87,7 @@ footer {
   overflow-x: auto;
   padding: 8px;
   border-top: 1px solid #bbb;
+  z-index: 500;
 }
 
 footer img {
