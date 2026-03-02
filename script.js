@@ -1,6 +1,5 @@
-
 // ===================================
-// LECTURE DES DONNÉES ENSEIGNANT
+// LECTURE DES DONNÉES
 // ===================================
 const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 
@@ -48,7 +47,7 @@ themeSelect.onchange = loadTheme;
 function loadTheme() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   thumbnails.innerHTML = '';
-  hideCard();
+  closeCard();
 
   if (!theme) return;
 
@@ -72,9 +71,7 @@ function openCard(card) {
 function showImage() {
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
-
-  const img = document.querySelector('.big-image');
-  img.onclick = closeCard;
+  document.querySelector('.big-image').onclick = closeCard;
 }
 
 function showWord() {
@@ -108,4 +105,3 @@ document.getElementById('speakBtn').onclick = () => {
     speechSynthesis.speak(u);
   }
 };
-
