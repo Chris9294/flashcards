@@ -2,7 +2,7 @@
 // ===================================
 // LECTURE DES DONNÉES ENSEIGNANT
 // ===================================
-alert("SCRIPT VISUEL CHARGÉ");
+const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 
 // ===================================
 // VARIABLES
