@@ -1,29 +1,26 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Flashcards</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Flashcards Visuel</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <h1>Flashcards</h1>
 
-<header>
+  <label for="themeSelect">Choisir la série :</label>
   <select id="themeSelect"></select>
-</header>
 
-<main>
-  <div id="flashcard" class="hidden">
+  <div id="flashcard">
     <div id="cardContent"></div>
+    <div id="cardButtons">
+      <button id="flipBtn">🔄</button>
+      <button id="speakBtn">🔊</button>
+    </div>
   </div>
-</main>
 
-<div id="controls">
-  <button id="flipBtn" title="Retourner">🔄</button>
-  <button id="speakBtn" title="Écouter">🔊</button>
-</div>
+  <div id="thumbnails"></div>
 
-<footer id="thumbnails"></footer>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
