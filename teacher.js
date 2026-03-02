@@ -96,3 +96,17 @@ function refreshCards() {
 
 refreshThemes();
 refreshCards();
+
+function addAudioToCard(cardIndex, file) {
+  if (!file) return;
+
+  const theme = data.themes.find(t => t.id === themeSelect.value);
+  if (!theme) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    theme.cards[cardIndex].audio = e.target.result;
+    saveData();
+  };
+  reader.readAsDataURL(file);
+}
