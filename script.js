@@ -37,11 +37,15 @@ data.themes.forEach((theme, index) => {
     option.value = theme.id;
     option.textContent = theme.name;
     themeSelect.appendChild(option);
-    if (index === 0) themeSelect.value = theme.id;
+   // if (index === 0) themeSelect.value = theme.id;
   });
 
-  loadTheme();
+//  loadTheme();
 }
+
+// État initial : aucune série sélectionnée
+themeSelect.selectedIndex = -1;
+thumbnails.innerHTML = '';
 
 init();
 themeSelect.onchange = loadTheme;
