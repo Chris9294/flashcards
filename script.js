@@ -53,8 +53,8 @@ function toggleCard(card) {
   showingWord = false;
   showImage();
 }
-
 function showImage() {
+  cardContent.style.backgroundImage = `url(${currentCard.image})`;
   cardContent.innerHTML = `
     <img src="${currentCard.image}" class="big-image">
   `;
@@ -62,6 +62,7 @@ function showImage() {
 
   document.querySelector('.big-image').onclick = hideCard;
 }
+
 function showWord() {
   cardContent.innerHTML =
     `<div class="word">${currentCard.word}</div>`;
