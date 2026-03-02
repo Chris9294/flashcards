@@ -58,7 +58,7 @@ h1 {
   max-width: 95%;
   max-height: 95%;
   color: black;      
-  font-size: 120px;  
+  font-size: 120px;  /* texte très gros */
   font-weight: bold;
   line-height: 1.1;
 }
@@ -88,9 +88,9 @@ h1 {
   padding: 10px;
 }
 
-/* Flèches navigation */
+/* Flèches navigation (placées de part et d'autre de l'image) */
 .navArrow {
-  position: absolute;   /* ✅ relatif au #flashcard */
+  position: absolute;   
   top: 50%;
   font-size: 48px;
   color: rgba(0,0,0,0.5);
@@ -103,13 +103,15 @@ h1 {
   cursor: pointer;
   user-select: none;
   transform: translateY(-50%);
-  z-index: 3;
+  z-index: 4;
 }
 
+/* Flèche gauche : juste à gauche de l'image */
 #leftArrow {
-  left: 20px;
+  left: calc(50% - 50vw + 10px); 
 }
 
+/* Flèche droite : juste à droite de l'image */
 #rightArrow {
-  right: 20px;
+  right: calc(50% - 50vw + 10px); 
 }
