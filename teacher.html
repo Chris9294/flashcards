@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Interface Enseignant</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Interface Enseignant – Flashcards</h1>
+
+<section>
+  <h2>Créer une série</h2>
+  <input id="newThemeName" placeholder="Nom de la série">
+  <button onclick="addTheme()">➕ Ajouter la série</button>
+</section>
+
+<section>
+  <h2>Ajouter une carte</h2>
+
+  <select id="themeSelect"></select><br><br>
+
+  <input id="wordInput" placeholder="Mot en anglais"><br><br>
+  <input type="file" id="imageInput" accept="image/*"><br><br>
+
+  <button onclick="addCard()">➕ Ajouter la carte</button>
+</section>
+
+<section>
+  <h2>Cartes existantes</h2>
+  <div id="cardList"></div>
+</section>
+
+<script src="teacher.js"></script>
+</body>
+</html>

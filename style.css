@@ -1,0 +1,75 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+header {
+  padding: 10px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+
+/* ===== ZONE CENTRALE ===== */
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fafafa;
+}
+
+#flashcard {
+  text-align: center;
+}
+
+#flashcard img {
+  max-width: 70vw;
+  max-height: 60vh;
+}
+
+.hidden {
+  display: none;
+}
+
+button {
+  margin: 10px;
+  padding: 8px 14px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ===== MINIATURES ===== */
+footer {
+  height: 120px;
+  background: #ddd;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding: 10px;
+  border-top: 1px solid #bbb;
+}
+
+footer img {
+  height: 90px;
+  margin-right: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+footer img:hover {
+  border-color: #333;
+}
+
+/* ===== ENSEIGNANT ===== */
+section {
+  margin: 20px;
+}
+
+input, select {
+  padding: 6px;
+  font-size: 16px;
+}
