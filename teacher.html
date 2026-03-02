@@ -2,34 +2,31 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Interface Enseignant</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Interface enseignant</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, button { margin: 5px 0; }
+    img { height: 60px; display: block; margin-top: 5px; }
+    .card { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+  </style>
 </head>
 <body>
 
-<h1>Interface Enseignant – Flashcards</h1>
+<h1>Interface enseignant</h1>
 
-<section>
-  <h2>Créer une série</h2>
-  <input id="newThemeName" placeholder="Nom de la série">
-  <button onclick="addTheme()">➕ Ajouter la série</button>
-</section>
+<h2>Créer une série</h2>
+<input id="themeName" placeholder="Nom de la série">
+<button onclick="addTheme()">Ajouter la série</button>
 
-<section>
-  <h2>Ajouter une carte</h2>
+<h2>Ajouter une carte</h2>
+<select id="themeSelect"></select><br>
+<input id="wordInput" placeholder="Mot en anglais"><br>
+<input type="file" id="imageInput" accept="image/*"><br>
+<input type="file" id="audioInput" accept="audio/*"><br>
+<button onclick="addCard()">Ajouter la carte</button>
 
-  <select id="themeSelect"></select><br><br>
-
-  <input id="wordInput" placeholder="Mot en anglais"><br><br>
-  <input type="file" id="imageInput" accept="image/*"><br><br>
-
-  <button onclick="addCard()">➕ Ajouter la carte</button>
-</section>
-
-<section>
-  <h2>Cartes existantes</h2>
-  <div id="cardList"></div>
-</section>
+<h2>Cartes existantes</h2>
+<div id="cardsList"></div>
 
 <script src="teacher.js"></script>
 </body>
