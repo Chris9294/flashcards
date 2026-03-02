@@ -42,7 +42,7 @@ h1 {
   display: none;
   justify-content: center;
   align-items: center;
-  background: #fff;  /* ✅ fond blanc */
+  background: #fff;
   z-index: 1000;
 }
 
@@ -57,7 +57,7 @@ h1 {
   text-align: center;
   max-width: 95%;
   max-height: 95%;
-  color: black;      /* ✅ texte noir */
+  color: black;      
   font-size: 120px;  /* texte très gros */
   font-weight: bold;
   line-height: 1.1;
@@ -86,4 +86,29 @@ h1 {
   font-size: 32px;
   cursor: pointer;
   padding: 10px;
+}
+
+/* Flèches navigation */
+.navArrow {
+  position: fixed;
+  top: 50%;
+  font-size: 48px;
+  color: rgba(0,0,0,0.5);
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 5;
+  user-select: none;
+}
+
+#leftArrow {
+  left: 10px;
+}
+
+#rightArrow {
+  right: 10px;
 }
