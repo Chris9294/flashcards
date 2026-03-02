@@ -76,6 +76,8 @@ function showImage() {
 
 function showWord() {
   cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
+  // ✅ clic sur le mot ferme la carte comme sur l'image
+  cardContent.querySelector('.word').onclick = closeCard;
 }
 
 function closeCard() {
