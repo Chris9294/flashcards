@@ -60,7 +60,8 @@ function showImage() {
 }
 
 function showWord() {
-  cardContent.innerHTML = `<h1>${currentCard.word}</h1>`;
+  cardContent.innerHTML =
+    `<div class="word">${currentCard.word}</div>`;
 }
 
 function hideCard() {
