@@ -26,8 +26,8 @@ h1 {
 }
 
 #thumbnails img {
-  height: 50px;        /* taille miniatures */
-  width: 50px;
+  height: 80px;        /* taille miniatures */
+  width: 80px;
   margin: 5px;         /* espace uniforme autour des miniatures */
   cursor: pointer;
   border: 2px solid #222;
