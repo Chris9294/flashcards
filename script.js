@@ -1,5 +1,18 @@
-// ===== DONNÉES =====
-const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
+// ===== DONNÉES DE TEST INTÉGRÉES =====
+const data = {
+  themes: [
+    {
+      id: "theme1",
+      name: "Animaux",
+      cards: [
+        { word: "cat", image: "https://placekitten.com/400/300", audio: null },
+        { word: "dog", image: "https://placedog.net/400/300", audio: null },
+        { word: "lion", image: "https://placekitten.com/401/300", audio: null },
+        { word: "elephant", image: "https://placekitten.com/402/300", audio: null }
+      ]
+    }
+  ]
+};
 
 // ===== VARIABLES =====
 let currentCard = null;
@@ -12,19 +25,15 @@ const cardContent = document.getElementById('cardContent');
 
 // ===== INITIALISATION =====
 function init() {
-  if (data.themes.length === 0) {
-    themeSelect.innerHTML = '<option>Aucune série</option>';
-  } else {
-    themeSelect.innerHTML = '';
-    data.themes.forEach((theme, index) => {
-      const option = document.createElement('option');
-      option.value = theme.id;
-      option.textContent = theme.name;
-      themeSelect.appendChild(option);
-      if (index === 0) themeSelect.value = theme.id;
-    });
-    loadTheme();
-  }
+  themeSelect.innerHTML = '';
+  data.themes.forEach((theme, index) => {
+    const option = document.createElement('option');
+    option.value = theme.id;
+    option.textContent = theme.name;
+    themeSelect.appendChild(option);
+    if (index === 0) themeSelect.value = theme.id;
+  });
+  loadTheme();
 }
 init();
 themeSelect.onchange = loadTheme;
@@ -57,7 +66,6 @@ function toggleCard(card) {
 }
 
 function showImage() {
-  cardContent.style.backgroundImage = '';
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
 
