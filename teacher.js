@@ -161,3 +161,6 @@ function refreshCards() {
 // ================================
 refreshThemes();
 refreshCards();
+
+// ✅ LIGNE MANQUANTE À AJOUTER
+themeSelect.onchange = refreshCards;
