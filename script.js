@@ -1,11 +1,11 @@
-// ===================================
+// ================================
 // DONNÉES
-// ===================================
+// ================================
 const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 
-// ===================================
+// ================================
 // VARIABLES
-// ===================================
+// ================================
 let currentCard = null;
 let showingWord = false;
 let currentIndex = 0;
@@ -19,9 +19,9 @@ const cardContent = document.getElementById('cardContent');
 const leftArrow = document.getElementById('leftArrow');
 const rightArrow = document.getElementById('rightArrow');
 
-// ===================================
+// ================================
 // INITIALISATION
-// ===================================
+// ================================
 function init() {
   themeSelect.innerHTML = '';
 
@@ -46,9 +46,9 @@ function init() {
 init();
 themeSelect.onchange = loadTheme;
 
-// ===================================
+// ================================
 // CHARGEMENT D’UNE SÉRIE
-// ===================================
+// ================================
 function loadTheme() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   thumbnails.innerHTML = '';
@@ -66,9 +66,9 @@ function loadTheme() {
   });
 }
 
-// ===================================
+// ================================
 // AFFICHAGE CARTE
-// ===================================
+// ================================
 function openCardAtIndex(index) {
   currentIndex = index;
   currentCard = currentThemeCards[currentIndex];
@@ -95,9 +95,9 @@ function closeCard() {
   currentCard = null;
 }
 
-// ===================================
+// ================================
 // FLÈCHES NAVIGATION
-// ===================================
+// ================================
 function updateArrows() {
   leftArrow.style.display = currentIndex > 0 ? 'block' : 'none';
   rightArrow.style.display = currentIndex < currentThemeCards.length - 1 ? 'block' : 'none';
@@ -111,9 +111,9 @@ rightArrow.onclick = () => {
   if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1);
 };
 
-// ===================================
+// ================================
 // BOUTONS
-// ===================================
+// ================================
 document.getElementById('flipBtn').onclick = () => {
   if (!currentCard) return;
   showingWord = !showingWord;
