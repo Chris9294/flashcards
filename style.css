@@ -1,4 +1,3 @@
-/* ====== Corps et titres ====== */
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
@@ -9,7 +8,7 @@ h1 {
   text-align: center;
 }
 
-/* ====== Miniatures ====== */
+/* Miniatures en bas avec fond blanc */
 #thumbnails {
   position: fixed;
   bottom: 0;
@@ -33,7 +32,7 @@ h1 {
   object-fit: cover;
 }
 
-/* ====== Flashcard plein écran ====== */
+/* Flashcard plein écran avec fond blanc */
 #flashcard {
   position: fixed;
   top: 0;
@@ -51,27 +50,28 @@ h1 {
   display: flex;
 }
 
-/* ====== Contenu central : texte ou image ====== */
+/* Texte ou image centrée */
 #cardContent {
-  position: relative; /* flèches absolues par rapport à ce conteneur */
-  max-width: 80%;
-  max-height: 80%;
+  position: relative;
+  z-index: 2;
   text-align: center;
-  color: black;
-  font-size: 120px;
+  max-width: 95%;
+  max-height: 95%;
+  color: black;      
+  font-size: 120px;  
   font-weight: bold;
   line-height: 1.1;
-  cursor: pointer;
 }
 
-/* Image centrée et agrandie si petite */
+/* Image centrée et agrandie si plus petite */
 .big-image {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  cursor: pointer;
 }
 
-/* ====== Boutons à droite ====== */
+/* Boutons à droite */
 #cardButtons {
   position: fixed;
   top: 50%;
@@ -79,7 +79,7 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  z-index: 10;
+  z-index: 3;
 }
 
 #cardButtons button {
@@ -88,29 +88,28 @@ h1 {
   padding: 10px;
 }
 
-/* ====== Flèches navigation autour de l'image ====== */
-#leftArrow, #rightArrow {
-  position: absolute; /* par rapport à #cardContent */
+/* Flèches navigation */
+.navArrow {
+  position: absolute;   /* ✅ relatif au #flashcard */
   top: 50%;
-  transform: translateY(-50%);
-  font-size: 80px;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-  color: rgba(0,0,0,0.6);
-  background: rgba(255,255,255,0.8);
+  font-size: 48px;
+  color: rgba(0,0,0,0.5);
+  background: rgba(255,255,255,0.7);
   border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
   cursor: pointer;
   user-select: none;
-  z-index: 10;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  transform: translateY(-50%);
+  z-index: 3;
 }
 
 #leftArrow {
-  left: 120px;
+  left: 20px;
 }
 
 #rightArrow {
-  right: 120px;
+  right: 20px;
 }
