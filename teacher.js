@@ -79,14 +79,17 @@ function refreshCards() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
-  theme.cards.forEach(card => {
+  theme.cards.forEach((card, index) => {
     const div = document.createElement('div');
     div.className = 'card';
+
     div.innerHTML = `
       <strong>${card.word}</strong><br>
-      <img src="${card.image}">
+      <img src="${card.image}"><br>
       <p>Audio : ${card.audio ? 'oui' : 'non'}</p>
+      <input type="file" accept="audio/*" onchange="addAudioToCard(${index}, this.files[0])">
     `;
+
     cardsList.appendChild(div);
   });
 }
