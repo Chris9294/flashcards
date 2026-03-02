@@ -1,3 +1,4 @@
+alert("SCRIPT VISUEL CHARGÉ");
 // ===================================
 // LECTURE DES DONNÉES ENSEIGNANT
 // ===================================
