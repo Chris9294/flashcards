@@ -55,8 +55,12 @@ function toggleCard(card) {
 }
 
 function showImage() {
-  cardContent.innerHTML = `<img src="${currentCard.image}">`;
+  cardContent.innerHTML = `
+    <img src="${currentCard.image}" class="big-image">
+  `;
   flashcard.classList.remove('hidden');
+
+  document.querySelector('.big-image').onclick = hideCard;
 }
 
 function showWord() {
