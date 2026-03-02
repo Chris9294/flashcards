@@ -78,7 +78,13 @@ document.getElementById('flipBtn').onclick = () => {
 
 document.getElementById('speakBtn').onclick = () => {
   if (!currentCard) return;
-  const utterance = new SpeechSynthesisUtterance(currentCard.word);
-  utterance.lang = 'en-US';
-  speechSynthesis.speak(utterance);
+
+  const u = new SpeechSynthesisUtterance(currentCard.word);
+  u.lang = 'en-GB';      // souvent meilleure que en-US
+  u.rate = 0.7;          // plus lent
+  u.pitch = 1;
+  u.volume = 1;
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
 };
