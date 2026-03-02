@@ -53,7 +53,7 @@ h1 {
 
 /* ====== Contenu central : texte ou image ====== */
 #cardContent {
-  position: relative; /* pour centrage flèches si besoin */
+  position: relative; /* référence pour flèches */
   max-width: 80%;
   max-height: 80%;
   text-align: center;
@@ -90,7 +90,7 @@ h1 {
 
 /* ====== Flèches navigation autour de l'image ====== */
 #leftArrow, #rightArrow {
-  position: absolute; /* par rapport à #flashcard */
+  position: absolute; /* par rapport à #cardContent */
   top: 50%;
   transform: translateY(-50%);
   font-size: 80px;
@@ -103,16 +103,16 @@ h1 {
   border-radius: 50%;
   cursor: pointer;
   user-select: none;
-  z-index: 1001;
+  z-index: 10;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* Flèche gauche juste à côté de l'image */
+/* Flèche gauche juste à gauche de l'image */
 #leftArrow {
-  left: calc(50% - 40% - 60px); /* 40% = moitié max-width de l'image, 60px = écart */
+  left: -110px; /* ajuster si besoin selon taille de l'image */
 }
 
-/* Flèche droite juste à côté de l'image */
+/* Flèche droite juste à droite de l'image */
 #rightArrow {
-  left: calc(50% + 40% - 40px); /* symétrique */
+  right: -110px; /* ajuster si besoin selon taille de l'image */
 }
