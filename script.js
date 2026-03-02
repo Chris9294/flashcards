@@ -32,24 +32,16 @@ function init() {
     return;
   }
 
-  // Option par défaut vide
-const defaultOption = document.createElement('option');
-defaultOption.value = '';
-defaultOption.textContent = '— Choisir une série —';
-defaultOption.disabled = true;
-defaultOption.selected = true;
-themeSelect.appendChild(defaultOption);
+data.themes.forEach((theme, index) => {
+    const option = document.createElement('option');
+    option.value = theme.id;
+    option.textContent = theme.name;
+    themeSelect.appendChild(option);
+    if (index === 0) themeSelect.value = theme.id;
+  });
 
-// Ajout des séries
-data.themes.forEach(theme => {
-  const option = document.createElement('option');
-  option.value = theme.id;
-  option.textContent = theme.name;
-  themeSelect.appendChild(option);
-});
-
-// Au démarrage : rien d'affiché
-thumbnails.innerHTML = '';
+  loadTheme();
+}
 
 init();
 themeSelect.onchange = loadTheme;
