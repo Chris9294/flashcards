@@ -88,30 +88,31 @@ h1 {
   padding: 10px;
 }
 
-/* Flèches navigation : placées à l'intérieur du #cardContent */
-#cardContent .navArrow {
-  position: absolute;
+/* Flèches navigation - FIXÉES sur l'écran (gauche/droite) */
+.navArrow {
+  position: fixed;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 48px;
-  color: rgba(0,0,0,0.5);
-  background: rgba(255,255,255,0.7);
+  font-size: 60px; /* plus grandes */
+  color: rgba(0,0,0,0.6);
+  background: rgba(255,255,255,0.8);
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  line-height: 60px;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
   text-align: center;
   cursor: pointer;
   user-select: none;
-  z-index: 4;
+  z-index: 1001;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* Flèche gauche */
-#cardContent #leftArrow {
-  left: -70px; /* 70px à gauche du contenu */
+/* Flèche gauche complètement à gauche */
+#leftArrow {
+  left: 10px;
 }
 
-/* Flèche droite */
-#cardContent #rightArrow {
-  right: -70px; /* 70px à droite du contenu */
+/* Flèche droite complètement à droite */
+#rightArrow {
+  right: 10px;
 }
