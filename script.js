@@ -62,7 +62,6 @@ function showImage() {
 
   document.querySelector('.big-image').onclick = hideCard;
 }
-
 function showWord() {
   cardContent.innerHTML =
     `<div class="word">${currentCard.word}</div>`;
