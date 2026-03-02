@@ -8,11 +8,16 @@ const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 // ===================================
 let currentCard = null;
 let showingWord = false;
+let currentIndex = 0;
+let currentThemeCards = [];
 
 const themeSelect = document.getElementById('themeSelect');
 const thumbnails = document.getElementById('thumbnails');
 const flashcard = document.getElementById('flashcard');
 const cardContent = document.getElementById('cardContent');
+
+const leftArrow = document.getElementById('leftArrow');
+const rightArrow = document.getElementById('rightArrow');
 
 // ===================================
 // INITIALISATION
@@ -51,10 +56,12 @@ function loadTheme() {
 
   if (!theme) return;
 
-  theme.cards.forEach(card => {
+  currentThemeCards = theme.cards;
+
+  theme.cards.forEach((card, index) => {
     const img = document.createElement('img');
     img.src = card.image;
-    img.onclick = () => openCard(card);
+    img.onclick = () => openCardAtIndex(index);
     thumbnails.appendChild(img);
   });
 }
@@ -62,28 +69,47 @@ function loadTheme() {
 // ===================================
 // AFFICHAGE CARTE
 // ===================================
-function openCard(card) {
-  currentCard = card;
+function openCardAtIndex(index) {
+  currentIndex = index;
+  currentCard = currentThemeCards[currentIndex];
   showingWord = false;
   showImage();
+  updateArrows();
 }
 
 function showImage() {
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
   document.querySelector('.big-image').onclick = closeCard;
+  updateArrows();
 }
 
 function showWord() {
   cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
-  // ✅ clic sur le mot ferme la carte comme sur l'image
   cardContent.querySelector('.word').onclick = closeCard;
+  updateArrows();
 }
 
 function closeCard() {
   flashcard.classList.remove('visible');
   currentCard = null;
 }
+
+// ===================================
+// FLÈCHES NAVIGATION
+// ===================================
+function updateArrows() {
+  leftArrow.style.display = currentIndex > 0 ? 'block' : 'none';
+  rightArrow.style.display = currentIndex < currentThemeCards.length - 1 ? 'block' : 'none';
+}
+
+leftArrow.onclick = () => {
+  if (currentIndex > 0) openCardAtIndex(currentIndex - 1);
+};
+
+rightArrow.onclick = () => {
+  if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1);
+};
 
 // ===================================
 // BOUTONS
