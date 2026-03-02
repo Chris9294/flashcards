@@ -90,21 +90,25 @@ h1 {
 
 /* Flèches navigation */
 .navArrow {
-  position: absolute;   /* ✅ relatif au #flashcard */
+  position: absolute;
   top: 50%;
-  font-size: 48px;
-  color: rgba(0,0,0,0.5);
-  background: rgba(255,255,255,0.7);
+  font-size: 72px;              /* flèche plus grande */
+  color: rgba(0,0,0,0.7);       /* plus contrastée */
+  background: rgba(255,255,255,0.9);
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  line-height: 60px;
+  width: 90px;                  /* zone cliquable plus large */
+  height: 90px;
+  line-height: 90px;
   text-align: center;
   cursor: pointer;
   user-select: none;
   transform: translateY(-50%);
   z-index: 3;
+
+  /* Ombre douce */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
+ 
 
 #leftArrow {
   left: 180px;
