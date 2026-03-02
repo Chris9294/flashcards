@@ -35,7 +35,7 @@ function init() {
 // Option neutre au démarrage
 const placeholder = document.createElement('option');
 placeholder.value = '';
-placeholder.textContent = '— Choisir une série —';
+placeholder.textContent = '— Flashcards —';
 themeSelect.appendChild(placeholder);
   
 data.themes.forEach((theme, index) => {
