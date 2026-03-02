@@ -19,10 +19,24 @@
 <button onclick="addTheme()">Ajouter la série</button>
 
 <h2>Ajouter une carte</h2>
-<select id="themeSelect"></select><br>
-<input id="wordInput" placeholder="Mot en anglais"><br>
-<input type="file" id="imageInput" accept="image/*"><br>
-<input type="file" id="audioInput" accept="audio/*"><br>
+
+<select id="themeSelect"></select><br><br>
+
+<label>
+  Mot en anglais :
+  <input id="wordInput">
+</label><br><br>
+
+<label>
+  Image (obligatoire) :
+  <input type="file" id="imageInput" accept="image/*">
+</label><br><br>
+
+<label>
+  Audio (optionnel – prononciation) :
+  <input type="file" id="audioInput" accept="audio/*">
+</label><br><br>
+
 <button onclick="addCard()">Ajouter la carte</button>
 
 <h2>Cartes existantes</h2>
