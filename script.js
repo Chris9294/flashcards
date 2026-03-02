@@ -1,5 +1,5 @@
 // ===================================
-// LECTURE DES DONNÉES
+// DONNÉES
 // ===================================
 const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 
