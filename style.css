@@ -1,11 +1,21 @@
+/* ===== GLOBAL ===== */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #fafafa;
 }
 
+/* ===== HEADER ===== */
+header {
+  padding: 10px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+
+/* ===== FLASHCARD OVERLAY ===== */
 #flashcard {
   position: fixed;
   inset: 0;
@@ -22,6 +32,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .big-image {
@@ -31,51 +42,32 @@ body {
   cursor: pointer;
 }
 
-/* fond flouté */
-#cardContent::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  filter: blur(20px);
-  opacity: 0.4;
-  z-index: -1;
+/* texte très grand pour mot anglais */
+.word {
+  font-size: 8vw;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  color: #fff;
 }
 
-/* ===== HEADER ===== */
-header {
-  padding: 10px;
-  background: #f0f0f0;
-  border-bottom: 1px solid #ccc;
-}
-
-/* ===== ZONE CENTRALE ===== */
-main {
-  flex: 1;
+/* ===== BOUTONS DROITE ===== */
+#controls {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #fafafa;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1100;
 }
 
-#flashcard {
-  text-align: center;
-}
-
-#flashcard img {
-  max-width: 70vw;
-  max-height: 60vh;
-}
-
-.hidden {
-  display: none;
-}
-
-button {
-  margin: 10px;
-  padding: 8px 14px;
-  font-size: 16px;
+#controls button {
+  font-size: 28px;
+  padding: 12px;
+  border-radius: 50%;
+  border: none;
   cursor: pointer;
 }
 
@@ -87,6 +79,7 @@ footer {
   align-items: center;
   overflow-x: auto;
   padding: 8px;
+  border-top: 1px solid #bbb;
 }
 
 footer img {
@@ -100,21 +93,4 @@ footer img {
 
 footer img:hover {
   border-color: #333;
-}
-
-/* ===== ENSEIGNANT ===== */
-section {
-  margin: 20px;
-}
-
-input, select {
-  padding: 6px;
-  font-size: 16px;
-}
-
-.word {
-  font-size: 8vw;
-  font-weight: bold;
-  letter-spacing: 0.1em;
-  text-transform: lowercase;
 }
