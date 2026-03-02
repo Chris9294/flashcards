@@ -31,7 +31,13 @@ function init() {
     themeSelect.appendChild(opt);
     return;
   }
-
+  
+// Option neutre au démarrage
+const placeholder = document.createElement('option');
+placeholder.value = '';
+placeholder.textContent = '— Choisir une série —';
+themeSelect.appendChild(placeholder);
+  
 data.themes.forEach((theme, index) => {
     const option = document.createElement('option');
     option.value = theme.id;
@@ -43,12 +49,13 @@ data.themes.forEach((theme, index) => {
 //  loadTheme();
 }
 
-// État initial : aucune série sélectionnée
-themeSelect.selectedIndex = -1;
+// État initial : rien de sélectionné
+themeSelect.value = '';
 thumbnails.innerHTML = '';
 
 init();
 themeSelect.onchange = loadTheme;
+
 
 // ================================
 // CHARGEMENT D’UNE SÉRIE
