@@ -1,5 +1,7 @@
+// ===== DONNÉES =====
 const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 
+// ===== VARIABLES =====
 let currentCard = null;
 let showingWord = false;
 
@@ -8,7 +10,7 @@ const thumbnails = document.getElementById('thumbnails');
 const flashcard = document.getElementById('flashcard');
 const cardContent = document.getElementById('cardContent');
 
-/* ===== Initialisation ===== */
+// ===== INITIALISATION =====
 if (data.themes.length === 0) {
   themeSelect.innerHTML = '<option>Aucune série</option>';
 } else {
@@ -18,7 +20,6 @@ if (data.themes.length === 0) {
     option.textContent = theme.name;
     themeSelect.appendChild(option);
 
-    // ⭐ sélection automatique de la première série
     if (index === 0) themeSelect.value = theme.id;
   });
 
@@ -27,7 +28,7 @@ if (data.themes.length === 0) {
 
 themeSelect.onchange = loadTheme;
 
-/* ===== Chargement d'une série ===== */
+// ===== CHARGER UNE SÉRIE =====
 function loadTheme() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   thumbnails.innerHTML = '';
@@ -43,7 +44,7 @@ function loadTheme() {
   });
 }
 
-/* ===== Affichage carte ===== */
+// ===== AFFICHAGE CARTE =====
 function toggleCard(card) {
   if (currentCard === card) {
     hideCard();
@@ -53,19 +54,17 @@ function toggleCard(card) {
   showingWord = false;
   showImage();
 }
+
 function showImage() {
   cardContent.style.backgroundImage = `url(${currentCard.image})`;
-  cardContent.innerHTML = `
-    <img src="${currentCard.image}" class="big-image">
-  `;
+  cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.remove('hidden');
 
   document.querySelector('.big-image').onclick = hideCard;
 }
 
 function showWord() {
-  cardContent.innerHTML =
-    `<div class="word">${currentCard.word}</div>`;
+  cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
 }
 
 function hideCard() {
@@ -73,7 +72,27 @@ function hideCard() {
   currentCard = null;
 }
 
-/* ===== Boutons ===== */
+// ===== BOUTONS =====
+document.getElementById('flipBtn').onclick = () => {
+  if (!currentCard) return;
+  showingWord = !showingWord;
+  showingWord ? showWord() : showImage();
+};
+
+document.getElementById('speakBtn').onclick = () => {
+  if (!currentCard) return;
+
+  // audio prioritaire si disponible
+  if (currentCard.audio) {
+    new Audio(currentCard.audio).play();
+  } else {
+    const u = new SpeechSynthesisUtterance(currentCard.word);
+    u.lang = 'en-GB';
+    u.rate = 0.7;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }
+};
 document.getElementById('flipBtn').onclick = () => {
   if (!currentCard) return;
   showingWord = !showingWord;
