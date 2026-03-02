@@ -2,31 +2,34 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Flashcards</title>
+<title>Flashcards Visuel</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <h1>Flashcards</h1>
 
-<h1>Flashcards Langues</h1>
+  <label for="themeSelect">Choisir la série :</label>
+  <select id="themeSelect"></select>
 
-<!-- Miniatures -->
-<div id="thumbnails"></div>
+  <!-- Flashcard plein écran -->
+  <div id="flashcard">
+    <div id="overlay"></div>
+    <div id="cardContent"></div>
 
-<!-- Grand écran flashcard -->
-<div id="flashcard">
-  <div id="cardContent">
-    <img src="" class="big-image" id="mainImage">
-    <div id="leftArrow">&#8592;</div>
-    <div id="rightArrow">&#8594;</div>
+    <!-- Boutons à droite -->
+    <div id="cardButtons">
+      <button id="flipBtn">🔄</button>
+      <button id="speakBtn">🔊</button>
+    </div>
+
+    <!-- Flèches navigation (dans le flashcard, superposées à l'image) -->
+    <div id="leftArrow" class="navArrow" style="display:none;">&#8592;</div>
+    <div id="rightArrow" class="navArrow" style="display:none;">&#8594;</div>
   </div>
 
-  <!-- Boutons à droite -->
-  <div id="cardButtons">
-    <button id="flipButton">&#x21bb;</button>
-    <button id="audioButton">&#128266;</button>
-  </div>
-</div>
+  <!-- Miniatures en bas -->
+  <div id="thumbnails"></div>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
