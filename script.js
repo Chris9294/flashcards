@@ -56,9 +56,9 @@ function toggleCard(card) {
 }
 
 function showImage() {
-  cardContent.style.backgroundImage = `url(${currentCard.image})`;
+  cardContent.style.backgroundImage = ''; // pas de flou global
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
-  flashcard.classList.remove('hidden');
+  flashcard.classList.add('visible');
 
   document.querySelector('.big-image').onclick = hideCard;
 }
@@ -68,7 +68,7 @@ function showWord() {
 }
 
 function hideCard() {
-  flashcard.classList.add('hidden');
+  flashcard.classList.remove('visible');
   currentCard = null;
 }
 
@@ -82,7 +82,6 @@ document.getElementById('flipBtn').onclick = () => {
 document.getElementById('speakBtn').onclick = () => {
   if (!currentCard) return;
 
-  // audio prioritaire si disponible
   if (currentCard.audio) {
     new Audio(currentCard.audio).play();
   } else {
@@ -92,22 +91,4 @@ document.getElementById('speakBtn').onclick = () => {
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
   }
-};
-document.getElementById('flipBtn').onclick = () => {
-  if (!currentCard) return;
-  showingWord = !showingWord;
-  showingWord ? showWord() : showImage();
-};
-
-document.getElementById('speakBtn').onclick = () => {
-  if (!currentCard) return;
-
-  const u = new SpeechSynthesisUtterance(currentCard.word);
-  u.lang = 'en-GB';      // souvent meilleure que en-US
-  u.rate = 0.7;          // plus lent
-  u.pitch = 1;
-  u.volume = 1;
-
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
 };
