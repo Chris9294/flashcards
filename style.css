@@ -20,7 +20,7 @@ h1 {
   padding: 10px;
   background: #fff;
   overflow-x: auto;
-  min-height: 120px;         /* un peu plus haut pour deux lignes */
+  min-height: 180px;         /* un peu plus haut pour deux lignes */
   z-index: 999;
   border-top: 1px solid #ccc;
 }
