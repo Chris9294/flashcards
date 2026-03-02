@@ -88,12 +88,12 @@ h1 {
   padding: 10px;
 }
 
-/* Flèches navigation - juste à gauche et droite de l'image */
+/* Flèches navigation - placées autour de l'image */
 #leftArrow, #rightArrow {
-  position: absolute;  /* relatif au flashcard */
+  position: absolute;  /* position par rapport au flashcard */
   top: 50%;
   transform: translateY(-50%);
-  font-size: 60px; 
+  font-size: 60px;
   color: rgba(0,0,0,0.6);
   background: rgba(255,255,255,0.8);
   border-radius: 50%;
@@ -109,9 +109,13 @@ h1 {
 
 /* Flèche gauche : juste à gauche de l'image */
 #leftArrow {
-  left: 5%;
+  left: calc(50% - 50vw + 10px); /* proche de l'image, pas à l'écran entier */
 }
 
+/* Flèche droite : juste à droite de l'image */
+#rightArrow {
+  left: calc(50% + 50vw - 90px); /* proche de l'image, pas sur les boutons */
+}
 /* Flèche droite : juste à droite de l'image */
 #rightArrow {
   right: 5%;
