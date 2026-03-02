@@ -1,12 +1,18 @@
 let data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 
-function save() {
+const themeSelect = document.getElementById('themeSelect');
+const cardsList = document.getElementById('cardsList');
+
+// ===== SAUVEGARDE =====
+function saveData() {
   localStorage.setItem('flashcards', JSON.stringify(data));
-  render();
+  refreshThemes();
+  refreshCards();
 }
 
+// ===== THEMES =====
 function addTheme() {
-  const name = document.getElementById('newThemeName').value.trim();
+  const name = document.getElementById('themeName').value;
   if (!name) return;
 
   data.themes.push({
@@ -15,62 +21,75 @@ function addTheme() {
     cards: []
   });
 
-  document.getElementById('newThemeName').value = '';
-  save();
+  saveData();
 }
 
-function addCard() {
-  const themeId = document.getElementById('themeSelect').value;
-  const word = document.getElementById('wordInput').value.trim();
-  const file = document.getElementById('imageInput').files[0];
-
-  if (!themeId || !word || !file) return;
-
-  const reader = new FileReader();
-  reader.onload = e => {
-    const theme = data.themes.find(t => t.id === themeId);
-    theme.cards.push({
-      word,
-      image: e.target.result
-    });
-    document.getElementById('wordInput').value = '';
-    document.getElementById('imageInput').value = '';
-    save();
-  };
-  reader.readAsDataURL(file);
-}
-
-function deleteCard(themeId, index) {
-  const theme = data.themes.find(t => t.id === themeId);
-  theme.cards.splice(index, 1);
-  save();
-}
-
-function render() {
-  const select = document.getElementById('themeSelect');
-  select.innerHTML = '';
-
+function refreshThemes() {
+  themeSelect.innerHTML = '';
   data.themes.forEach(t => {
     const opt = document.createElement('option');
     opt.value = t.id;
     opt.textContent = t.name;
-    select.appendChild(opt);
-  });
-
-  const list = document.getElementById('cardList');
-  list.innerHTML = '';
-
-  data.themes.forEach(t => {
-    t.cards.forEach((c, i) => {
-      const div = document.createElement('div');
-      div.innerHTML = `
-        <strong>${t.name}</strong> – ${c.word}
-        <button onclick="deleteCard('${t.id}', ${i})">❌</button><br>
-        <img src="${c.image}" height="60"><br><br>
-      `;
-      list.appendChild(div);
-    });
+    themeSelect.appendChild(opt);
   });
 }
 
-render();
+// ===== CARTES =====
+function addCard() {
+  const theme = data.themes.find(t => t.id === themeSelect.value);
+  if (!theme) return;
+
+  const word = document.getElementById('wordInput').value;
+  const imageFile = document.getElementById('imageInput').files[0];
+  const audioFile = document.getElementById('audioInput').files[0];
+
+  if (!word || !imageFile) return;
+
+  const card = { word, image: null, audio: null };
+
+  const imgReader = new FileReader();
+  imgReader.onload = e => {
+    card.image = e.target.result;
+
+    if (audioFile) {
+      handleAudioUpload(audioFile, card);
+    } else {
+      theme.cards.push(card);
+      saveData();
+    }
+  };
+  imgReader.readAsDataURL(imageFile);
+}
+
+// ✅ ===== LA FONCTION QUE TU CHERCHAIS =====
+function handleAudioUpload(file, card) {
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    card.audio = e.target.result; // audio Base64
+    const theme = data.themes.find(t => t.id === themeSelect.value);
+    theme.cards.push(card);
+    saveData();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ===== AFFICHAGE =====
+function refreshCards() {
+  cardsList.innerHTML = '';
+  const theme = data.themes.find(t => t.id === themeSelect.value);
+  if (!theme) return;
+
+  theme.cards.forEach(card => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <strong>${card.word}</strong><br>
+      <img src="${card.image}">
+      <p>Audio : ${card.audio ? 'oui' : 'non'}</p>
+    `;
+    cardsList.appendChild(div);
+  });
+}
+
+refreshThemes();
+refreshCards();
