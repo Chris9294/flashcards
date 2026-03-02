@@ -1,104 +1,53 @@
-/* ===== GLOBAL ===== */
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  height: 100vh;
+  margin: 20px;
+}
+
+#thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  height: 100px;
+  overflow-x: auto;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+#thumbnails img {
+  height: 80px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+#flashcard {
+  position: relative;
+  margin-top: 20px;
+  text-align: center;
+}
+
+#flashcard.visible .big-image {
+  max-width: 80%;
+  max-height: 400px;
+  display: block;
+  margin: 0 auto;
+}
+
+#cardButtons {
+  position: absolute;
+  top: 50%;
+  right: 10px;
   display: flex;
   flex-direction: column;
-  background: #fafafa;
+  gap: 10px;
 }
 
-/* ===== HEADER ===== */
-header {
-  padding: 10px;
-  background: #f0f0f0;
-  border-bottom: 1px solid #ccc;
-}
-
-/* ===== FLASHCARD OVERLAY ===== */
-#flashcard {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: none; /* cacher par défaut */
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-#flashcard.visible {
-  display: flex;
-}
-
-#cardContent {
-  max-width: 90vw;
-  max-height: 90vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.big-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+#cardButtons button {
+  font-size: 24px;
   cursor: pointer;
+  padding: 10px;
 }
 
 .word {
-  font-size: 8vw;
+  font-size: 48px;
   font-weight: bold;
-  letter-spacing: 0.1em;
-  text-transform: lowercase;
-  color: #fff;
-}
-
-/* ===== BOUTONS DROITE ===== */
-#controls {
-  position: fixed;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  z-index: 1100;
-}
-
-#controls button {
-  font-size: 28px;
-  padding: 12px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-}
-
-/* ===== MINIATURES EN BAS ===== */
-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-  background: #ddd;
-  display: flex;
-  align-items: center;
-  overflow-x: auto;
-  padding: 8px;
-  border-top: 1px solid #bbb;
-  z-index: 500;
-}
-
-footer img {
-  height: 55px !important;
-  width: auto;
-  margin-right: 8px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  flex-shrink: 0;
-}
-
-footer img:hover {
-  border-color: #333;
 }
