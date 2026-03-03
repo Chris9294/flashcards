@@ -77,7 +77,7 @@ select {
   border-radius: 6px;
   border: 1px solid #ffcc80;
   width: 180px;
-  color: gray; /* texte placeholder gris par défaut */
+  color: gray; /* placeholder gris par défaut */
 }
 
 select:invalid {
@@ -85,7 +85,7 @@ select:invalid {
 }
 
 /* ==========================
-   Inputs type file
+   Inputs type file création carte
    ========================== */
 input[type="file"] {
   font-size: 13px;
@@ -96,6 +96,14 @@ input[type="file"] {
   background: #fff;
   width: 250px;       /* plus large pour afficher le texte entier */
   color: black;       /* texte "Aucun fichier sélectionné." en noir */
+  vertical-align: middle;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+input[type="file"]:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* bouton natif parcourir */
@@ -107,6 +115,12 @@ input[type="file"]::-webkit-file-upload-button {
   background-color: #ffcc80;
   cursor: pointer;
   color: black;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
@@ -181,6 +195,9 @@ button:disabled {
   font-size: 12.5px;
 }
 
+/* ==========================
+   Inputs type file dans les cartes existantes
+   ========================== */
 .card input[type="file"] {
   font-size: 13px;
   padding: 4px;
@@ -188,8 +205,15 @@ button:disabled {
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
-  width: 200px;   /* suffisamment large pour le nom du fichier */
-  color: black;
+  width: 200px;       /* texte entier visible */
+  color: black;       /* texte "Aucun fichier sélectionné." en noir */
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.card input[type="file"]:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
