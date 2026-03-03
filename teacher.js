@@ -13,8 +13,15 @@ const cardsList = document.getElementById('cardsList');
 // SAUVEGARDE
 // ================================
 function saveData() {
+  const selectedTheme = themeSelect.value; // mémorise la série courante
+
   localStorage.setItem('flashcards', JSON.stringify(data));
+
   refreshThemes();
+
+  // restaurer la série sélectionnée
+  themeSelect.value = selectedTheme;
+
   refreshCards();
 }
 
