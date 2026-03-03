@@ -39,21 +39,21 @@
     <input id="wordInput" type="text">
   </label>
 
- <label>
-  Image (obligatoire)
-  <div class="file-wrapper">
-    <input type="file" id="imageInput" accept="image/*">
-    <span class="file-label">Aucun fichier sélectionné.</span>
-  </div>
-</label>
+  <label>
+    Image (obligatoire)
+    <div class="file-wrapper" id="imageInputWrapper">
+      <input type="file" accept="image/*">
+      <span class="file-label">Parcourir…</span>
+    </div>
+  </label>
 
-<label>
-  Audio (optionnel)
-  <div class="file-wrapper">
-    <input type="file" id="audioInput" accept="audio/*">
-    <span class="file-label">Aucun fichier sélectionné.</span>
-  </div>
-</label>
+  <label>
+    Audio (optionnel)
+    <div class="file-wrapper" id="audioInputWrapper">
+      <input type="file" accept="audio/*">
+      <span class="file-label">Parcourir…</span>
+    </div>
+  </label>
 </div>
 <button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
 
