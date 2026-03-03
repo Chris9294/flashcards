@@ -176,3 +176,23 @@ h1 {
 #rightArrow {
   right: 180px;
 }
+/* ==========================
+   Carte visuelle (ombre + arrondi)
+   ========================== */
+#card {
+  width: 92%;
+  height: 85%;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* empêche les images de déborder */
+}
+
+/* Le contenu reste inchangé mais bien contenu */
+#cardContent {
+  width: 100%;
+  height: 100%;
+}
