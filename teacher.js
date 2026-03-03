@@ -35,7 +35,7 @@ function addTheme() {
   document.getElementById('themeName').value = '';
   saveData();
 
-  // ✅ sélectionner automatiquement la nouvelle série
+  // sélectionner automatiquement la nouvelle série
   themeSelect.value = newTheme.id;
   refreshCards();
 }
@@ -56,13 +56,11 @@ function refreshThemes() {
     themeSelect.appendChild(option);
   });
 
-  // forcer l'état "aucune série sélectionnée"
+  // aucune série sélectionnée par défaut
   themeSelect.value = '';
 }
 
- 
-
-// ✅ Lien pour mettre à jour l’affichage des cartes quand on change de série
+// mise à jour quand on change de série
 themeSelect.onchange = refreshCards;
 
 // ================================
@@ -79,7 +77,7 @@ function addCard() {
 
   if (!word || !imageFile) return;
 
-  const card = { word: word, image: null, audio: null };
+  const card = { word, image: null, audio: null };
 
   const imgReader = new FileReader();
   imgReader.onload = function(e) {
@@ -94,7 +92,6 @@ function addCard() {
   };
   imgReader.readAsDataURL(imageFile);
 
-  // vider les champs
   document.getElementById('wordInput').value = '';
   document.getElementById('imageInput').value = '';
   document.getElementById('audioInput').value = '';
@@ -107,7 +104,7 @@ function handleAudioUpload(file, card, theme) {
   const reader = new FileReader();
   reader.onload = function(e) {
     card.audio = e.target.result;
-    theme.cards.push(card); // ✅ ajouter à la bonne série
+    theme.cards.push(card);
     saveData();
   };
   reader.readAsDataURL(file);
@@ -136,7 +133,7 @@ function addAudioToCard(cardIndex, file) {
 function refreshCards() {
   cardsList.innerHTML = '';
 
-  if (!themeSelect.value) return; // ✅ rien tant qu'aucune série choisie
+  if (!themeSelect.value) return;
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
@@ -158,9 +155,9 @@ function refreshCards() {
     const audioInput = document.createElement('input');
     audioInput.type = 'file';
     audioInput.accept = 'audio/*';
-    audioInput.addEventListener('change', function () {
+    audioInput.onchange = () => {
       addAudioToCard(index, audioInput.files[0]);
-    });
+    };
 
     div.appendChild(title);
     div.appendChild(document.createElement('br'));
