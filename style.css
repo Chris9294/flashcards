@@ -51,9 +51,16 @@ h1 {
   flex-shrink: 0;
   transition: transform 0.2s, box-shadow 0.2s;
 }
+/* effet au survol */
 #thumbnails img:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transform: scale(1.15); /* légèrement plus gros au hover */
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3); /* ombre plus prononcée */
+}
+
+/* effet au clic */
+#thumbnails img:active {
+  transform: scale(1.05);  /* miniatures “s’enfoncent” légèrement */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* ombre réduite */
 }
 
 /* ==========================
