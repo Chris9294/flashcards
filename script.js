@@ -32,30 +32,26 @@ function init() {
     return;
   }
   
-// Option neutre au démarrage
-const placeholder = document.createElement('option');
-placeholder.value = '';
-placeholder.textContent = '— Flashcards —';
-themeSelect.appendChild(placeholder);
+  // Option neutre au démarrage
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = '— Flashcards —';
+  themeSelect.appendChild(placeholder);
   
-data.themes.forEach((theme, index) => {
+  data.themes.forEach((theme) => {
     const option = document.createElement('option');
     option.value = theme.id;
     option.textContent = theme.name;
     themeSelect.appendChild(option);
-   // if (index === 0) themeSelect.value = theme.id;
   });
 
-//  loadTheme();
+  // État initial : rien de sélectionné
+  themeSelect.value = '';
+  thumbnails.innerHTML = '';
 }
-
-// État initial : rien de sélectionné
-themeSelect.value = '';
-thumbnails.innerHTML = '';
 
 init();
 themeSelect.onchange = loadTheme;
-
 
 // ================================
 // CHARGEMENT D’UNE SÉRIE
@@ -91,7 +87,13 @@ function openCardAtIndex(index) {
 function showImage() {
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
-  document.querySelector('.big-image').onclick = closeCard;
+
+  const img = document.querySelector('.big-image');
+  img.onclick = closeCard;
+
+  // déclencher transition "zoom"
+  setTimeout(() => img.classList.add('active'), 20);
+
   updateArrows();
 }
 
