@@ -28,7 +28,7 @@ body {
 }
 
 /* ==========================
-   Titre principal (compact)
+   Titres
    ========================== */
 h1 {
   text-align: center;
@@ -37,9 +37,6 @@ h1 {
   margin: 6px 0 8px 0;
 }
 
-/* ==========================
-   Sous-titres
-   ========================== */
 h2 {
   font-size: 1.3em;
   color: #ff8a65;
@@ -50,7 +47,7 @@ h2 {
 }
 
 /* ==========================
-   Étiquettes (labels)
+   Labels
    ========================== */
 label {
   display: block;
@@ -61,46 +58,53 @@ label {
 }
 
 /* ==========================
-   Champs texte et menu déroulant
+   Inputs texte et select
    ========================== */
-input[type="text"],
-select {
+input[type="text"] {
   font-size: 13px;
   padding: 5px;
   margin-bottom: 10px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
-  color: black;
+  width: 180px;
 }
 
-/* ==========================
-   Menu déroulant série
-   ========================== */
-#themeSelect {
-  width: 180px;
+select {
   font-size: 13px;
+  padding: 5px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ffcc80;
+  width: 180px;
   background-color: #e0e0e0; /* gris clair */
   color: black;              /* texte noir */
 }
 
+select:invalid {
+  color: gray; /* placeholder gris si valeur vide */
+}
+
 /* ==========================
-   Inputs type file (Parcourir + texte)
+   Inputs type file (création de carte)
    ========================== */
-input[type="file"] {
+.add-card-row input[type="file"],
+.card input[type="file"] {
   font-size: 13px;
-  color: black;               /* texte "Aucun fichier sélectionné." en noir */
-  padding: 2px 4px;
+  padding: 4px 6px;
   margin-bottom: 10px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
-  background-color: #fff;
+  background: #fff;
+  width: 250px;       /* assez large pour afficher le texte complet */
+  color: black;       /* texte "Aucun fichier sélectionné." en noir */
   vertical-align: middle;
   cursor: pointer;
 }
 
-/* bouton "Parcourir" natif */
-input[type="file"]::-webkit-file-upload-button {
+/* bouton natif parcourir */
+.add-card-row input[type="file"]::-webkit-file-upload-button,
+.card input[type="file"]::-webkit-file-upload-button {
   font-size: 13px;
   padding: 4px 8px;
   border-radius: 6px;
@@ -111,7 +115,8 @@ input[type="file"]::-webkit-file-upload-button {
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
-input[type="file"]::-webkit-file-upload-button:hover {
+.add-card-row input[type="file"]::-webkit-file-upload-button:hover,
+.card input[type="file"]::-webkit-file-upload-button:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
@@ -143,11 +148,11 @@ button:disabled {
 }
 
 /* ==========================
-   Zone ajout carte (ligne compacte)
+   Zone ajout carte
    ========================== */
 .add-card-row {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 14px;
   margin-bottom: 8px;
 }
@@ -168,7 +173,6 @@ button:disabled {
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* mot éditable */
 .card input[type="text"] {
   font-size: 15px;
   font-weight: bold;
@@ -176,7 +180,6 @@ button:disabled {
   margin-bottom: 6px;
 }
 
-/* image miniature */
 .card img {
   height: 55px;
   margin-top: 6px;
@@ -185,39 +188,9 @@ button:disabled {
   background: #fff;
 }
 
-/* infos audio */
 .card p {
   margin: 4px 0;
   font-size: 12.5px;
-}
-
-/* input audio dans les cartes existantes */
-.card input[type="file"] {
-  font-size: 13px;
-  color: black;             /* texte entier visible */
-  padding: 2px 4px;
-  margin-top: 2px;
-  border-radius: 6px;
-  border: 1px solid #ffcc80;
-  background: #fff;
-  vertical-align: middle;
-  cursor: pointer;
-}
-
-.card input[type="file"]::-webkit-file-upload-button {
-  font-size: 13px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: none;
-  background-color: #ffcc80;
-  cursor: pointer;
-  color: black;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.card input[type="file"]::-webkit-file-upload-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
