@@ -32,29 +32,28 @@
      AJOUT DE CARTE
      ========================== -->
 <h2>Créer une carte</h2>
+
 <div class="add-card-row">
-  <div class="add-card-field">
-    <label for="wordInput">Texte de la carte</label>
+  <label class="add-card-field">
+    Texte de la carte
     <input id="wordInput" type="text">
-  </div>
+  </label>
 
-  <div class="add-card-field">
-    <label>Image (obligatoire)</label>
-    <div class="file-wrapper">
+  <label class="add-card-field">
+    Image (obligatoire)
+    <span class="file-wrapper">
       <input type="file" id="imageInput" accept="image/*">
-      <button type="button" class="file-btn">Parcourir</button>
-      <span class="file-name">Aucun fichier sélectionné</span>
-    </div>
-  </div>
+      <span class="file-label">Parcourir…</span>
+    </span>
+  </label>
 
-  <div class="add-card-field">
-    <label>Audio (optionnel)</label>
-    <div class="file-wrapper">
+  <label class="add-card-field">
+    Audio (optionnel)
+    <span class="file-wrapper">
       <input type="file" id="audioInput" accept="audio/*">
-      <button type="button" class="file-btn">Parcourir</button>
-      <span class="file-name">Aucun fichier sélectionné</span>
-    </div>
-  </div>
+      <span class="file-label">Parcourir…</span>
+    </span>
+  </label>
 </div>
 
 <button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
