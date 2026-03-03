@@ -34,13 +34,12 @@ function init() {
     themeSelect.appendChild(opt);
     return;
   }
-  
-  // Option neutre au démarrage
+
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Flashcards —';
   themeSelect.appendChild(placeholder);
-  
+
   data.themes.forEach((theme) => {
     const option = document.createElement('option');
     option.value = theme.id;
@@ -48,11 +47,10 @@ function init() {
     themeSelect.appendChild(option);
   });
 
-  // État initial : rien de sélectionné
   themeSelect.value = '';
   thumbnails.innerHTML = '';
 
-  // Bouton enseignant visible sur l'écran principal
+  // écran principal → bouton enseignant visible
   teacherBtn.style.display = "block";
 }
 
@@ -63,21 +61,22 @@ themeSelect.onchange = loadTheme;
 // BOUTON INTERFACE ENSEIGNANT
 // ================================
 teacherBtn.onclick = () => {
-  window.location.href = "teacher.html";
+  // redirection robuste (GitHub Pages compatible)
+  window.location.href = "./teacher.html";
 };
 
 // ================================
-// PLEIN ÉCRAN (corrigé + Safari)
+// BOUTON PLEIN ÉCRAN (SIMPLE & FIABLE)
 // ================================
-fullscreenBtn.addEventListener("click", () => {
+fullscreenBtn.onclick = () => {
   const isFullscreen =
     document.fullscreenElement || document.webkitFullscreenElement;
 
   if (!isFullscreen) {
-    if (flashcard.requestFullscreen) {
-      flashcard.requestFullscreen();
-    } else if (flashcard.webkitRequestFullscreen) {
-      flashcard.webkitRequestFullscreen(); // Safari
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen(); // Safari
     }
   } else {
     if (document.exitFullscreen) {
@@ -86,18 +85,7 @@ fullscreenBtn.addEventListener("click", () => {
       document.webkitExitFullscreen(); // Safari
     }
   }
-});
-
-// BONUS : icône dynamique
-document.addEventListener("fullscreenchange", updateFullscreenIcon);
-document.addEventListener("webkitfullscreenchange", updateFullscreenIcon);
-
-function updateFullscreenIcon() {
-  const isFullscreen =
-    document.fullscreenElement || document.webkitFullscreenElement;
-
-  fullscreenBtn.textContent = isFullscreen ? "🡽" : "⛶";
-}
+};
 
 // ================================
 // CHARGEMENT D’UNE SÉRIE
@@ -130,42 +118,33 @@ function openCardAtIndex(index) {
   updateArrows();
 }
 
-// Affichage de l'image avec effet zoom
+// Image
 function showImage() {
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
 
-  // cacher bouton enseignant
+  // cacher bouton enseignant uniquement
   teacherBtn.style.display = "none";
 
   const img = document.querySelector('.big-image');
   img.onclick = closeCard;
 
-  // forcer reflow pour que la transition fonctionne
   void img.offsetWidth;
-
-  // ajouter la classe active pour déclencher le zoom
   img.classList.add('active');
 
   updateArrows();
 }
 
-// Affichage du mot avec effet fondu
+// Mot
 function showWord() {
   cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
   const wordDiv = cardContent.querySelector('.word');
 
-  // cacher bouton enseignant
   teacherBtn.style.display = "none";
 
-  // départ invisible pour le fondu
   wordDiv.style.opacity = 0;
   wordDiv.style.transition = "opacity 0.5s ease";
-  
-  // forcer reflow
   void wordDiv.offsetWidth;
-  
-  // apparition progressive
   wordDiv.style.opacity = 1;
 
   wordDiv.onclick = closeCard;
@@ -176,7 +155,7 @@ function closeCard() {
   flashcard.classList.remove('visible');
   currentCard = null;
 
-  // réafficher bouton enseignant
+  // retour écran principal → bouton enseignant visible
   teacherBtn.style.display = "block";
 }
 
