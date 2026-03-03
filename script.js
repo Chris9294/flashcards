@@ -53,6 +53,16 @@ function init() {
 init();
 themeSelect.onchange = loadTheme;
 
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+fullscreenBtn.addEventListener("click", () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
+
 // ================================
 // CHARGEMENT D’UNE SÉRIE
 // ================================
