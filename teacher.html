@@ -4,71 +4,12 @@
   <meta charset="UTF-8">
   <title>Interface enseignant</title>
   <link rel="stylesheet" href="teacher.css">
-  <style>
-    /* ==========================
-       Wrapper pour styliser input file
-       ========================== */
-    .file-wrapper {
-      position: relative;
-      display: inline-block;
-      width: 250px; /* largeur totale du champ */
-      margin-bottom: 10px;
-      vertical-align: middle;
-    }
-
-    .file-wrapper input[type="file"] {
-      opacity: 0;           /* cache le vrai input */
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-      z-index: 2;
-    }
-
-    .file-wrapper .file-label {
-      display: block;
-      width: 100%;
-      height: 32px;
-      line-height: 32px;
-      background-color: #ffcc80;
-      color: black;
-      padding-left: 8px;
-      border-radius: 6px;
-      pointer-events: none;
-      transition: all 0.2s;
-    }
-
-    .file-wrapper:hover .file-label {
-      transform: scale(1.05);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-    }
-
-    /* Texte du select gris placeholder / noir quand sélectionné */
-    select {
-      font-size: 13px;
-      padding: 5px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: 1px solid #ffcc80;
-      width: 180px;
-      color: gray; /* placeholder gris */
-    }
-    select option {
-      color: black; /* options en noir */
-    }
-    select:invalid {
-      color: gray; /* placeholder gris si valeur vide */
-    }
-  </style>
 </head>
 <body>
 
 <h1>FlashCards! - Interface enseignant</h1>
-<button id="backToFlashcardsBtn">
-  ⬅️ Retour aux flashcards
-</button>
+
+<button id="backToFlashcardsBtn">⬅️ Retour aux flashcards</button>
 
 <!-- ==========================
      CRÉATION DE SÉRIE
@@ -85,9 +26,7 @@
   <select id="themeSelect" required>
     <option value="" disabled selected>— Choix de la série —</option>
   </select>
-  <button id="deleteThemeBtn" class="danger-btn">
-    🗑️ Supprimer la série
-  </button>
+  <button id="deleteThemeBtn" class="danger-btn">🗑️ Supprimer la série</button>
 </div>
 
 <!-- ==========================
@@ -100,53 +39,41 @@
     <input id="wordInput" type="text">
   </label>
 
-  <div class="file-wrapper">
-    <input type="file" id="imageInput" accept="image/*" required>
-    <span class="file-label">Parcourir…</span>
-  </div>
+  <label>
+    Image (obligatoire)
+    <div class="file-wrapper">
+      <input type="file" id="imageInput" accept="image/*">
+      <span class="file-label">Parcourir…</span>
+    </div>
+  </label>
 
-  <div class="file-wrapper">
-    <input type="file" id="audioInput" accept="audio/*">
-    <span class="file-label">Parcourir…</span>
-  </div>
+  <label>
+    Audio (optionnel)
+    <div class="file-wrapper">
+      <input type="file" id="audioInput" accept="audio/*">
+      <span class="file-label">Parcourir…</span>
+    </div>
+  </label>
 </div>
 <button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
 
 <!-- ==========================
      CARTES EXISTANTES
      ========================== -->
-<h2 id="cardsTitle">cartes existantes</h2>
+<h2 id="cardsTitle">Cartes existantes</h2>
 <div id="cardsList"></div>
 
 <script src="teacher.js"></script>
-
 <script>
   // ================================
-  // Met à jour les labels "Parcourir..." pour tous les inputs file
+  // Gestion du texte des inputs file
   // ================================
-  function setupFileInputs() {
-    document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
-      const label = input.nextElementSibling;
-      input.addEventListener('change', () => {
-        if (input.files.length > 0) {
-          label.textContent = input.files[0].name;
-        } else {
-          label.textContent = 'Parcourir…';
-        }
-      });
+  document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
+    const label = input.nextElementSibling;
+    input.addEventListener('change', () => {
+      label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
     });
-  }
-
-  // Exécuter au chargement
-  setupFileInputs();
-
-  // Ré-exécuter après ajout dynamique de cartes
-  const originalRefreshCards = refreshCards;
-  refreshCards = function() {
-    originalRefreshCards();
-    setupFileInputs();
-  }
+  });
 </script>
-
 </body>
 </html>
