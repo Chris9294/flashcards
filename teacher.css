@@ -28,7 +28,7 @@ body {
 }
 
 /* ==========================
-   Titre principal (compact)
+   Titre principal
    ========================== */
 h1 {
   text-align: center;
@@ -50,7 +50,7 @@ h2 {
 }
 
 /* ==========================
-   Étiquettes (labels)
+   Labels
    ========================== */
 label {
   display: block;
@@ -61,7 +61,7 @@ label {
 }
 
 /* ==========================
-   Champs & menus
+   Champs texte et select
    ========================== */
 input[type="text"],
 select {
@@ -71,56 +71,48 @@ select {
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
-  box-sizing: border-box;
-}
-
-/* placeholder de l’option neutre du menu déroulant */
-select option[value=""] {
-  color: gray;
 }
 
 /* ==========================
-   Inputs type file (Parcourir + texte "aucun fichier")
+   File inputs personnalisés
    ========================== */
-input[type="file"] {
-  font-size: 13px;
-  padding: 4px 6px;
-  margin-bottom: 10px;
+.file-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.file-wrapper input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-btn {
+  background-color: #ffcc80;
+  border: none;
+  padding: 4px 8px;
   border-radius: 6px;
-  border: 1px solid #ffcc80;
-  background: #fff;
-  vertical-align: middle;
-  width: auto;          /* laisse la largeur s’adapter au contenu */
-  min-width: 220px;     /* large pour voir le texte complet */
-  max-width: 100%;
-  box-sizing: border-box;
-  color: black;         /* texte “Aucun fichier sélectionné” en noir */
-  overflow: hidden;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.file-name {
+  font-size: 13px;
+  color: black;
+  min-width: 220px;
   white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Bouton "Parcourir" */
-input[type="file"]::-webkit-file-upload-button {
-  font-size: 13px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: none;
-  background-color: #ffcc80;  /* orange uniforme */
-  cursor: pointer;
-  color: black;               /* texte du bouton en noir */
-}
-
 /* ==========================
-   Menu déroulant série (réduit)
-   ========================== */
-#themeSelect {
-  width: 180px;
-  font-size: 13px;
-}
-
-/* ==========================
-   Boutons
+   Boutons généraux
    ========================== */
 button {
   font-size: 14px;
@@ -146,11 +138,11 @@ button:disabled {
 }
 
 /* ==========================
-   Zone ajout carte (ligne compacte)
+   Zone ajout carte
    ========================== */
 .add-card-row {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 14px;
   margin-bottom: 8px;
 }
@@ -171,16 +163,15 @@ button:disabled {
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* mot éditable */
+/* texte mot */
 .card input[type="text"] {
   font-size: 15px;
   font-weight: bold;
   width: 100%;
   margin-bottom: 6px;
-  box-sizing: border-box;
 }
 
-/* image miniature */
+/* miniature image */
 .card img {
   height: 55px;
   margin-top: 6px;
@@ -195,16 +186,12 @@ button:disabled {
   font-size: 12.5px;
 }
 
-/* input audio dans les cartes */
+/* input file audio dans cartes */
 .card input[type="file"] {
-  font-size: 12.5px;
-  padding: 4px 6px;
+  font-size: 13px;
+  padding: 4px;
   vertical-align: middle;
   margin-top: 2px;
-  min-width: 180px;  
-  max-width: 100%;
-  box-sizing: border-box;
-  color: black;      /* texte visible en noir */
 }
 
 /* ==========================
