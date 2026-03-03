@@ -61,7 +61,17 @@ themeSelect.onchange = loadTheme;
 // BOUTON INTERFACE ENSEIGNANT
 // ================================
 teacherBtn.onclick = () => {
-  // redirection robuste (GitHub Pages compatible)
+  const pin = prompt("Code enseignant :");
+
+  // si annulation ou mauvais code → rien
+  if (pin !== "1515") {
+    if (pin !== null) {
+      alert("Code incorrect");
+    }
+    return;
+  }
+
+  // redirection si code correct
   window.location.href = "./teacher.html";
 };
 
