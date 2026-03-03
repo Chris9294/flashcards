@@ -151,9 +151,9 @@ button:disabled {
    Texte "Aucun fichier sélectionné"
    ========================== */
 input[type="file"]::-webkit-file-upload-button {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 input[type="file"] {
-  font-size: 12px;         /* ✅ évite le texte tronqué */
+  font-size: 10px;         /* ✅ évite le texte tronqué */
 }
