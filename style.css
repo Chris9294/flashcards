@@ -4,24 +4,27 @@
 body {
   font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', Arial, sans-serif;
   margin: 20px;
-  background: #fff9f2;  /* fond plus chaleureux */
+  background: #fff9f2;  /* fond doux et chaleureux */
   color: #333;
 }
 
 /* ==========================
-   Titre principal
+   Titre principal avec dégradé
    ========================== */
 h1 {
   text-align: center;
   font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
   font-size: 3em;
-  color: #ff6f61;  /* couleur vive et gaie */
+  color: #fff;
+  background: linear-gradient(90deg, #ff6f61, #ffcc80); /* dégradé rouge → orange → jaune */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; 
   text-shadow: 2px 2px 4px #aaa;
   margin-bottom: 20px;
 }
 
 /* ==========================
-   Miniatures en bas avec fond blanc
+   Miniatures en bas avec fond dégradé
    ========================== */
 #thumbnails {
   position: fixed;
@@ -29,10 +32,10 @@ h1 {
   left: 0;
   right: 0;
   display: flex;
-  flex-wrap: wrap;        /* permet plusieurs lignes */
-  justify-content: center;/* centre les miniatures sur chaque ligne */
+  flex-wrap: wrap;        
+  justify-content: center;
   padding: 10px;
-  background: #fff6e5;    /* plus doux et chaleureux */
+  background: linear-gradient(to top, #fff6e5, #ffe5b4); /* fond dégradé chaud */
   overflow-x: hidden;
   min-height: 180px;      /* permet 2 lignes */
   z-index: 999;
@@ -89,7 +92,7 @@ h1 {
   font-weight: bold;
   line-height: 1.1;
   text-align: center;
-  text-shadow: 2px 2px 4px #ffd699; /* effet lumineux pour le mot */
+  text-shadow: 2px 2px 4px #ffd699; /* halo lumineux pour le mot */
 }
 
 /* ==========================
