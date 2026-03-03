@@ -71,27 +71,32 @@ select {
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
+  box-sizing: border-box;
 }
 
 /* ==========================
    Inputs type file (Parcourir + texte "aucun fichier")
    ========================== */
 input[type="file"] {
-  font-size: 13px;           /* texte plus gros */
-  padding: 4px;              /* padding suffisant pour ne pas tronquer */
+  font-size: 13px;
+  padding: 4px 6px;
   margin-bottom: 10px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
-  vertical-align: middle;    /* aligne avec les champs texte */
+  vertical-align: middle;
+  min-width: 220px;   /* largeur minimale pour voir le texte complet */
+  max-width: 100%;    /* reste responsive sur petit écran */
+  box-sizing: border-box;
 }
 
+/* Bouton "Parcourir" */
 input[type="file"]::-webkit-file-upload-button {
-  font-size: 13px;           /* bouton parcourir plus lisible */
+  font-size: 13px;
   padding: 4px 8px;
   border-radius: 6px;
   border: none;
-  background-color: #ffcc80;
+  background-color: #ffcc80;  /* orange uniforme */
   cursor: pointer;
 }
 
@@ -161,6 +166,7 @@ button:disabled {
   font-weight: bold;
   width: 100%;
   margin-bottom: 6px;
+  box-sizing: border-box;
 }
 
 /* image miniature */
@@ -181,9 +187,12 @@ button:disabled {
 /* input audio dans les cartes */
 .card input[type="file"] {
   font-size: 12.5px;
-  padding: 3px;
+  padding: 4px 6px;  /* plus de padding pour lisibilité */
   vertical-align: middle;
   margin-top: 2px;
+  min-width: 180px;   /* élargit pour texte complet */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* ==========================
