@@ -66,6 +66,7 @@ input[type="text"] {
   border: 1px solid #ffcc80;
   background: #fff;
   width: 180px;
+  vertical-align: middle;
 }
 
 /* ==========================
@@ -78,8 +79,8 @@ select {
   border-radius: 6px;
   border: 1px solid #ffcc80;
   width: 180px;
-  color: black; /* texte en noir */
-  background: #f0f0f0; /* gris clair pour le placeholder */
+  color: black;           /* texte en noir */
+  background: #f0f0f0;    /* gris clair */
 }
 
 /* ==========================
@@ -107,7 +108,7 @@ button:disabled {
 }
 
 /* ==========================
-   Wrapper inputs file
+   Inputs type file (création carte & cartes existantes)
    ========================== */
 .file-wrapper {
   position: relative;
@@ -116,9 +117,9 @@ button:disabled {
 }
 
 .file-wrapper input[type="file"] {
-  width: 100%;
-  height: 30px;
   opacity: 0;
+  width: 100%;
+  height: 32px;
   position: absolute;
   left: 0;
   top: 0;
@@ -128,15 +129,18 @@ button:disabled {
 .file-wrapper .file-label {
   display: inline-block;
   width: 100%;
-  height: 30px;
-  line-height: 30px;
+  height: 32px;
+  line-height: 32px;
   background: #ffcc80;
   border-radius: 6px;
   text-align: center;
   color: black;
   cursor: pointer;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
 }
+
 .file-wrapper .file-label:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
@@ -147,7 +151,7 @@ button:disabled {
    ========================== */
 .add-card-row {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-start; /* aligne input texte et file verticalement */
   gap: 14px;
   margin-bottom: 8px;
 }
@@ -187,6 +191,7 @@ button:disabled {
   font-size: 12.5px;
 }
 
+/* Inputs file dans les cartes */
 .card .file-wrapper {
   width: 200px;
   margin-top: 2px;
@@ -208,6 +213,8 @@ button:disabled {
   text-align: center;
   color: black;
   cursor: pointer;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
 }
 .card .file-wrapper .file-label:hover {
