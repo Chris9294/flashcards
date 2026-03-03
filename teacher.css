@@ -8,6 +8,11 @@ body {
   padding: 15px;
 }
 
+#backToFlashcardsBtn {
+  background: #b3e5fc;
+  margin-bottom: 10px;
+}
+
 /* ==========================
    Titre principal (compact)
    ========================== */
