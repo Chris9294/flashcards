@@ -1,4 +1,14 @@
 // ================================
+// RETOUR INTERFACE FLASHCARDS
+// ================================
+const backBtn = document.getElementById("backToFlashcardsBtn");
+
+if (backBtn) {
+  backBtn.onclick = () => {
+    window.location.href = "./index.html";
+  };
+}
+// ================================
 // DONNÉES
 // ================================
 let data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
