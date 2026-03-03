@@ -2,7 +2,6 @@
 // RETOUR INTERFACE FLASHCARDS
 // ================================
 const backBtn = document.getElementById("backToFlashcardsBtn");
-
 if (backBtn) {
   backBtn.onclick = () => {
     window.location.href = "./index.html";
@@ -25,7 +24,7 @@ const cardsList = document.getElementById('cardsList');
 // SAUVEGARDE
 // ================================
 function saveData() {
-  const selectedTheme = themeSelect.value; 
+  const selectedTheme = themeSelect.value;
   localStorage.setItem('flashcards', JSON.stringify(data));
   refreshThemes();
   themeSelect.value = selectedTheme;
@@ -39,10 +38,16 @@ function addTheme() {
   const name = document.getElementById('themeName').value.trim();
   if (!name) return;
 
-  const newTheme = { id: Date.now().toString(), name, cards: [] };
+  const newTheme = {
+    id: Date.now().toString(),
+    name,
+    cards: []
+  };
+
   data.themes.push(newTheme);
   document.getElementById('themeName').value = '';
   saveData();
+
   themeSelect.value = newTheme.id;
   refreshCards();
 }
@@ -53,6 +58,8 @@ function refreshThemes() {
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Choix de la série —';
+  placeholder.disabled = true;
+  placeholder.selected = true;
   themeSelect.appendChild(placeholder);
 
   data.themes.forEach(theme => {
@@ -61,13 +68,8 @@ function refreshThemes() {
     option.textContent = theme.name;
     themeSelect.appendChild(option);
   });
-
-  themeSelect.value = '';
 }
 
-// ================================
-// SUPPRESSION D'UNE SÉRIE
-// ================================
 deleteThemeBtn.onclick = () => {
   if (!themeSelect.value) return;
 
@@ -83,27 +85,19 @@ deleteThemeBtn.onclick = () => {
 themeSelect.onchange = refreshCards;
 
 // ================================
-// UTILE : METTRE À JOUR LABEL FILE
-// ================================
-function updateFileLabel(wrapper) {
-  const input = wrapper.querySelector('input[type=file]');
-  const label = wrapper.querySelector('.file-label');
-  label.textContent = input.files.length > 0 ? input.files[0].name : 'Aucun fichier sélectionné.';
-}
-
-// ================================
-// AJOUT DE CARTE
+// AJOUT DE CARTE (Créer une carte)
 // ================================
 function addCard() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
-  const word = document.getElementById('wordInput').value.trim();
-  const imageWrapper = document.getElementById('imageWrapper');
-  const audioWrapper = document.getElementById('audioWrapper');
+  const wordInput = document.getElementById('wordInput');
+  const imageInput = document.getElementById('imageInput');
+  const audioInput = document.getElementById('audioInput');
 
-  const imageFile = imageWrapper.querySelector('input[type=file]').files[0];
-  const audioFile = audioWrapper.querySelector('input[type=file]').files[0];
+  const word = wordInput.value.trim();
+  const imageFile = imageInput.files[0];
+  const audioFile = audioInput.files[0];
 
   if (!word || !imageFile) return;
 
@@ -122,11 +116,25 @@ function addCard() {
   };
   imgReader.readAsDataURL(imageFile);
 
-  document.getElementById('wordInput').value = '';
-  imageWrapper.querySelector('input[type=file]').value = '';
-  updateFileLabel(imageWrapper);
-  audioWrapper.querySelector('input[type=file]').value = '';
-  updateFileLabel(audioWrapper);
+  // réinitialiser les champs
+  wordInput.value = '';
+  resetFileInput(imageInput);
+  resetFileInput(audioInput);
+}
+
+// ================================
+// GESTION DES INPUT FILE POUR TEXTE NOIR
+// ================================
+function resetFileInput(input) {
+  input.value = '';
+  // Si un label personnalisé existe, rien à faire, sinon on peut ajouter le texte noir
+  if (input.nextSibling && input.nextSibling.tagName !== 'LABEL') {
+    const span = document.createElement('span');
+    span.style.color = 'black';
+    span.style.marginLeft = '4px';
+    span.textContent = 'Aucun fichier sélectionné.';
+    input.parentNode.insertBefore(span, input.nextSibling);
+  }
 }
 
 // ================================
@@ -145,8 +153,7 @@ function handleAudioUpload(file, card, theme) {
 // ================================
 // AUDIO SUR CARTE EXISTANTE
 // ================================
-function addAudioToCard(cardIndex, wrapper) {
-  const file = wrapper.querySelector('input[type=file]').files[0];
+function addAudioToCard(cardIndex, file) {
   if (!file) return;
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
@@ -156,7 +163,6 @@ function addAudioToCard(cardIndex, wrapper) {
   reader.onload = function(e) {
     theme.cards[cardIndex].audio = e.target.result;
     saveData();
-    updateFileLabel(wrapper);
   };
   reader.readAsDataURL(file);
 }
@@ -166,8 +172,8 @@ function addAudioToCard(cardIndex, wrapper) {
 // ================================
 function refreshCards() {
   cardsList.innerHTML = '';
-  const cardsTitle = document.getElementById('cardsTitle');
 
+  const cardsTitle = document.getElementById('cardsTitle');
   if (!themeSelect.value) {
     cardsTitle.textContent = 'Cartes existantes';
     return;
@@ -176,12 +182,14 @@ function refreshCards() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
-  cardsTitle.textContent = `${theme.cards.length} carte${theme.cards.length > 1 ? 's' : ''} existante${theme.cards.length > 1 ? 's' : ''}`;
+  const count = theme.cards.length;
+  cardsTitle.textContent = `${count} carte${count > 1 ? 's' : ''} existante${count > 1 ? 's' : ''}`;
 
   theme.cards.forEach((card, index) => {
     const div = document.createElement('div');
     div.className = 'card';
 
+    // numéro de la carte
     const number = document.createElement('div');
     number.textContent = `Carte ${index + 1}`;
     number.style.fontWeight = 'bold';
@@ -214,23 +222,14 @@ function refreshCards() {
     const audioInfo = document.createElement('p');
     audioInfo.textContent = card.audio ? 'Audio : oui' : 'Audio : non';
 
-    const audioWrapper = document.createElement('div');
-    audioWrapper.className = 'file-wrapper';
-    audioWrapper.style.marginTop = '4px';
-
     const audioInput = document.createElement('input');
     audioInput.type = 'file';
     audioInput.accept = 'audio/*';
-    audioInput.onchange = () => addAudioToCard(index, audioWrapper);
+    audioInput.onchange = () => {
+      addAudioToCard(index, audioInput.files[0]);
+    };
 
-    const audioLabel = document.createElement('span');
-    audioLabel.className = 'file-label';
-    audioLabel.textContent = card.audio ? card.audio.split('\\').pop() : 'Aucun fichier sélectionné.';
-
-    audioWrapper.appendChild(audioInput);
-    audioWrapper.appendChild(audioLabel);
-
-    // boutons réordonnement & suppression
+    // réordonner
     const upBtn = document.createElement('button');
     upBtn.textContent = '🔼';
     upBtn.disabled = index === 0;
@@ -258,14 +257,12 @@ function refreshCards() {
     div.appendChild(wordInput);
     div.appendChild(saveBtn);
     div.appendChild(document.createElement('br'));
-
     div.appendChild(upBtn);
     div.appendChild(downBtn);
     div.appendChild(deleteBtn);
-
     div.appendChild(img);
     div.appendChild(audioInfo);
-    div.appendChild(audioWrapper);
+    div.appendChild(audioInput);
 
     cardsList.appendChild(div);
   });
