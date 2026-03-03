@@ -1,0 +1,112 @@
+/* ==========================
+   Style général
+   ========================== */
+body {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', Arial, sans-serif;
+  background: #fff9f2;
+  color: #333;
+  padding: 20px;
+}
+
+/* ==========================
+   Titres
+   ========================== */
+h1 {
+  text-align: center;
+  font-size: 3em;
+  color: #ff6f61;
+  margin-bottom: 30px;
+}
+
+h2 {
+  color: #ff8a65;
+  border-bottom: 2px solid #ffcc80;
+  padding-bottom: 5px;
+  margin-top: 30px;
+}
+
+/* ==========================
+   Champs et boutons
+   ========================== */
+input[type="text"],
+input[type="file"],
+select {
+  font-size: 16px;
+  padding: 6px;
+  margin: 5px 0;
+  border-radius: 6px;
+  border: 1px solid #ffcc80;
+}
+
+button {
+  font-size: 15px;
+  padding: 6px 10px;
+  margin: 4px 2px;
+  border-radius: 8px;
+  border: none;
+  background: #ffcc80;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* ==========================
+   Cartes enseignant
+   ========================== */
+.card {
+  background: #ffffff;
+  border: 2px solid #ffcc80;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* mot éditable */
+.card input[type="text"] {
+  font-size: 18px;
+  font-weight: bold;
+  width: 220px;
+}
+
+/* image miniature */
+.card img {
+  height: 60px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+}
+
+/* infos audio */
+.card p {
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+/* ==========================
+   Zone listes
+   ========================== */
+#cardsList {
+  margin-top: 10px;
+}
+
+/* ==========================
+   Sélecteur de série
+   ========================== */
+select#themeSelect {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
