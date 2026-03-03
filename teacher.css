@@ -21,7 +21,6 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   font-size: 14px;
 }
-
 #backToFlashcardsBtn:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
@@ -36,7 +35,6 @@ h1 {
   color: #ff6f61;
   margin: 6px 0 8px 0;
 }
-
 h2 {
   font-size: 1.3em;
   color: #ff8a65;
@@ -58,7 +56,7 @@ label {
 }
 
 /* ==========================
-   Inputs texte et select
+   Inputs texte
    ========================== */
 input[type="text"] {
   font-size: 13px;
@@ -70,6 +68,9 @@ input[type="text"] {
   width: 180px;
 }
 
+/* ==========================
+   Menu déroulant
+   ========================== */
 select {
   font-size: 13px;
   padding: 5px;
@@ -77,36 +78,8 @@ select {
   border-radius: 6px;
   border: 1px solid #ffcc80;
   width: 180px;
-  color: gray; /* texte placeholder gris par défaut */
-}
-
-select:invalid {
-  color: gray; /* placeholder gris si valeur vide */
-}
-
-/* ==========================
-   Inputs type file
-   ========================== */
-input[type="file"] {
-  font-size: 13px;
-  padding: 5px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #ffcc80;
-  background: #fff;
-  width: 250px;       /* plus large pour afficher le texte entier */
-  color: black;       /* texte "Aucun fichier sélectionné." en noir */
-}
-
-/* bouton natif parcourir */
-input[type="file"]::-webkit-file-upload-button {
-  font-size: 13px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: none;
-  background-color: #ffcc80;
-  cursor: pointer;
-  color: black;
+  color: black; /* texte en noir */
+  background: #f0f0f0; /* gris clair pour le placeholder */
 }
 
 /* ==========================
@@ -123,16 +96,50 @@ button {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
 }
-
 button:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
-
 button:disabled {
   opacity: 0.4;
   cursor: default;
   box-shadow: none;
+}
+
+/* ==========================
+   Wrapper inputs file
+   ========================== */
+.file-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 250px;
+}
+
+.file-wrapper input[type="file"] {
+  width: 100%;
+  height: 30px;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+.file-wrapper .file-label {
+  display: inline-block;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  background: #ffcc80;
+  border-radius: 6px;
+  text-align: center;
+  color: black;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.file-wrapper .file-label:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
@@ -144,7 +151,6 @@ button:disabled {
   gap: 14px;
   margin-bottom: 8px;
 }
-
 .add-card-field {
   display: flex;
   flex-direction: column;
@@ -181,15 +187,32 @@ button:disabled {
   font-size: 12.5px;
 }
 
-.card input[type="file"] {
-  font-size: 13px;
-  padding: 4px;
+.card .file-wrapper {
+  width: 200px;
   margin-top: 2px;
+}
+.card .file-wrapper input[type="file"] {
+  opacity: 0;
+  height: 28px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.card .file-wrapper .file-label {
+  display: inline-block;
+  width: 100%;
+  height: 28px;
+  line-height: 28px;
+  background: #ffcc80;
   border-radius: 6px;
-  border: 1px solid #ffcc80;
-  background: #fff;
-  width: 200px;   /* suffisamment large pour le nom du fichier */
+  text-align: center;
   color: black;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card .file-wrapper .file-label:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
