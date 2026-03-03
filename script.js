@@ -84,15 +84,15 @@ function openCardAtIndex(index) {
   updateArrows();
 }
 
+// Affichage de l'image avec effet zoom
 function showImage() {
-  // créer l'image et l'ajouter au DOM
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
 
   const img = document.querySelector('.big-image');
   img.onclick = closeCard;
 
-  // forcer un reflow pour que la transition fonctionne
+  // forcer reflow pour que la transition fonctionne
   void img.offsetWidth;
 
   // ajouter la classe active pour déclencher le zoom
@@ -101,9 +101,22 @@ function showImage() {
   updateArrows();
 }
 
+// Affichage du mot avec effet fondu
 function showWord() {
   cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
-  cardContent.querySelector('.word').onclick = closeCard;
+  const wordDiv = cardContent.querySelector('.word');
+
+  // départ invisible pour le fondu
+  wordDiv.style.opacity = 0;
+  wordDiv.style.transition = "opacity 0.5s ease";
+  
+  // forcer reflow
+  void wordDiv.offsetWidth;
+  
+  // apparition progressive
+  wordDiv.style.opacity = 1;
+
+  wordDiv.onclick = closeCard;
   updateArrows();
 }
 
