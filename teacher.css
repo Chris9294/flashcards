@@ -9,7 +9,7 @@ body {
 }
 
 /* ==========================
-   Titre principal (très compact)
+   Titre principal
    ========================== */
 h1 {
   text-align: center;
@@ -31,31 +31,28 @@ h2 {
 }
 
 /* ==========================
-   Champs, menus et boutons
+   Champs généraux
    ========================== */
 input[type="text"],
 input[type="file"],
 select {
   font-size: 13px;
   padding: 4px;
-  margin: 3px 0;
   border-radius: 6px;
   border: 1px solid #ffcc80;
 }
 
-/* menu déroulant série */
+/* menu déroulant */
 select#themeSelect {
   font-size: 13px;
-  font-weight: normal;
 }
 
 /* ==========================
-   Boutons généraux
+   Boutons
    ========================== */
 button {
   font-size: 14px;
   padding: 5px 9px;
-  margin: 3px 2px;
   border-radius: 8px;
   border: none;
   background: #ffcc80;
@@ -85,7 +82,7 @@ button:disabled {
   margin-bottom: 10px;
 }
 
-/* bouton supprimer série */
+/* bouton supprimer série à DROITE */
 .danger-btn {
   background: #ff6f61;
   color: white;
@@ -95,32 +92,44 @@ button:disabled {
 }
 
 /* ==========================
-   Ligne ajout de carte
+   Ligne ajout de carte (alignement parfait)
    ========================== */
 .add-card-row {
   display: flex;
-  gap: 18px;
-  align-items: flex-end;
+  gap: 20px;
+  align-items: flex-start; /* clé de l’alignement */
   margin-bottom: 6px;
 }
 
 .add-card-row label {
+  display: flex;
+  flex-direction: column;
   font-size: 13px;
   font-weight: bold;
   color: #ff6f61;
 }
 
+.add-card-row input[type="text"] {
+  width: 200px;
+  margin-top: 2px;
+}
+
+.add-card-row input[type="file"] {
+  width: 200px;
+  margin-top: 2px;
+}
+
 /* bouton ajouter carte */
 .primary-btn {
   background: #ffcc80;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 .primary-btn:hover {
   background: #ffb74d;
 }
 
 /* ==========================
-   Liste des cartes en grille (3 colonnes)
+   Liste des cartes (3 colonnes)
    ========================== */
 #cardsList {
   display: grid;
@@ -130,7 +139,7 @@ button:disabled {
 }
 
 /* ==========================
-   Cartes enseignant
+   Carte enseignant
    ========================== */
 .card {
   background: #ffffff;
@@ -140,14 +149,14 @@ button:disabled {
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* numéro de carte */
+/* numéro carte */
 .card div:first-child {
   font-weight: bold;
   color: #ff6f61;
   margin-bottom: 4px;
 }
 
-/* mot éditable */
+/* texte éditable */
 .card input[type="text"] {
   font-size: 15px;
   font-weight: bold;
@@ -155,7 +164,7 @@ button:disabled {
   margin-bottom: 4px;
 }
 
-/* image miniature */
+/* image */
 .card img {
   height: 55px;
   margin-top: 5px;
@@ -164,7 +173,7 @@ button:disabled {
   background: #fff;
 }
 
-/* infos audio */
+/* audio */
 .card p {
   margin: 3px 0;
   font-size: 12.5px;
