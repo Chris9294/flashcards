@@ -77,11 +77,7 @@ select {
   border-radius: 6px;
   border: 1px solid #ffcc80;
   width: 180px;
-  color: gray; /* placeholder gris par défaut */
-}
-
-select:invalid {
-  color: gray; /* placeholder gris si valeur vide */
+  color: black; /* texte en noir */
 }
 
 /* ==========================
@@ -95,7 +91,7 @@ input[type="file"] {
   border: 1px solid #ffcc80;
   background: #fff;
   width: 250px;       /* plus large pour afficher le texte entier */
-  color: black;       /* texte "Aucun fichier sélectionné." en noir */
+  color: black;       /* texte en noir */
   vertical-align: middle;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
@@ -106,7 +102,6 @@ input[type="file"]:hover {
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
-/* bouton natif parcourir */
 input[type="file"]::-webkit-file-upload-button {
   font-size: 13px;
   padding: 4px 8px;
@@ -200,14 +195,15 @@ button:disabled {
    ========================== */
 .card input[type="file"] {
   font-size: 13px;
-  padding: 4px;
+  padding: 5px;
   margin-top: 2px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
-  width: 200px;       /* texte entier visible */
+  width: 250px;       /* texte entier visible */
   color: black;       /* texte "Aucun fichier sélectionné." en noir */
   cursor: pointer;
+  vertical-align: middle;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
