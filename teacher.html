@@ -3,44 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <title>Interface enseignant</title>
- <link rel="stylesheet" href="teacher.css">
+  <link rel="stylesheet" href="teacher.css">
 </head>
 <body>
 
 <h1>Interface enseignant</h1>
 
-<h2>Créer une série</h2>
-<input id="themeName" placeholder="Nom de la série">
+<!-- ==========================
+     CRÉATION DE SÉRIE
+     ========================== -->
+<h2>Ajouter une série</h2>
+
+<input id="themeName" type="text" placeholder="Nom de la série">
 <button onclick="addTheme()">Ajouter la série</button>
 
-<h2>Ajouter une carte</h2>
+<!-- ==========================
+     SÉLECTION DE SÉRIE
+     ========================== -->
+<h2>Choix de la série</h2>
 
 <div class="theme-row">
   <select id="themeSelect"></select>
-  <button id="deleteThemeBtn" class="danger-btn">Supprimer la série</button>
+  <button id="deleteThemeBtn" class="danger-btn">
+    🗑️ Supprimer la série
+  </button>
 </div>
+
+<!-- ==========================
+     AJOUT DE CARTE
+     ========================== -->
+<h2>Créer une carte</h2>
 
 <div class="add-card-row">
-  <div>
-    <label>Texte</label><br>
-    <input id="wordInput">
-  </div>
+  <label>
+    Texte
+    <input id="wordInput" type="text">
+  </label>
 
-  <div>
-    <label>Image</label><br>
+  <label>
+    Image
     <input type="file" id="imageInput" accept="image/*">
-  </div>
+  </label>
 
-  <div>
-    <label>Audio</label><br>
+  <label>
+    Audio
     <input type="file" id="audioInput" accept="audio/*">
-  </div>
+  </label>
 </div>
 
-<button onclick="addCard()" class="primary-btn">➕ Ajouter la carte</button>
+<button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
 
+<!-- ==========================
+     CARTES EXISTANTES
+     ========================== -->
 <h2 id="cardsTitle">Cartes existantes</h2>
-<p id="cardsCount"></p>
 <div id="cardsList"></div>
 
 <script src="teacher.js"></script>
