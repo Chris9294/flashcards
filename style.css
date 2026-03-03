@@ -51,6 +51,7 @@ h1 {
   flex-shrink: 0;
   transition: transform 0.2s, box-shadow 0.2s;
 }
+
 /* effet au survol */
 #thumbnails img:hover {
   transform: scale(1.15); /* légèrement plus gros au hover */
@@ -100,13 +101,23 @@ h1 {
 }
 
 /* ==========================
-   Image centrée et agrandie
+   Image centrée et agrandie avec effet zoom
    ========================== */
 .big-image {
   max-width: 95%;
   max-height: 95%;
-  object-fit: contain;  /* toute l'image visible */
+  object-fit: contain;  
   cursor: pointer;
+
+  /* effet de transition “zoom” */
+  transform: scale(0.8);  /* départ légèrement plus petit */
+  opacity: 0;             /* départ invisible */
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.big-image.active {
+  transform: scale(1);   /* taille finale */
+  opacity: 1;
 }
 
 /* ==========================
@@ -143,11 +154,11 @@ h1 {
 .navArrow {
   position: absolute;
   top: 50%;
-  font-size: 72px;              /* flèche plus grande */
-  color: rgba(0,0,0,0.7);       /* contraste élevé */
+  font-size: 72px;              
+  color: rgba(0,0,0,0.7);       
   background: rgba(255,255,255,0.9);
   border-radius: 50%;
-  width: 90px;                  /* zone cliquable large */
+  width: 90px;                  
   height: 90px;
   line-height: 90px;
   text-align: center;
@@ -155,7 +166,7 @@ h1 {
   user-select: none;
   transform: translateY(-50%);
   z-index: 3;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25); /* ombre douce */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25); 
 }
 
 #leftArrow {
