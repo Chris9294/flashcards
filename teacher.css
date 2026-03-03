@@ -60,7 +60,7 @@ input[type="file"] {
 
 /* menu déroulant série */
 #themeSelect {
-  width: 260px;           /* ✅ largeur contrôlée */
+  width: 130px;   /* ✅ largeur divisée par deux */
   font-size: 13px;
 }
 
