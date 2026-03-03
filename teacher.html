@@ -4,6 +4,64 @@
   <meta charset="UTF-8">
   <title>Interface enseignant</title>
   <link rel="stylesheet" href="teacher.css">
+  <style>
+    /* ==========================
+       Wrapper pour styliser input file
+       ========================== */
+    .file-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 250px; /* largeur totale du champ */
+      margin-bottom: 10px;
+      vertical-align: middle;
+    }
+
+    .file-wrapper input[type="file"] {
+      opacity: 0;           /* cache le vrai input */
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .file-wrapper .file-label {
+      display: block;
+      width: 100%;
+      height: 32px;
+      line-height: 32px;
+      background-color: #ffcc80;
+      color: black;
+      padding-left: 8px;
+      border-radius: 6px;
+      pointer-events: none;
+      transition: all 0.2s;
+    }
+
+    .file-wrapper:hover .file-label {
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    }
+
+    /* Texte du select gris placeholder / noir quand sélectionné */
+    select {
+      font-size: 13px;
+      padding: 5px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ffcc80;
+      width: 180px;
+      color: gray; /* placeholder gris */
+    }
+    select option {
+      color: black; /* options en noir */
+    }
+    select:invalid {
+      color: gray; /* placeholder gris si valeur vide */
+    }
+  </style>
 </head>
 <body>
 
@@ -24,38 +82,34 @@
      ========================== -->
 <h2>Choix de la série</h2>
 <div class="theme-row">
-  <select id="themeSelect"></select>
-  <button id="deleteThemeBtn" class="danger-btn">🗑️ Supprimer la série</button>
+  <select id="themeSelect" required>
+    <option value="" disabled selected>— Choix de la série —</option>
+  </select>
+  <button id="deleteThemeBtn" class="danger-btn">
+    🗑️ Supprimer la série
+  </button>
 </div>
 
 <!-- ==========================
      AJOUT DE CARTE
      ========================== -->
 <h2>Créer une carte</h2>
-
 <div class="add-card-row">
-  <label class="add-card-field">
+  <label>
     Texte de la carte
     <input id="wordInput" type="text">
   </label>
 
-  <label class="add-card-field">
-    Image (obligatoire)
-    <span class="file-wrapper">
-      <input type="file" id="imageInput" accept="image/*">
-      <span class="file-label">Parcourir…</span>
-    </span>
-  </label>
+  <div class="file-wrapper">
+    <input type="file" id="imageInput" accept="image/*" required>
+    <span class="file-label">Parcourir…</span>
+  </div>
 
-  <label class="add-card-field">
-    Audio (optionnel)
-    <span class="file-wrapper">
-      <input type="file" id="audioInput" accept="audio/*">
-      <span class="file-label">Parcourir…</span>
-    </span>
-  </label>
+  <div class="file-wrapper">
+    <input type="file" id="audioInput" accept="audio/*">
+    <span class="file-label">Parcourir…</span>
+  </div>
 </div>
-
 <button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
 
 <!-- ==========================
@@ -65,32 +119,34 @@
 <div id="cardsList"></div>
 
 <script src="teacher.js"></script>
-<script>
-  // ==========================
-  // Gestion des fichiers personnalisés
-  // ==========================
-  function setupFileInput(wrapperSelector, inputId) {
-    const wrapper = document.querySelector(wrapperSelector);
-    const input = wrapper.querySelector(`#${inputId}`);
-    const btn = wrapper.querySelector('.file-btn');
-    const nameSpan = wrapper.querySelector('.file-name');
 
-    btn.addEventListener('click', () => input.click());
-    input.addEventListener('change', () => {
-      nameSpan.textContent = input.files[0]?.name || "Aucun fichier sélectionné";
+<script>
+  // ================================
+  // Met à jour les labels "Parcourir..." pour tous les inputs file
+  // ================================
+  function setupFileInputs() {
+    document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
+      const label = input.nextElementSibling;
+      input.addEventListener('change', () => {
+        if (input.files.length > 0) {
+          label.textContent = input.files[0].name;
+        } else {
+          label.textContent = 'Parcourir…';
+        }
+      });
     });
   }
 
-  setupFileInput('.add-card-row .add-card-field:nth-child(2) .file-wrapper', 'imageInput');
-  setupFileInput('.add-card-row .add-card-field:nth-child(3) .file-wrapper', 'audioInput');
+  // Exécuter au chargement
+  setupFileInputs();
 
-  // Placeholder gris pour le select
-  const themeSelect = document.getElementById('themeSelect');
-  function updateSelectColor() {
-    themeSelect.style.color = themeSelect.value === "" ? "gray" : "black";
+  // Ré-exécuter après ajout dynamique de cartes
+  const originalRefreshCards = refreshCards;
+  refreshCards = function() {
+    originalRefreshCards();
+    setupFileInputs();
   }
-  themeSelect.addEventListener("change", updateSelectColor);
-  updateSelectColor();
 </script>
+
 </body>
 </html>
