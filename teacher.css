@@ -8,9 +8,7 @@ body {
   padding: 15px;
 }
 
-/* ==========================
-   Bouton retour Flashcards
-   ========================== */
+/* Bouton retour Flashcards */
 #backToFlashcardsBtn {
   background: #ffcc80;
   margin-bottom: 10px;
@@ -21,45 +19,19 @@ body {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   font-size: 14px;
 }
-
 #backToFlashcardsBtn:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
-/* ==========================
-   Titres
-   ========================== */
-h1 {
-  text-align: center;
-  font-size: 2.2em;
-  color: #ff6f61;
-  margin: 6px 0 8px 0;
-}
+/* Titres */
+h1 { text-align: center; font-size: 2.2em; color: #ff6f61; margin: 6px 0 8px 0; }
+h2 { font-size: 1.3em; color: #ff8a65; border-bottom: 2px solid #ffcc80; padding-bottom: 4px; margin-top: 16px; margin-bottom: 8px; }
 
-h2 {
-  font-size: 1.3em;
-  color: #ff8a65;
-  border-bottom: 2px solid #ffcc80;
-  padding-bottom: 4px;
-  margin-top: 16px;
-  margin-bottom: 8px;
-}
+/* Labels */
+label { display: block; font-size: 14px; font-weight: bold; color: #ff8a65; margin-bottom: 4px; }
 
-/* ==========================
-   Labels
-   ========================== */
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: bold;
-  color: #ff8a65;
-  margin-bottom: 4px;
-}
-
-/* ==========================
-   Inputs texte et select
-   ========================== */
+/* Inputs texte et select */
 input[type="text"] {
   font-size: 13px;
   padding: 5px;
@@ -77,46 +49,55 @@ select {
   border-radius: 6px;
   border: 1px solid #ffcc80;
   width: 180px;
-  background-color: #e0e0e0; /* gris clair */
-  color: black;              /* texte noir */
-}
-
-select:invalid {
-  color: gray; /* placeholder gris si valeur vide */
+  color: black; /* texte en noir même pour placeholder */
 }
 
 /* ==========================
-   Inputs type file (création de carte)
+   Wrapper input file pour bouton stylé
    ========================== */
-.add-card-row input[type="file"],
-.card input[type="file"] {
+.file-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 250px;
+  height: 32px;
+  overflow: hidden;
+}
+
+.file-wrapper input[type="file"] {
   font-size: 13px;
-  padding: 4px 6px;
-  margin-bottom: 10px;
+  padding: 5px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
-  width: 250px;       /* assez large pour afficher le texte complet */
-  color: black;       /* texte "Aucun fichier sélectionné." en noir */
-  vertical-align: middle;
-  cursor: pointer;
-}
-
-/* bouton natif parcourir */
-.add-card-row input[type="file"]::-webkit-file-upload-button,
-.card input[type="file"]::-webkit-file-upload-button {
-  font-size: 13px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: none;
-  background-color: #ffcc80;
-  cursor: pointer;
+  width: 250px;
+  height: 32px;
   color: black;
-  transition: transform 0.15s, box-shadow 0.15s;
+  opacity: 0;        /* cache le vrai input */
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+  z-index: 2;
 }
 
-.add-card-row input[type="file"]::-webkit-file-upload-button:hover,
-.card input[type="file"]::-webkit-file-upload-button:hover {
+.file-wrapper .file-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 32px;
+  line-height: 32px;
+  width: 250px;
+  background-color: #ffcc80;
+  color: black;
+  padding-left: 8px;
+  border-radius: 6px;
+  z-index: 1;
+  pointer-events: none;
+  transition: all 0.2s;
+}
+
+/* Hover sur bouton parcourir */
+.file-wrapper:hover .file-label {
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
@@ -135,17 +116,8 @@ button {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
 }
-
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-button:disabled {
-  opacity: 0.4;
-  cursor: default;
-  box-shadow: none;
-}
+button:hover { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
+button:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
 
 /* ==========================
    Zone ajout carte
@@ -156,11 +128,7 @@ button:disabled {
   gap: 14px;
   margin-bottom: 8px;
 }
-
-.add-card-field {
-  display: flex;
-  flex-direction: column;
-}
+.add-card-field { display: flex; flex-direction: column; }
 
 /* ==========================
    Cartes enseignant
@@ -191,6 +159,29 @@ button:disabled {
 .card p {
   margin: 4px 0;
   font-size: 12.5px;
+}
+
+/* Input audio dans les cartes existantes */
+.card .file-wrapper {
+  width: 200px;
+  height: 28px;
+  margin-top: 2px;
+}
+.card .file-wrapper input[type="file"] { opacity: 0; width: 200px; height: 28px; }
+.card .file-wrapper .file-label {
+  width: 200px;
+  height: 28px;
+  line-height: 28px;
+  padding-left: 8px;
+  background-color: #ffcc80;
+  color: black;
+  border-radius: 6px;
+  pointer-events: none;
+  transition: all 0.2s;
+}
+.card .file-wrapper:hover .file-label {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
