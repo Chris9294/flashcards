@@ -142,13 +142,28 @@ function refreshCards() {
     const div = document.createElement('div');
     div.className = 'card';
 
-    const title = document.createElement('strong');
-    title.textContent = card.word;
+    /* ====== ÉDITION DU MOT ====== */
+    const wordInput = document.createElement('input');
+    wordInput.type = 'text';
+    wordInput.value = card.word;
+    wordInput.style.fontSize = '16px';
+    wordInput.style.width = '200px';
 
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = '💾 Enregistrer';
+    saveBtn.onclick = () => {
+      card.word = wordInput.value.trim();
+      saveData();
+    };
+
+    /* ====== IMAGE ====== */
     const img = document.createElement('img');
     img.src = card.image;
     img.style.height = '60px';
+    img.style.display = 'block';
+    img.style.marginTop = '5px';
 
+    /* ====== AUDIO ====== */
     const audioInfo = document.createElement('p');
     audioInfo.textContent = card.audio ? 'Audio : oui' : 'Audio : non';
 
@@ -159,8 +174,42 @@ function refreshCards() {
       addAudioToCard(index, audioInput.files[0]);
     };
 
-    div.appendChild(title);
+    /* ====== RÉORDONNEMENT ====== */
+    const upBtn = document.createElement('button');
+    upBtn.textContent = '🔼';
+    upBtn.disabled = index === 0;
+    upBtn.onclick = () => {
+      [theme.cards[index - 1], theme.cards[index]] =
+      [theme.cards[index], theme.cards[index - 1]];
+      saveData();
+    };
+
+    const downBtn = document.createElement('button');
+    downBtn.textContent = '🔽';
+    downBtn.disabled = index === theme.cards.length - 1;
+    downBtn.onclick = () => {
+      [theme.cards[index + 1], theme.cards[index]] =
+      [theme.cards[index], theme.cards[index + 1]];
+      saveData();
+    };
+
+    /* ====== SUPPRESSION ====== */
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '🗑️ Supprimer';
+    deleteBtn.onclick = () => {
+      theme.cards.splice(index, 1);
+      saveData();
+    };
+
+    /* ====== ASSEMBLAGE ====== */
+    div.appendChild(wordInput);
+    div.appendChild(saveBtn);
     div.appendChild(document.createElement('br'));
+
+    div.appendChild(upBtn);
+    div.appendChild(downBtn);
+    div.appendChild(deleteBtn);
+
     div.appendChild(img);
     div.appendChild(audioInfo);
     div.appendChild(audioInput);
