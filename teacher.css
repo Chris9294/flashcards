@@ -5,43 +5,56 @@ body {
   font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', Arial, sans-serif;
   background: #fff9f2;
   color: #333;
-  padding: 20px;
+  padding: 15px;
 }
 
 /* ==========================
-   Titres
+   Titre principal (plus compact)
    ========================== */
 h1 {
   text-align: center;
-  font-size: 2em;
+  font-size: 2.4em;          /* ↓ taille */
   color: #ff6f61;
-  margin-bottom: 30px;
-}
-
-h2 {
-  color: #ff8a65;
-  border-bottom: 2px solid #ffcc80;
-  padding-bottom: 5px;
-  margin-top: 30px;
+  margin: 10px 0 15px 0;     /* ↓ espaces haut / bas */
 }
 
 /* ==========================
-   Champs et boutons
+   Sous-titres (plus discrets)
+   ========================== */
+h2 {
+  font-size: 1.3em;          /* ↓ taille */
+  color: #ff8a65;
+  border-bottom: 2px solid #ffcc80;
+  padding-bottom: 4px;
+  margin-top: 18px;          /* ↓ espace au-dessus */
+  margin-bottom: 10px;       /* ↓ espace en dessous */
+}
+
+/* ==========================
+   Champs, menus et boutons
    ========================== */
 input[type="text"],
 input[type="file"],
 select {
-  font-size: 16px;
-  padding: 6px;
-  margin: 5px 0;
+  font-size: 14px;           /* ↓ taille police */
+  padding: 5px;
+  margin: 4px 0;
   border-radius: 6px;
   border: 1px solid #ffcc80;
 }
 
+/* menu déroulant série */
+select#themeSelect {
+  font-size: 15px;           /* ↓ taille spécifique */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* boutons */
 button {
-  font-size: 15px;
-  padding: 6px 10px;
-  margin: 4px 2px;
+  font-size: 14px;
+  padding: 5px 9px;
+  margin: 3px 2px;
   border-radius: 8px;
   border: none;
   background: #ffcc80;
@@ -68,22 +81,22 @@ button:disabled {
   background: #ffffff;
   border: 2px solid #ffcc80;
   border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 15px;
+  padding: 10px;             /* ↓ padding */
+  margin-bottom: 12px;       /* ↓ espacement */
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
 /* mot éditable */
 .card input[type="text"] {
-  font-size: 18px;
+  font-size: 16px;           /* ↓ taille */
   font-weight: bold;
-  width: 220px;
+  width: 200px;
 }
 
 /* image miniature */
 .card img {
-  height: 60px;
-  margin-top: 8px;
+  height: 55px;              /* ↓ taille image */
+  margin-top: 6px;
   border: 1px solid #ccc;
   border-radius: 6px;
   background: #fff;
@@ -91,22 +104,13 @@ button:disabled {
 
 /* infos audio */
 .card p {
-  margin: 6px 0;
-  font-size: 14px;
+  margin: 4px 0;
+  font-size: 13px;           /* ↓ taille texte */
 }
 
 /* ==========================
-   Zone listes
+   Liste des cartes
    ========================== */
 #cardsList {
-  margin-top: 10px;
-}
-
-/* ==========================
-   Sélecteur de série
-   ========================== */
-select#themeSelect {
-  font-size: 17px;
-  font-weight: bold;
-  margin-bottom: 15px;
+  margin-top: 8px;
 }
