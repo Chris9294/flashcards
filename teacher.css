@@ -15,7 +15,7 @@ h1 {
   text-align: center;
   font-size: 2.2em;
   color: #ff6f61;
-  margin: 6px 0 4px 0; /* encore plus compact */
+  margin: 6px 0 4px 0;
 }
 
 /* ==========================
@@ -31,41 +31,64 @@ h2 {
 }
 
 /* ==========================
-   Champs généraux
-   ========================== */
-input[type="text"],
-input[type="file"],
-select {
-  font-size: 13px;
-  padding: 4px;
-  border-radius: 6px;
-  border: 1px solid #ffcc80;
-}
-
-/* ==========================
-   Ligne sélection de série
+   Ligne sélection série
    ========================== */
 .theme-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  max-width: 600px;   /* 🔑 empêche l’étalement */
 }
 
-/* menu déroulant prend tout l'espace */
 .theme-row select {
   flex: 1;
   font-size: 13px;
+  padding: 4px;
 }
 
-/* bouton supprimer série à DROITE */
 .danger-btn {
   background: #ff6f61;
   color: white;
-  white-space: nowrap;
 }
 .danger-btn:hover {
   background: #e85b50;
+}
+
+/* ==========================
+   Ligne ajout carte
+   ========================== */
+.add-card-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.add-card-row label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: bold;
+  color: #ff6f61;
+  line-height: 1;        /* 🔑 interligne réduit */
+  margin: 0;
+}
+
+.add-card-row input {
+  margin-top: 2px;      /* 🔑 espace minimal */
+  padding: 4px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid #ffcc80;
+}
+
+.add-card-row input[type="text"] {
+  width: 180px;
+}
+
+.primary-btn {
+  margin-top: 4px;
+  background: #ffcc80;
 }
 
 /* ==========================
@@ -76,65 +99,16 @@ button {
   padding: 5px 9px;
   border-radius: 8px;
   border: none;
-  background: #ffcc80;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  transition: transform 0.15s, box-shadow 0.15s;
 }
 
 button:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-button:disabled {
-  opacity: 0.4;
-  cursor: default;
-  box-shadow: none;
 }
 
 /* ==========================
-   Ligne ajout de carte (alignement compact)
-   ========================== */
-.add-card-row {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  margin-bottom: 4px;
-}
-
-/* labels très compacts */
-.add-card-row label {
-  display: flex;
-  flex-direction: column;
-  font-size: 13px;
-  font-weight: bold;
-  color: #ff6f61;
-  line-height: 1.1;          /* 🔑 réduit l’espace vertical */
-  margin: 0;
-}
-
-/* inputs collés au label */
-.add-card-row input {
-  margin-top: 2px;           /* 🔑 espace minimal */
-}
-
-.add-card-row input[type="text"],
-.add-card-row input[type="file"] {
-  width: 200px;
-}
-
-/* bouton ajouter carte */
-.primary-btn {
-  margin-top: 4px;
-  background: #ffcc80;
-}
-.primary-btn:hover {
-  background: #ffb74d;
-}
-
-/* ==========================
-   Liste des cartes (3 colonnes)
+   Grille cartes
    ========================== */
 #cardsList {
   display: grid;
@@ -152,34 +126,4 @@ button:disabled {
   border-radius: 12px;
   padding: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-/* numéro carte */
-.card div:first-child {
-  font-weight: bold;
-  color: #ff6f61;
-  margin-bottom: 4px;
-}
-
-/* texte éditable */
-.card input[type="text"] {
-  font-size: 15px;
-  font-weight: bold;
-  width: 100%;
-  margin-bottom: 4px;
-}
-
-/* image */
-.card img {
-  height: 55px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
-}
-
-/* audio */
-.card p {
-  margin: 3px 0;
-  font-size: 12.5px;
 }
