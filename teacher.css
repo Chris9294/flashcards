@@ -8,9 +8,23 @@ body {
   padding: 15px;
 }
 
+/* ==========================
+   Bouton retour Flashcards
+   ========================== */
 #backToFlashcardsBtn {
   background: #b3e5fc;
   margin-bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-size: 14px;
+}
+
+#backToFlashcardsBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
@@ -42,29 +56,50 @@ label {
   display: block;
   font-size: 14px;
   font-weight: bold;
-  color: #ff8a65;          /* ✅ orange restauré */
-  margin-bottom: 4px;     /* ✅ espace lisible */
+  color: #ff8a65;
+  margin-bottom: 4px;
 }
 
 /* ==========================
    Champs & menus
    ========================== */
 input[type="text"],
-input[type="file"],
 select {
   font-size: 13px;
   padding: 5px;
-  margin-bottom: 10px;    /* ✅ espace sous chaque champ */
+  margin-bottom: 10px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
 }
 
 /* ==========================
+   Inputs type file (Parcourir + texte "aucun fichier")
+   ========================== */
+input[type="file"] {
+  font-size: 13px;           /* texte plus gros */
+  padding: 4px;              /* padding suffisant pour ne pas tronquer */
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ffcc80;
+  background: #fff;
+  vertical-align: middle;    /* aligne avec les champs texte */
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  font-size: 13px;           /* bouton parcourir plus lisible */
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  background-color: #ffcc80;
+  cursor: pointer;
+}
+
+/* ==========================
    Menu déroulant série (réduit)
    ========================== */
 #themeSelect {
-  width: 180px;           /* ✅ largeur divisée par deux */
+  width: 180px;
   font-size: 13px;
 }
 
@@ -99,7 +134,7 @@ button:disabled {
    ========================== */
 .add-card-row {
   display: flex;
-  align-items: flex-end;   /* ✅ alignement propre */
+  align-items: flex-end;   /* alignement propre */
   gap: 14px;
   margin-bottom: 8px;
 }
@@ -125,6 +160,7 @@ button:disabled {
   font-size: 15px;
   font-weight: bold;
   width: 100%;
+  margin-bottom: 6px;
 }
 
 /* image miniature */
@@ -142,6 +178,14 @@ button:disabled {
   font-size: 12.5px;
 }
 
+/* input audio dans les cartes */
+.card input[type="file"] {
+  font-size: 12.5px;
+  padding: 3px;
+  vertical-align: middle;
+  margin-top: 2px;
+}
+
 /* ==========================
    Liste des cartes en grille
    ========================== */
@@ -150,15 +194,4 @@ button:disabled {
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-top: 8px;
-}
-
-/* ==========================
-   Texte "Aucun fichier sélectionné"
-   ========================== */
-input[type="file"]::-webkit-file-upload-button {
-  font-size: 10px;
-}
-
-input[type="file"] {
-  font-size: 10px;         /* ✅ évite le texte tronqué */
 }
