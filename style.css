@@ -1,14 +1,28 @@
+/* ==========================
+   Style général du body
+   ========================== */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', Arial, sans-serif;
   margin: 20px;
-  background: #f0f0f0;
+  background: #fff9f2;  /* fond plus chaleureux */
+  color: #333;
 }
 
+/* ==========================
+   Titre principal
+   ========================== */
 h1 {
   text-align: center;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
+  font-size: 3em;
+  color: #ff6f61;  /* couleur vive et gaie */
+  text-shadow: 2px 2px 4px #aaa;
+  margin-bottom: 20px;
 }
 
-/* Miniatures en bas avec fond blanc */
+/* ==========================
+   Miniatures en bas avec fond blanc
+   ========================== */
 #thumbnails {
   position: fixed;
   bottom: 0;
@@ -18,11 +32,11 @@ h1 {
   flex-wrap: wrap;        /* permet plusieurs lignes */
   justify-content: center;/* centre les miniatures sur chaque ligne */
   padding: 10px;
-  background: #fff;
-  overflow-x: auto;
-  min-height: 180px;         /* un peu plus haut pour deux lignes */
+  background: #fff6e5;    /* plus doux et chaleureux */
+  overflow-x: hidden;
+  min-height: 180px;      /* permet 2 lignes */
   z-index: 999;
-  border-top: 1px solid #ccc;
+  border-top: 2px solid #ffcc80;
 }
 
 #thumbnails img {
@@ -30,13 +44,21 @@ h1 {
   width: 80px;
   margin: 5px;
   cursor: pointer;
-  border: 2px solid #222;
-  object-fit: contain;  /* <-- toute l'image est visible */
-  background: #fff;     /* optionnel : fond blanc si l'image est plus petite */
-  flex-shrink: 0;      /* empêche rétrécissement automatique */
+  border: 2px solid #ffab40;   /* contour coloré */
+  border-radius: 8px;           /* coins arrondis */
+  object-fit: contain;          /* toute l'image visible */
+  background: #fff;
+  flex-shrink: 0;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#thumbnails img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* Flashcard plein écran avec fond blanc */
+/* ==========================
+   Flashcard plein écran avec fond blanc chaud
+   ========================== */
 #flashcard {
   position: fixed;
   top: 0;
@@ -46,35 +68,43 @@ h1 {
   display: none;
   justify-content: center;
   align-items: center;
-  background: #fff;
+  background: #fffdea;  /* blanc chaud */
   z-index: 1000;
 }
 #flashcard.visible {
   display: flex;
 }
 
-/* Texte ou image centrée */
+/* ==========================
+   Texte ou image centrée
+   ========================== */
 #cardContent {
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: black;      
+  color: #222;      
   font-size: 120px;  
   font-weight: bold;
   line-height: 1.1;
+  text-align: center;
+  text-shadow: 2px 2px 4px #ffd699; /* effet lumineux pour le mot */
 }
 
-/* Image centrée et agrandie si plus petite */
+/* ==========================
+   Image centrée et agrandie
+   ========================== */
 .big-image {
   max-width: 95%;
   max-height: 95%;
-  object-fit: contain;
+  object-fit: contain;  /* toute l'image visible */
   cursor: pointer;
 }
 
-/* Boutons à droite */
+/* ==========================
+   Boutons à droite
+   ========================== */
 #cardButtons {
   position: fixed;
   top: 50%;
@@ -86,20 +116,31 @@ h1 {
 }
 
 #cardButtons button {
-  font-size: 32px;
+  font-size: 36px;
   cursor: pointer;
   padding: 10px;
+  background: #ffcc80;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#cardButtons button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
-/* Flèches navigation */
+/* ==========================
+   Flèches navigation
+   ========================== */
 .navArrow {
   position: absolute;
   top: 50%;
   font-size: 72px;              /* flèche plus grande */
-  color: rgba(0,0,0,0.7);       /* plus contrastée */
+  color: rgba(0,0,0,0.7);       /* contraste élevé */
   background: rgba(255,255,255,0.9);
   border-radius: 50%;
-  width: 90px;                  /* zone cliquable plus large */
+  width: 90px;                  /* zone cliquable large */
   height: 90px;
   line-height: 90px;
   text-align: center;
@@ -107,11 +148,8 @@ h1 {
   user-select: none;
   transform: translateY(-50%);
   z-index: 3;
-
-  /* Ombre douce */
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25); /* ombre douce */
 }
- 
 
 #leftArrow {
   left: 180px;
