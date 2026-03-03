@@ -28,7 +28,7 @@ body {
 }
 
 /* ==========================
-   Titres
+   Titre principal (compact)
    ========================== */
 h1 {
   text-align: center;
@@ -37,6 +37,9 @@ h1 {
   margin: 6px 0 8px 0;
 }
 
+/* ==========================
+   Sous-titres
+   ========================== */
 h2 {
   font-size: 1.3em;
   color: #ff8a65;
@@ -47,7 +50,7 @@ h2 {
 }
 
 /* ==========================
-   Labels
+   Étiquettes (labels)
    ========================== */
 label {
   display: block;
@@ -58,51 +61,45 @@ label {
 }
 
 /* ==========================
-   Inputs texte et select
+   Champs texte et menu déroulant
    ========================== */
-input[type="text"] {
-  font-size: 13px;
-  padding: 5px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #ffcc80;
-  background: #fff;
-  width: 180px;
-}
-
+input[type="text"],
 select {
   font-size: 13px;
   padding: 5px;
   margin-bottom: 10px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
-  width: 180px;
-  color: black; /* texte en noir */
-  background-color: #f0f0f0; /* gris clair pour le menu */
+  background: #fff;
+  color: black;
 }
 
 /* ==========================
-   Inputs type file création carte
+   Menu déroulant série
+   ========================== */
+#themeSelect {
+  width: 180px;
+  font-size: 13px;
+  background-color: #e0e0e0; /* gris clair */
+  color: black;              /* texte noir */
+}
+
+/* ==========================
+   Inputs type file (Parcourir + texte)
    ========================== */
 input[type="file"] {
   font-size: 13px;
-  padding: 5px 6px;
+  color: black;               /* texte "Aucun fichier sélectionné." en noir */
+  padding: 2px 4px;
   margin-bottom: 10px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
-  background: #fff;
-  width: 250px;       /* texte entier visible */
-  color: black;       /* texte "Aucun fichier sélectionné." en noir */
+  background-color: #fff;
   vertical-align: middle;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
 }
 
-input[type="file"]:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
+/* bouton "Parcourir" natif */
 input[type="file"]::-webkit-file-upload-button {
   font-size: 13px;
   padding: 4px 8px;
@@ -146,11 +143,11 @@ button:disabled {
 }
 
 /* ==========================
-   Zone ajout carte
+   Zone ajout carte (ligne compacte)
    ========================== */
 .add-card-row {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 14px;
   margin-bottom: 8px;
 }
@@ -171,6 +168,7 @@ button:disabled {
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
+/* mot éditable */
 .card input[type="text"] {
   font-size: 15px;
   font-weight: bold;
@@ -178,6 +176,7 @@ button:disabled {
   margin-bottom: 6px;
 }
 
+/* image miniature */
 .card img {
   height: 55px;
   margin-top: 6px;
@@ -186,29 +185,37 @@ button:disabled {
   background: #fff;
 }
 
+/* infos audio */
 .card p {
   margin: 4px 0;
   font-size: 12.5px;
 }
 
-/* ==========================
-   Inputs type file dans les cartes existantes
-   ========================== */
+/* input audio dans les cartes existantes */
 .card input[type="file"] {
   font-size: 13px;
-  padding: 5px 6px;
+  color: black;             /* texte entier visible */
+  padding: 2px 4px;
   margin-top: 2px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
-  width: 250px;       /* texte entier visible */
-  color: black;       /* texte "Aucun fichier sélectionné." en noir */
-  cursor: pointer;
   vertical-align: middle;
+  cursor: pointer;
+}
+
+.card input[type="file"]::-webkit-file-upload-button {
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: none;
+  background-color: #ffcc80;
+  cursor: pointer;
+  color: black;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
-.card input[type="file"]:hover {
+.card input[type="file"]::-webkit-file-upload-button:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
