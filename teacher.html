@@ -15,24 +15,29 @@
 
 <h2>Ajouter une carte</h2>
 
-<select id="themeSelect"></select><br><br>
-<button id="deleteThemeBtn">🗑️ Supprimer la série</button>
-<label>
-  Mot en anglais :
-  <input id="wordInput">
-</label><br><br>
+<div class="theme-row">
+  <button id="deleteThemeBtn" class="danger-btn">🗑️ Supprimer la série</button>
+  <select id="themeSelect"></select>
+</div>
 
-<label>
-  Image (obligatoire) :
-  <input type="file" id="imageInput" accept="image/*">
-</label><br><br>
+<div class="add-card-row">
+  <div>
+    <label>Texte</label><br>
+    <input id="wordInput">
+  </div>
 
-<label>
-  Audio (optionnel – prononciation) :
-  <input type="file" id="audioInput" accept="audio/*">
-</label><br><br>
+  <div>
+    <label>Image</label><br>
+    <input type="file" id="imageInput" accept="image/*">
+  </div>
 
-<button onclick="addCard()">Ajouter la carte</button>
+  <div>
+    <label>Audio</label><br>
+    <input type="file" id="audioInput" accept="audio/*">
+  </div>
+</div>
+
+<button onclick="addCard()" class="primary-btn">➕ Ajouter la carte</button>
 
 <h2 id="cardsTitle">Cartes existantes</h2>
 <p id="cardsCount"></p>
