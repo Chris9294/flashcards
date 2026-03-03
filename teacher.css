@@ -13,9 +13,9 @@ body {
    ========================== */
 h1 {
   text-align: center;
-  font-size: 2.2em;          /* ↓ encore un peu */
+  font-size: 2.2em;
   color: #ff6f61;
-  margin: 6px 0 8px 0;       /* ↓ espace sous le titre */
+  margin: 6px 0 6px 0;
 }
 
 /* ==========================
@@ -26,8 +26,8 @@ h2 {
   color: #ff8a65;
   border-bottom: 2px solid #ffcc80;
   padding-bottom: 4px;
-  margin-top: 16px;
-  margin-bottom: 8px;
+  margin-top: 14px;
+  margin-bottom: 6px;
 }
 
 /* ==========================
@@ -36,21 +36,22 @@ h2 {
 input[type="text"],
 input[type="file"],
 select {
-  font-size: 13px;           /* ↓ taille générale */
+  font-size: 13px;
   padding: 4px;
   margin: 3px 0;
   border-radius: 6px;
   border: 1px solid #ffcc80;
 }
 
-/* menu déroulant série (encore plus discret) */
+/* menu déroulant série */
 select#themeSelect {
-  font-size: 13px;           /* ↓ encore réduit */
-  font-weight: normal;       /* ↓ moins visuel */
-  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: normal;
 }
 
-/* boutons */
+/* ==========================
+   Boutons généraux
+   ========================== */
 button {
   font-size: 14px;
   padding: 5px 9px;
@@ -75,22 +76,83 @@ button:disabled {
 }
 
 /* ==========================
+   Ligne sélection de série
+   ========================== */
+.theme-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* bouton supprimer série */
+.danger-btn {
+  background: #ff6f61;
+  color: white;
+}
+.danger-btn:hover {
+  background: #e85b50;
+}
+
+/* ==========================
+   Ligne ajout de carte
+   ========================== */
+.add-card-row {
+  display: flex;
+  gap: 18px;
+  align-items: flex-end;
+  margin-bottom: 6px;
+}
+
+.add-card-row label {
+  font-size: 13px;
+  font-weight: bold;
+  color: #ff6f61;
+}
+
+/* bouton ajouter carte */
+.primary-btn {
+  background: #ffcc80;
+  margin-top: 4px;
+}
+.primary-btn:hover {
+  background: #ffb74d;
+}
+
+/* ==========================
+   Liste des cartes en grille (3 colonnes)
+   ========================== */
+#cardsList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* ==========================
    Cartes enseignant
    ========================== */
 .card {
   background: #ffffff;
   border: 2px solid #ffcc80;
   border-radius: 12px;
-  padding: 9px;
-  margin-bottom: 10px;
+  padding: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* numéro de carte */
+.card div:first-child {
+  font-weight: bold;
+  color: #ff6f61;
+  margin-bottom: 4px;
 }
 
 /* mot éditable */
 .card input[type="text"] {
   font-size: 15px;
   font-weight: bold;
-  width: 200px;
+  width: 100%;
+  margin-bottom: 4px;
 }
 
 /* image miniature */
@@ -106,19 +168,4 @@ button:disabled {
 .card p {
   margin: 3px 0;
   font-size: 12.5px;
-}
-
-/* ==========================
-   Liste des cartes en grille (3 colonnes)
-   ========================== */
-#cardsList {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
-  gap: 12px;
-  margin-top: 8px;
-}
-
-/* cartes plus compactes pour la grille */
-.card {
-  padding: 8px;
 }
