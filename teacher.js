@@ -7,6 +7,7 @@ let data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 // ÉLÉMENTS DOM
 // ================================
 const themeSelect = document.getElementById('themeSelect');
+const deleteThemeBtn = document.getElementById('deleteThemeBtn');
 const cardsList = document.getElementById('cardsList');
 
 // ================================
@@ -62,6 +63,22 @@ function refreshThemes() {
   // aucune série sélectionnée par défaut
   themeSelect.value = '';
 }
+
+// ================================
+// SUPPRESSION D'UNE SÉRIE
+// ================================
+deleteThemeBtn.onclick = () => {
+  if (!themeSelect.value) return; // rien si aucune série sélectionnée
+
+  const theme = data.themes.find(t => t.id === themeSelect.value);
+  if (!theme) return;
+
+  if (confirm(`Voulez-vous vraiment supprimer la série "${theme.name}" et toutes ses cartes ?`)) {
+    // Supprimer la série
+    data.themes = data.themes.filter(t => t.id !== theme.id);
+    saveData();
+  }
+};
 
 // mise à jour quand on change de série
 themeSelect.onchange = refreshCards;
@@ -213,7 +230,7 @@ function refreshCards() {
       saveData();
     };
 
-    /* ====== SUPPRESSION ====== */
+    /* ====== SUPPRESSION DE LA CARTE ====== */
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '🗑️ Supprimer';
     deleteBtn.onclick = () => {
