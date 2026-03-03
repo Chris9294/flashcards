@@ -78,6 +78,7 @@ select {
   border: 1px solid #ffcc80;
   width: 180px;
   color: black; /* texte en noir */
+  background-color: #f0f0f0; /* gris clair pour le menu */
 }
 
 /* ==========================
@@ -85,13 +86,13 @@ select {
    ========================== */
 input[type="file"] {
   font-size: 13px;
-  padding: 5px;
+  padding: 5px 6px;
   margin-bottom: 10px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
   background: #fff;
-  width: 250px;       /* plus large pour afficher le texte entier */
-  color: black;       /* texte en noir */
+  width: 250px;       /* texte entier visible */
+  color: black;       /* texte "Aucun fichier sélectionné." en noir */
   vertical-align: middle;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
@@ -195,7 +196,7 @@ button:disabled {
    ========================== */
 .card input[type="file"] {
   font-size: 13px;
-  padding: 5px;
+  padding: 5px 6px;
   margin-top: 2px;
   border-radius: 6px;
   border: 1px solid #ffcc80;
