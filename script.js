@@ -19,6 +19,8 @@ const cardContent = document.getElementById('cardContent');
 const leftArrow = document.getElementById('leftArrow');
 const rightArrow = document.getElementById('rightArrow');
 
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
 // ================================
 // INITIALISATION
 // ================================
@@ -53,15 +55,38 @@ function init() {
 init();
 themeSelect.onchange = loadTheme;
 
-const fullscreenBtn = document.getElementById("fullscreenBtn");
-
+// ================================
+// PLEIN ÉCRAN (corrigé + Safari)
+// ================================
 fullscreenBtn.addEventListener("click", () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
+  const isFullscreen =
+    document.fullscreenElement || document.webkitFullscreenElement;
+
+  if (!isFullscreen) {
+    if (flashcard.requestFullscreen) {
+      flashcard.requestFullscreen();
+    } else if (flashcard.webkitRequestFullscreen) {
+      flashcard.webkitRequestFullscreen(); // Safari
+    }
   } else {
-    document.exitFullscreen();
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen(); // Safari
+    }
   }
 });
+
+// BONUS : icône dynamique
+document.addEventListener("fullscreenchange", updateFullscreenIcon);
+document.addEventListener("webkitfullscreenchange", updateFullscreenIcon);
+
+function updateFullscreenIcon() {
+  const isFullscreen =
+    document.fullscreenElement || document.webkitFullscreenElement;
+
+  fullscreenBtn.textContent = isFullscreen ? "🡽" : "⛶";
+}
 
 // ================================
 // CHARGEMENT D’UNE SÉRIE
