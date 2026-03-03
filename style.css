@@ -51,17 +51,15 @@ h1 {
   flex-shrink: 0;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
 /* effet au survol */
 #thumbnails img:hover {
-  transform: scale(1.15); /* légèrement plus gros au hover */
-  box-shadow: 0 6px 16px rgba(0,0,0,0.3); /* ombre plus prononcée */
+  transform: scale(1.15); 
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3); 
 }
-
 /* effet au clic */
 #thumbnails img:active {
-  transform: scale(1.05);  /* miniatures “s’enfoncent” légèrement */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* ombre réduite */
+  transform: scale(1.05);  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 /* ==========================
@@ -97,7 +95,8 @@ h1 {
   font-weight: bold;
   line-height: 1.1;
   text-align: center;
-  text-shadow: 2px 2px 4px #ffd699; /* halo lumineux pour le mot */
+  /* ajout animation sur le mot */
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
 /* ==========================
@@ -110,13 +109,28 @@ h1 {
   cursor: pointer;
 
   /* effet de transition “zoom” */
-  transform: scale(0.8);  /* départ légèrement plus petit */
-  opacity: 0;             /* départ invisible */
+  transform: scale(0.8);  
+  opacity: 0;             
   transition: transform 0.4s ease, opacity 0.4s ease;
 }
-
 .big-image.active {
-  transform: scale(1);   /* taille finale */
+  transform: scale(1);   
+  opacity: 1;
+}
+
+/* ==========================
+   Effet ludique sur le mot
+   ========================== */
+.word {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
+  color: #ff6f61;
+  text-shadow: 2px 2px 8px #ffd699; /* halo lumineux */
+  transform: scale(0.8);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.word.active {
+  transform: scale(1);
   opacity: 1;
 }
 
@@ -132,7 +146,6 @@ h1 {
   gap: 10px;
   z-index: 3;
 }
-
 #cardButtons button {
   font-size: 36px;
   cursor: pointer;
@@ -168,11 +181,9 @@ h1 {
   z-index: 3;
   box-shadow: 0 6px 18px rgba(0,0,0,0.25); 
 }
-
 #leftArrow {
   left: 180px;
 }
-
 #rightArrow {
   right: 180px;
 }
