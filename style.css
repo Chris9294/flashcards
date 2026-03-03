@@ -180,7 +180,8 @@ h1 {
    Carte visuelle (ombre + arrondi)
    ========================== */
 #card {
-  width: 92%;
+  width: calc(100% - 220px); /* laisse de la place pour les boutons */
+  max-width: 1100px;         /* évite une carte trop large sur grands écrans */
   height: 85%;
   background: #ffffff;
   border-radius: 20px;
@@ -188,9 +189,8 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden; /* empêche les images de déborder */
+  overflow: hidden;
 }
-
 /* Le contenu reste inchangé mais bien contenu */
 #cardContent {
   width: 100%;
