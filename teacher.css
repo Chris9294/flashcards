@@ -15,67 +15,61 @@ h1 {
   text-align: center;
   font-size: 2.2em;
   color: #ff6f61;
-  margin: 6px 0 6px 0;   /* encore plus compact */
+  margin: 6px 0 8px 0;
 }
 
 /* ==========================
    Sous-titres
    ========================== */
 h2 {
-  font-size: 1.25em;
+  font-size: 1.3em;
   color: #ff8a65;
   border-bottom: 2px solid #ffcc80;
-  padding-bottom: 3px;
-  margin-top: 14px;
-  margin-bottom: 6px;
+  padding-bottom: 4px;
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 
 /* ==========================
-   Champs, menus et boutons
+   Étiquettes (labels)
+   ========================== */
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  color: #ff8a65;          /* ✅ orange restauré */
+  margin-bottom: 4px;     /* ✅ espace lisible */
+}
+
+/* ==========================
+   Champs & menus
    ========================== */
 input[type="text"],
+input[type="file"],
 select {
   font-size: 13px;
-  padding: 4px 6px;
+  padding: 5px;
+  margin-bottom: 10px;    /* ✅ espace sous chaque champ */
   border-radius: 6px;
   border: 1px solid #ffcc80;
-}
-
-/* 🔽 INPUT FILE : texte "Aucun fichier sélectionné" */
-input[type="file"] {
-  font-size: 11px;        /* ✅ réduit fortement */
-  padding: 2px;
-  max-width: 160px;       /* ✅ empêche débordement */
+  background: #fff;
 }
 
 /* ==========================
-   Ligne sélection série
+   Menu déroulant série (réduit)
    ========================== */
-.theme-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  max-width: 520px;       /* ✅ empêche l'étalement */
-}
-
-/* menu déroulant série */
 #themeSelect {
-  width: 130px;   /* ✅ largeur divisée par deux */
+  width: 130px;           /* ✅ largeur divisée par deux */
   font-size: 13px;
 }
 
-/* bouton supprimer série */
-.danger-btn {
-  background: #ff8a80;
-}
-
 /* ==========================
-   Boutons généraux
+   Boutons
    ========================== */
 button {
-  font-size: 13px;
+  font-size: 14px;
   padding: 5px 9px;
-  margin: 2px;
+  margin: 3px 2px;
   border-radius: 8px;
   border: none;
   background: #ffcc80;
@@ -96,42 +90,18 @@ button:disabled {
 }
 
 /* ==========================
-   Ligne ajout de carte
+   Zone ajout carte (ligne compacte)
    ========================== */
 .add-card-row {
   display: flex;
-  align-items: flex-end;   /* ✅ alignement parfait */
-  gap: 12px;
-  margin-bottom: 6px;
+  align-items: flex-end;   /* ✅ alignement propre */
+  gap: 14px;
+  margin-bottom: 8px;
 }
 
-.add-card-row label {
+.add-card-field {
   display: flex;
   flex-direction: column;
-  font-size: 12px;
-  line-height: 1.1;        /* ✅ réduit espace vertical */
-}
-
-/* champ texte carte */
-#wordInput {
-  width: 160px;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-/* bouton principal */
-.primary-btn {
-  margin-top: 4px;
-}
-
-/* ==========================
-   Liste des cartes (3 colonnes)
-   ========================== */
-#cardsList {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 6px;
 }
 
 /* ==========================
@@ -145,17 +115,17 @@ button:disabled {
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* champ mot dans carte */
+/* mot éditable */
 .card input[type="text"] {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
-  width: 180px;
+  width: 100%;
 }
 
 /* image miniature */
 .card img {
   height: 55px;
-  margin-top: 4px;
+  margin-top: 6px;
   border: 1px solid #ccc;
   border-radius: 6px;
   background: #fff;
@@ -163,6 +133,27 @@ button:disabled {
 
 /* infos audio */
 .card p {
-  margin: 2px 0;
+  margin: 4px 0;
+  font-size: 12.5px;
+}
+
+/* ==========================
+   Liste des cartes en grille
+   ========================== */
+#cardsList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* ==========================
+   Texte "Aucun fichier sélectionné"
+   ========================== */
+input[type="file"]::-webkit-file-upload-button {
   font-size: 12px;
+}
+
+input[type="file"] {
+  font-size: 12px;         /* ✅ évite le texte tronqué */
 }
