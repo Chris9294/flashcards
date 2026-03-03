@@ -59,7 +59,7 @@ select {
    Menu déroulant série (réduit)
    ========================== */
 #themeSelect {
-  width: 130px;           /* ✅ largeur divisée par deux */
+  width: 180px;           /* ✅ largeur divisée par deux */
   font-size: 13px;
 }
 
