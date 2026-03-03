@@ -74,6 +74,11 @@ select {
   box-sizing: border-box;
 }
 
+/* placeholder de l’option neutre du menu déroulant */
+select option[value=""] {
+  color: gray;
+}
+
 /* ==========================
    Inputs type file (Parcourir + texte "aucun fichier")
    ========================== */
@@ -85,9 +90,14 @@ input[type="file"] {
   border: 1px solid #ffcc80;
   background: #fff;
   vertical-align: middle;
-  min-width: 220px;   /* largeur minimale pour voir le texte complet */
-  max-width: 100%;    /* reste responsive sur petit écran */
+  width: auto;          /* laisse la largeur s’adapter au contenu */
+  min-width: 220px;     /* large pour voir le texte complet */
+  max-width: 100%;
   box-sizing: border-box;
+  color: black;         /* texte “Aucun fichier sélectionné” en noir */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Bouton "Parcourir" */
@@ -98,6 +108,7 @@ input[type="file"]::-webkit-file-upload-button {
   border: none;
   background-color: #ffcc80;  /* orange uniforme */
   cursor: pointer;
+  color: black;               /* texte du bouton en noir */
 }
 
 /* ==========================
@@ -139,7 +150,7 @@ button:disabled {
    ========================== */
 .add-card-row {
   display: flex;
-  align-items: flex-end;   /* alignement propre */
+  align-items: flex-end;
   gap: 14px;
   margin-bottom: 8px;
 }
@@ -187,12 +198,13 @@ button:disabled {
 /* input audio dans les cartes */
 .card input[type="file"] {
   font-size: 12.5px;
-  padding: 4px 6px;  /* plus de padding pour lisibilité */
+  padding: 4px 6px;
   vertical-align: middle;
   margin-top: 2px;
-  min-width: 180px;   /* élargit pour texte complet */
+  min-width: 180px;  
   max-width: 100%;
   box-sizing: border-box;
+  color: black;      /* texte visible en noir */
 }
 
 /* ==========================
