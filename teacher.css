@@ -118,7 +118,7 @@ button:disabled {
 
 .file-wrapper input[type="file"] {
   opacity: 0;
-  width: 180px; 
+  width: 120px; 
   height: 32px;
   position: absolute;
   left: 0;
