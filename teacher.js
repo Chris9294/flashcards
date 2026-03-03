@@ -136,17 +136,19 @@ function addAudioToCard(cardIndex, file) {
 function refreshCards() {
   cardsList.innerHTML = '';
 
-  if (!themeSelect.value) return;
+  const cardsTitle = document.getElementById('cardsTitle');
+
+  if (!themeSelect.value) {
+    cardsTitle.textContent = 'Cartes existantes';
+    return;
+  }
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
-  // affichage du nombre total de cartes
-  const totalCards = document.createElement('div');
-  totalCards.textContent = `${theme.cards.length} carte${theme.cards.length > 1 ? 's' : ''} existante${theme.cards.length > 1 ? 's' : ''}`;
-  totalCards.style.fontWeight = 'bold';
-  totalCards.style.marginBottom = '10px';
-  cardsList.appendChild(totalCards);
+  // mettre à jour le sous-titre avec le nombre de cartes
+  const count = theme.cards.length;
+  cardsTitle.textContent = `${count} carte${count > 1 ? 's' : ''} existante${count > 1 ? 's' : ''}`;
 
   theme.cards.forEach((card, index) => {
     const div = document.createElement('div');
