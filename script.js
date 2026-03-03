@@ -85,14 +85,18 @@ function openCardAtIndex(index) {
 }
 
 function showImage() {
+  // créer l'image et l'ajouter au DOM
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
 
   const img = document.querySelector('.big-image');
   img.onclick = closeCard;
 
-  // déclencher transition "zoom"
-  setTimeout(() => img.classList.add('active'), 20);
+  // forcer un reflow pour que la transition fonctionne
+  void img.offsetWidth;
+
+  // ajouter la classe active pour déclencher le zoom
+  img.classList.add('active');
 
   updateArrows();
 }
