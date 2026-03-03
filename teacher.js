@@ -149,6 +149,12 @@ function refreshCards() {
     const div = document.createElement('div');
     div.className = 'card';
 
+    const number = document.createElement('div');
+number.textContent = `Carte ${index + 1}`;
+number.style.fontWeight = 'bold';
+number.style.color = '#ff6f61';
+number.style.marginBottom = '4px';
+
     /* ====== ÉDITION DU MOT ====== */
     const wordInput = document.createElement('input');
     wordInput.type = 'text';
