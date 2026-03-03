@@ -8,6 +8,7 @@ if (backBtn) {
     window.location.href = "./index.html";
   };
 }
+
 // ================================
 // DONNÉES
 // ================================
@@ -24,10 +25,9 @@ const cardsList = document.getElementById('cardsList');
 // SAUVEGARDE
 // ================================
 function saveData() {
-  const selectedTheme = themeSelect.value; // mémorise la série courante
+  const selectedTheme = themeSelect.value; 
   localStorage.setItem('flashcards', JSON.stringify(data));
   refreshThemes();
-  // restaurer la série sélectionnée
   themeSelect.value = selectedTheme;
   refreshCards();
 }
@@ -39,17 +39,10 @@ function addTheme() {
   const name = document.getElementById('themeName').value.trim();
   if (!name) return;
 
-  const newTheme = {
-    id: Date.now().toString(),
-    name: name,
-    cards: []
-  };
-
+  const newTheme = { id: Date.now().toString(), name, cards: [] };
   data.themes.push(newTheme);
   document.getElementById('themeName').value = '';
   saveData();
-
-  // sélectionner automatiquement la nouvelle série
   themeSelect.value = newTheme.id;
   refreshCards();
 }
@@ -57,7 +50,6 @@ function addTheme() {
 function refreshThemes() {
   themeSelect.innerHTML = '';
 
-  // option neutre par défaut
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Choix de la série —';
@@ -70,7 +62,6 @@ function refreshThemes() {
     themeSelect.appendChild(option);
   });
 
-  // aucune série sélectionnée par défaut
   themeSelect.value = '';
 }
 
@@ -78,32 +69,41 @@ function refreshThemes() {
 // SUPPRESSION D'UNE SÉRIE
 // ================================
 deleteThemeBtn.onclick = () => {
-  if (!themeSelect.value) return; // rien si aucune série sélectionnée
+  if (!themeSelect.value) return;
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
   if (confirm(`Voulez-vous vraiment supprimer la série "${theme.name}" et toutes ses cartes ?`)) {
-    // Supprimer la série
     data.themes = data.themes.filter(t => t.id !== theme.id);
     saveData();
   }
 };
 
-// mise à jour quand on change de série
 themeSelect.onchange = refreshCards;
+
+// ================================
+// UTILE : METTRE À JOUR LABEL FILE
+// ================================
+function updateFileLabel(wrapper) {
+  const input = wrapper.querySelector('input[type=file]');
+  const label = wrapper.querySelector('.file-label');
+  label.textContent = input.files.length > 0 ? input.files[0].name : 'Aucun fichier sélectionné.';
+}
 
 // ================================
 // AJOUT DE CARTE
 // ================================
 function addCard() {
-  const themeId = themeSelect.value;
-  const theme = data.themes.find(t => t.id === themeId);
+  const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
   const word = document.getElementById('wordInput').value.trim();
-  const imageFile = document.getElementById('imageInput').files[0];
-  const audioFile = document.getElementById('audioInput').files[0];
+  const imageWrapper = document.getElementById('imageWrapper');
+  const audioWrapper = document.getElementById('audioWrapper');
+
+  const imageFile = imageWrapper.querySelector('input[type=file]').files[0];
+  const audioFile = audioWrapper.querySelector('input[type=file]').files[0];
 
   if (!word || !imageFile) return;
 
@@ -123,8 +123,10 @@ function addCard() {
   imgReader.readAsDataURL(imageFile);
 
   document.getElementById('wordInput').value = '';
-  document.getElementById('imageInput').value = '';
-  document.getElementById('audioInput').value = '';
+  imageWrapper.querySelector('input[type=file]').value = '';
+  updateFileLabel(imageWrapper);
+  audioWrapper.querySelector('input[type=file]').value = '';
+  updateFileLabel(audioWrapper);
 }
 
 // ================================
@@ -143,7 +145,8 @@ function handleAudioUpload(file, card, theme) {
 // ================================
 // AUDIO SUR CARTE EXISTANTE
 // ================================
-function addAudioToCard(cardIndex, file) {
+function addAudioToCard(cardIndex, wrapper) {
+  const file = wrapper.querySelector('input[type=file]').files[0];
   if (!file) return;
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
@@ -153,6 +156,7 @@ function addAudioToCard(cardIndex, file) {
   reader.onload = function(e) {
     theme.cards[cardIndex].audio = e.target.result;
     saveData();
+    updateFileLabel(wrapper);
   };
   reader.readAsDataURL(file);
 }
@@ -162,7 +166,6 @@ function addAudioToCard(cardIndex, file) {
 // ================================
 function refreshCards() {
   cardsList.innerHTML = '';
-
   const cardsTitle = document.getElementById('cardsTitle');
 
   if (!themeSelect.value) {
@@ -173,15 +176,12 @@ function refreshCards() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
-  // mettre à jour le sous-titre avec le nombre de cartes
-  const count = theme.cards.length;
-  cardsTitle.textContent = `${count} carte${count > 1 ? 's' : ''} existante${count > 1 ? 's' : ''}`;
+  cardsTitle.textContent = `${theme.cards.length} carte${theme.cards.length > 1 ? 's' : ''} existante${theme.cards.length > 1 ? 's' : ''}`;
 
   theme.cards.forEach((card, index) => {
     const div = document.createElement('div');
     div.className = 'card';
 
-    // numéro de la carte
     const number = document.createElement('div');
     number.textContent = `Carte ${index + 1}`;
     number.style.fontWeight = 'bold';
@@ -189,7 +189,7 @@ function refreshCards() {
     number.style.marginBottom = '4px';
     div.appendChild(number);
 
-    /* ====== ÉDITION DU MOT ====== */
+    // mot éditable
     const wordInput = document.createElement('input');
     wordInput.type = 'text';
     wordInput.value = card.word;
@@ -203,31 +203,39 @@ function refreshCards() {
       saveData();
     };
 
-    /* ====== IMAGE ====== */
+    // image
     const img = document.createElement('img');
     img.src = card.image;
     img.style.height = '60px';
     img.style.display = 'block';
     img.style.marginTop = '5px';
 
-    /* ====== AUDIO ====== */
+    // audio
     const audioInfo = document.createElement('p');
     audioInfo.textContent = card.audio ? 'Audio : oui' : 'Audio : non';
+
+    const audioWrapper = document.createElement('div');
+    audioWrapper.className = 'file-wrapper';
+    audioWrapper.style.marginTop = '4px';
 
     const audioInput = document.createElement('input');
     audioInput.type = 'file';
     audioInput.accept = 'audio/*';
-    audioInput.onchange = () => {
-      addAudioToCard(index, audioInput.files[0]);
-    };
+    audioInput.onchange = () => addAudioToCard(index, audioWrapper);
 
-    /* ====== RÉORDONNEMENT ====== */
+    const audioLabel = document.createElement('span');
+    audioLabel.className = 'file-label';
+    audioLabel.textContent = card.audio ? card.audio.split('\\').pop() : 'Aucun fichier sélectionné.';
+
+    audioWrapper.appendChild(audioInput);
+    audioWrapper.appendChild(audioLabel);
+
+    // boutons réordonnement & suppression
     const upBtn = document.createElement('button');
     upBtn.textContent = '🔼';
     upBtn.disabled = index === 0;
     upBtn.onclick = () => {
-      [theme.cards[index - 1], theme.cards[index]] =
-      [theme.cards[index], theme.cards[index - 1]];
+      [theme.cards[index - 1], theme.cards[index]] = [theme.cards[index], theme.cards[index - 1]];
       saveData();
     };
 
@@ -235,12 +243,10 @@ function refreshCards() {
     downBtn.textContent = '🔽';
     downBtn.disabled = index === theme.cards.length - 1;
     downBtn.onclick = () => {
-      [theme.cards[index + 1], theme.cards[index]] =
-      [theme.cards[index], theme.cards[index + 1]];
+      [theme.cards[index + 1], theme.cards[index]] = [theme.cards[index], theme.cards[index + 1]];
       saveData();
     };
 
-    /* ====== SUPPRESSION DE LA CARTE ====== */
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '🗑️ Supprimer';
     deleteBtn.onclick = () => {
@@ -248,7 +254,7 @@ function refreshCards() {
       saveData();
     };
 
-    /* ====== ASSEMBLAGE ====== */
+    // assemblage
     div.appendChild(wordInput);
     div.appendChild(saveBtn);
     div.appendChild(document.createElement('br'));
@@ -259,7 +265,7 @@ function refreshCards() {
 
     div.appendChild(img);
     div.appendChild(audioInfo);
-    div.appendChild(audioInput);
+    div.appendChild(audioWrapper);
 
     cardsList.appendChild(div);
   });
