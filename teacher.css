@@ -109,8 +109,16 @@ button:disabled {
 }
 
 /* ==========================
-   Liste des cartes
+   Liste des cartes en grille (3 colonnes)
    ========================== */
 #cardsList {
-  margin-top: 6px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* cartes plus compactes pour la grille */
+.card {
+  padding: 8px;
 }
