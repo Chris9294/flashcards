@@ -60,15 +60,7 @@ function refreshThemes() {
   themeSelect.value = '';
 }
 
-  data.themes.forEach((theme, index) => {
-    const option = document.createElement('option');
-    option.value = theme.id;
-    option.textContent = theme.name;
-    themeSelect.appendChild(option);
-
-    if (index === 0 && !themeSelect.value) themeSelect.value = theme.id;
-  });
-}
+ 
 
 // ✅ Lien pour mettre à jour l’affichage des cartes quand on change de série
 themeSelect.onchange = refreshCards;
