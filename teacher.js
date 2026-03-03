@@ -14,14 +14,10 @@ const cardsList = document.getElementById('cardsList');
 // ================================
 function saveData() {
   const selectedTheme = themeSelect.value; // mémorise la série courante
-
   localStorage.setItem('flashcards', JSON.stringify(data));
-
   refreshThemes();
-
   // restaurer la série sélectionnée
   themeSelect.value = selectedTheme;
-
   refreshCards();
 }
 
@@ -145,15 +141,24 @@ function refreshCards() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
+  // affichage du nombre total de cartes
+  const totalCards = document.createElement('div');
+  totalCards.textContent = `${theme.cards.length} carte${theme.cards.length > 1 ? 's' : ''} existante${theme.cards.length > 1 ? 's' : ''}`;
+  totalCards.style.fontWeight = 'bold';
+  totalCards.style.marginBottom = '10px';
+  cardsList.appendChild(totalCards);
+
   theme.cards.forEach((card, index) => {
     const div = document.createElement('div');
     div.className = 'card';
 
+    // numéro de la carte
     const number = document.createElement('div');
-number.textContent = `Carte ${index + 1}`;
-number.style.fontWeight = 'bold';
-number.style.color = '#ff6f61';
-number.style.marginBottom = '4px';
+    number.textContent = `Carte ${index + 1}`;
+    number.style.fontWeight = 'bold';
+    number.style.color = '#ff6f61';
+    number.style.marginBottom = '4px';
+    div.appendChild(number);
 
     /* ====== ÉDITION DU MOT ====== */
     const wordInput = document.createElement('input');
