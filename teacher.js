@@ -43,6 +43,23 @@ function addTheme() {
 function refreshThemes() {
   themeSelect.innerHTML = '';
 
+  // option neutre par défaut
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = '— Choix de la série —';
+  themeSelect.appendChild(placeholder);
+
+  data.themes.forEach(theme => {
+    const option = document.createElement('option');
+    option.value = theme.id;
+    option.textContent = theme.name;
+    themeSelect.appendChild(option);
+  });
+
+  // forcer l'état "aucune série sélectionnée"
+  themeSelect.value = '';
+}
+
   data.themes.forEach((theme, index) => {
     const option = document.createElement('option');
     option.value = theme.id;
@@ -126,6 +143,8 @@ function addAudioToCard(cardIndex, file) {
 // ================================
 function refreshCards() {
   cardsList.innerHTML = '';
+
+  if (!themeSelect.value) return; // ✅ rien tant qu'aucune série choisie
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
