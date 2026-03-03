@@ -20,6 +20,7 @@ const leftArrow = document.getElementById('leftArrow');
 const rightArrow = document.getElementById('rightArrow');
 
 const fullscreenBtn = document.getElementById("fullscreenBtn");
+const teacherBtn = document.getElementById("teacherBtn");
 
 // ================================
 // INITIALISATION
@@ -50,10 +51,20 @@ function init() {
   // État initial : rien de sélectionné
   themeSelect.value = '';
   thumbnails.innerHTML = '';
+
+  // Bouton enseignant visible sur l'écran principal
+  teacherBtn.style.display = "block";
 }
 
 init();
 themeSelect.onchange = loadTheme;
+
+// ================================
+// BOUTON INTERFACE ENSEIGNANT
+// ================================
+teacherBtn.onclick = () => {
+  window.location.href = "teacher.html";
+};
 
 // ================================
 // PLEIN ÉCRAN (corrigé + Safari)
@@ -124,6 +135,9 @@ function showImage() {
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
 
+  // cacher bouton enseignant
+  teacherBtn.style.display = "none";
+
   const img = document.querySelector('.big-image');
   img.onclick = closeCard;
 
@@ -140,6 +154,9 @@ function showImage() {
 function showWord() {
   cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
   const wordDiv = cardContent.querySelector('.word');
+
+  // cacher bouton enseignant
+  teacherBtn.style.display = "none";
 
   // départ invisible pour le fondu
   wordDiv.style.opacity = 0;
@@ -158,6 +175,9 @@ function showWord() {
 function closeCard() {
   flashcard.classList.remove('visible');
   currentCard = null;
+
+  // réafficher bouton enseignant
+  teacherBtn.style.display = "block";
 }
 
 // ================================
