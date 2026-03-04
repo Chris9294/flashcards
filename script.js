@@ -36,6 +36,11 @@ teacherBtn.onclick = () => {
 teacherCode.addEventListener("input", () => {
   if (teacherCode.value === "1515") {
     window.location.href = "./teacher.html";
+  } else if (teacherCode.value.length === 4) {
+    // code incorrect → on efface immédiatement
+    alert("Code incorrect");
+    teacherCode.value = "";
+    teacherCode.focus();
   }
 });
 
