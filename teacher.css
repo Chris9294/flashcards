@@ -116,7 +116,7 @@ button:disabled {
   width: 250px;
 }
 
-/* Input invisible derrière le label */
+/* input file invisible */
 .file-wrapper input[type="file"] {
   opacity: 0;
   width: 100%;
@@ -125,13 +125,13 @@ button:disabled {
   left: 0;
   top: 0;
   cursor: pointer;
-  z-index: 1; /* derrière le label pour hover */
+  z-index: 2; /* cliquable */
 }
 
-/* Label “Parcourir…” au-dessus pour hover */
+/* label “Parcourir…” */
 .file-wrapper .file-label {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   display: inline-block;
   width: 160px;
   background: #ffcc80;
@@ -140,46 +140,36 @@ button:disabled {
   color: black;
   cursor: pointer;
   font-size: 13px;
-  font-weight: normal; /* texte non gras */
+  font-weight: normal;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
   transform-origin: center center;
 }
 
-/* hauteur pour création de carte */
+/* hauteur création carte */
 #imageInputWrapper .file-label,
 #audioInputWrapper .file-label {
   height: 32px;
   line-height: 32px;
 }
 
-/* hauteur pour cartes existantes */
+/* cartes existantes */
 .card .file-wrapper {
   width: 160px;
   margin-top: 2px;
 }
 
-/* Fix pour que les inputs audio dans les cartes existantes ouvrent le Finder */
 .card .file-wrapper input[type="file"] {
-  opacity: 0;
   height: 28px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  cursor: pointer;
-  z-index: 2; /* devant le label pour être cliquable */
 }
 
-/* Label reste au-dessus visuellement pour hover et style */
 .card .file-wrapper .file-label {
   height: 28px;
   line-height: 28px;
-  position: relative;
-  z-index: 1; /* derrière l’input pour ne pas bloquer le click */
 }
 
-/* Hover fonctionne pour tous les labels */
-.file-wrapper .file-label:hover {
+/* ✅ HOVER CORRIGÉ (clé du problème) */
+.file-wrapper:hover .file-label {
   transform: scale(1.08);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
