@@ -205,7 +205,7 @@ button:disabled {
 }
 .card .file-wrapper .file-label {
   display: inline-block;
-  width: 100%;
+  width: 160px;
   height: 28px;
   line-height: 28px;
   background: #ffcc80;
