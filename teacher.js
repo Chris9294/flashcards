@@ -53,13 +53,14 @@ function addTheme() {
 }
 
 function refreshThemes() {
+  const currentValue = themeSelect.value;
+
   themeSelect.innerHTML = '';
 
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Choix de la série —';
   placeholder.disabled = true;
-  placeholder.selected = true;
   themeSelect.appendChild(placeholder);
 
   data.themes.forEach(theme => {
@@ -68,6 +69,13 @@ function refreshThemes() {
     option.textContent = theme.name;
     themeSelect.appendChild(option);
   });
+
+  // ✅ RESTAURATION DE LA SÉRIE SÉLECTIONNÉE
+  if (currentValue && data.themes.some(t => t.id === currentValue)) {
+    themeSelect.value = currentValue;
+  } else {
+    placeholder.selected = true;
+  }
 }
 
 // ================================
