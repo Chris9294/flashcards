@@ -30,16 +30,23 @@
 </div>
 
 <!-- ==========================
-     IMPORT ZIP
+     IMPORT ZIP (UNE SEULE LIGNE)
      ========================== -->
-<h2>Importer une série (ZIP)</h2>
-<p style="font-size:14px; color:#666;">
-  Le ZIP doit contenir des images + audios avec le <strong>même nom</strong><br>
-  (ex : chat.jpg + chat.mp3)
-</p>
+<h2>Importer des cartes (ZIP)</h2>
 
-<input type="file" id="zipInput" accept=".zip">
-<button class="primary-btn" onclick="importZipFromInput()">Importer le ZIP</button>
+<div class="zip-row">
+  <input type="file" id="zipInput" accept=".zip">
+
+  <button class="primary-btn" onclick="importZipFromInput()">
+    📦 Importer le ZIP
+  </button>
+
+  <span class="zip-help">
+    Images + audios avec le <strong>même nom</strong>
+    (ex : chat.jpg + chat.mp3).  
+    Les cartes sont ajoutées à la série sélectionnée.
+  </span>
+</div>
 
 <hr>
 
