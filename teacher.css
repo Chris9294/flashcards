@@ -116,18 +116,22 @@ button:disabled {
   width: 250px;
 }
 
+/* Input invisible derrière le label */
 .file-wrapper input[type="file"] {
   opacity: 0;
-  width: 100%; 
+  width: 100%;
   height: 32px;
   position: absolute;
   left: 0;
   top: 0;
   cursor: pointer;
+  z-index: 1; /* derrière le label pour hover */
 }
 
-/* Labels “Parcourir…” unifiés */
+/* Label “Parcourir…” au-dessus pour hover */
 .file-wrapper .file-label {
+  position: relative;
+  z-index: 2;
   display: inline-block;
   width: 160px;               /* largeur uniforme */
   background: #ffcc80;
@@ -142,16 +146,16 @@ button:disabled {
   transform-origin: center center;
 }
 
-/* hauteur spécifique pour création de carte */
+/* hauteur pour création de carte */
 #imageInputWrapper .file-label,
 #audioInputWrapper .file-label {
   height: 32px;
   line-height: 32px;
 }
 
-/* hauteur spécifique pour cartes existantes */
+/* hauteur pour cartes existantes */
 .card .file-wrapper {
-  width: 160px;  /* largeur identique */
+  width: 160px;  
   margin-top: 2px;
 }
 
@@ -169,7 +173,7 @@ button:disabled {
   line-height: 28px;
 }
 
-/* effet hover pour tous les labels */
+/* Hover fonctionne pour tous les labels */
 .file-wrapper .file-label:hover {
   transform: scale(1.08);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
