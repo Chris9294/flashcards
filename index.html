@@ -47,21 +47,11 @@
   <script src="script.js"></script>
 
   <!-- Script code enseignant -->
-  <script>
-    const teacherBtn = document.getElementById("teacherBtn");
-    const teacherCode = document.getElementById("teacherCode");
-
-    teacherBtn.addEventListener("click", () => {
-      teacherCode.style.display = "inline-block";
-      teacherCode.focus();
-      teacherCode.value = "";
-    });
-
-    teacherCode.addEventListener("input", () => {
-      if (teacherCode.value === "1515") {
-        window.location.href = "./enseignant.html";
-      }
-    });
-  </script>
+  <input
+  type="password"
+  id="teacherCode"
+  placeholder="Code enseignant"
+  style="display:none; margin-left:8px;"
+>
 </body>
 </html>
