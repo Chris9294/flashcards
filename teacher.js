@@ -300,3 +300,90 @@ function refreshCards() {
 // ================================
 refreshThemes();
 refreshCards();
+
+// ================================
+// IMPORT ZIP (images + audios)
+// ================================
+async function importZip(file, themeId) {
+  if (!file || !themeId) return;
+  
+  const theme = data.themes.find(t => t.id === themeId);
+  if (!theme) return;
+
+  // Lecture du ZIP via JSZip
+  const JSZip = window.JSZip; // Assure-toi d'avoir <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script> dans ton HTML
+  const zip = await JSZip.loadAsync(file);
+  const files = Object.values(zip.files);
+
+  // Filtre les images et audios
+  const images = files.filter(f => !f.dir && /\.(png|jpg|jpeg|gif)$/i.test(f.name));
+  const audios = files.filter(f => !f.dir && /\.(mp3|wav|ogg)$/i.test(f.name));
+
+  for (let imgFile of images) {
+    const imgData = await imgFile.async("base64");
+    const base64Img = "data:image/" + imgFile.name.split('.').pop() + ";base64," + imgData;
+
+    // Cherche l'audio correspondant au même nom
+    const baseName = imgFile.name.replace(/\.[^/.]+$/, "");
+    const audioMatch = audios.find(a => a.name.startsWith(baseName));
+    let base64Audio = null;
+
+    if (audioMatch) {
+      const audioData = await audioMatch.async("base64");
+      const ext = audioMatch.name.split('.').pop();
+      base64Audio = `data:audio/${ext};base64,${audioData}`;
+    }
+
+    const card = {
+      word: baseName,
+      image: base64Img,
+      audio: base64Audio,
+      visible: true
+    };
+
+    // === SUPABASE LOGIC ===
+    if (window.supabase) {
+      try {
+        // Upload image
+        const imgExt = imgFile.name.split('.').pop();
+        const imgPath = `${themeId}/${imgFile.name}`;
+        await supabase.storage.from('flashcards').upload(imgPath, base64toBlob(base64Img), { upsert: true });
+
+        // Upload audio
+        let audioPath = null;
+        if (base64Audio) {
+          const audioExt = audioMatch.name.split('.').pop();
+          audioPath = `${themeId}/${audioMatch.name}`;
+          await supabase.storage.from('flashcards').upload(audioPath, base64toBlob(base64Audio), { upsert: true });
+        }
+
+        // Stocke les URLs Supabase dans la carte
+        card.image = supabase.storage.from('flashcards').getPublicUrl(imgPath).data.publicUrl;
+        if (audioPath) card.audio = supabase.storage.from('flashcards').getPublicUrl(audioPath).data.publicUrl;
+        
+      } catch (err) {
+        console.error("Erreur Supabase upload :", err);
+      }
+    }
+
+    // Ajoute la carte au thème
+    theme.cards.push(card);
+  }
+
+  saveData();
+  alert(`Import terminé : ${images.length} carte(s) ajoutée(s) !`);
+}
+
+// ================================
+// UTILITAIRE : base64 -> Blob
+// ================================
+function base64toBlob(base64Data) {
+  const parts = base64Data.split(',');
+  const contentType = parts[0].match(/:(.*?);/)[1];
+  const byteCharacters = atob(parts[1]);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  return new Blob([new Uint8Array(byteNumbers)], { type: contentType });
+}
