@@ -106,7 +106,12 @@ function addCard() {
 
   if (!word || !imageFile) return;
 
-  const card = { word, image: null, audio: null };
+  const card = {
+  word,
+  image: null,
+  audio: null,
+  visible: true
+};
 
   const imgReader = new FileReader();
   imgReader.onload = function(e) {
