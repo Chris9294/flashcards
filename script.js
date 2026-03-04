@@ -22,6 +22,20 @@ const rightArrow = document.getElementById('rightArrow');
 const fullscreenBtn = document.getElementById("fullscreenBtn");
 const teacherBtn = document.getElementById("teacherBtn");
 
+const teacherCode = document.getElementById("teacherCode");
+
+teacherBtn.onclick = () => {
+  teacherCode.style.display = "inline-block";
+  teacherCode.value = "";
+  teacherCode.focus();
+};
+
+teacherCode.addEventListener("input", () => {
+  if (teacherCode.value === "1515") {
+    window.location.href = "./teacher.html";
+  }
+});
+
 // ================================
 // INITIALISATION
 // ================================
