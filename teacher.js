@@ -57,7 +57,6 @@ function addTheme() {
 function refreshThemes() {
   themeSelect.innerHTML = '';
 
-  // option neutre par défaut
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Choix de la série —';
@@ -88,7 +87,6 @@ deleteThemeBtn.onclick = () => {
   }
 };
 
-// mise à jour quand on change de série
 themeSelect.onchange = refreshCards;
 
 // ================================
@@ -123,10 +121,17 @@ function addCard() {
   };
   imgReader.readAsDataURL(imageFile);
 
-  // reset inputs
+  // ================================
+  // RESET INPUTS ET LABELS
+  // ================================
   document.getElementById('wordInput').value = '';
   imageInput.value = '';
   audioInput.value = '';
+
+  const imageLabel = document.getElementById('imageInputWrapper').querySelector('.file-label');
+  const audioLabel = document.getElementById('audioInputWrapper').querySelector('.file-label');
+  imageLabel.textContent = 'Parcourir…';
+  audioLabel.textContent = 'Parcourir…';
 }
 
 // ================================
@@ -181,7 +186,6 @@ function refreshCards() {
     const div = document.createElement('div');
     div.className = 'card';
 
-    // numéro de la carte
     const number = document.createElement('div');
     number.textContent = `Carte ${index + 1}`;
     number.style.fontWeight = 'bold';
@@ -189,7 +193,6 @@ function refreshCards() {
     number.style.marginBottom = '4px';
     div.appendChild(number);
 
-    // mot éditable
     const wordInput = document.createElement('input');
     wordInput.type = 'text';
     wordInput.value = card.word;
@@ -203,18 +206,15 @@ function refreshCards() {
       saveData();
     };
 
-    // image
     const img = document.createElement('img');
     img.src = card.image;
     img.style.height = '60px';
     img.style.display = 'block';
     img.style.marginTop = '5px';
 
-    // audio info
     const audioInfo = document.createElement('p');
     audioInfo.textContent = card.audio ? 'Audio : oui' : 'Audio : non';
 
-    // audio input wrapper
     const audioWrapper = document.createElement('div');
     audioWrapper.className = 'file-wrapper';
     const audioFileInput = document.createElement('input');
@@ -227,7 +227,6 @@ function refreshCards() {
     audioWrapper.appendChild(audioFileInput);
     audioWrapper.appendChild(audioLabel);
 
-    // boutons réorganisation et suppression
     const upBtn = document.createElement('button');
     upBtn.textContent = '🔼';
     upBtn.disabled = index === 0;
@@ -251,7 +250,6 @@ function refreshCards() {
       saveData();
     };
 
-    // assemblage
     div.appendChild(wordInput);
     div.appendChild(saveBtn);
     div.appendChild(document.createElement('br'));
