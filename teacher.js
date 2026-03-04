@@ -27,7 +27,6 @@ function saveData() {
   const selectedTheme = themeSelect.value; // mémorise la série courante
   localStorage.setItem('flashcards', JSON.stringify(data));
   refreshThemes();
-  // restaurer la série sélectionnée
   themeSelect.value = selectedTheme;
   refreshCards();
 }
@@ -107,11 +106,11 @@ function addCard() {
   if (!word || !imageFile) return;
 
   const card = {
-  word,
-  image: null,
-  audio: null,
-  visible: true
-};
+    word,
+    image: null,
+    audio: null,
+    visible: true   // ✅ nouvelle propriété visible par défaut
+  };
 
   const imgReader = new FileReader();
   imgReader.onload = function(e) {
@@ -184,6 +183,11 @@ function refreshCards() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
+  // Sécurité : les anciennes cartes sans "visible"
+  theme.cards.forEach(card => {
+    if (card.visible === undefined) card.visible = true;
+  });
+
   const count = theme.cards.length;
   cardsTitle.textContent = `${count} carte${count > 1 ? 's' : ''} existante${count > 1 ? 's' : ''}`;
 
@@ -191,6 +195,11 @@ function refreshCards() {
     const div = document.createElement('div');
     div.className = 'card';
 
+    if (!card.visible) {
+      div.classList.add('card-hidden');  // ✅ griser si masquée
+    }
+
+    // Numéro carte
     const number = document.createElement('div');
     number.textContent = `Carte ${index + 1}`;
     number.style.fontWeight = 'bold';
@@ -198,6 +207,7 @@ function refreshCards() {
     number.style.marginBottom = '4px';
     div.appendChild(number);
 
+    // Texte modifiable
     const wordInput = document.createElement('input');
     wordInput.type = 'text';
     wordInput.value = card.word;
@@ -211,15 +221,18 @@ function refreshCards() {
       saveData();
     };
 
+    // Image
     const img = document.createElement('img');
     img.src = card.image;
     img.style.height = '60px';
     img.style.display = 'block';
     img.style.marginTop = '5px';
 
+    // Info audio
     const audioInfo = document.createElement('p');
     audioInfo.textContent = card.audio ? 'Audio : oui' : 'Audio : non';
 
+    // Input audio
     const audioWrapper = document.createElement('div');
     audioWrapper.className = 'file-wrapper';
     const audioFileInput = document.createElement('input');
@@ -232,6 +245,7 @@ function refreshCards() {
     audioWrapper.appendChild(audioFileInput);
     audioWrapper.appendChild(audioLabel);
 
+    // Boutons déplacer/supprimer
     const upBtn = document.createElement('button');
     upBtn.textContent = '🔼';
     upBtn.disabled = index === 0;
@@ -255,6 +269,15 @@ function refreshCards() {
       saveData();
     };
 
+    // ✅ Bouton Afficher / Masquer
+    const toggleBtn = document.createElement('button');
+    toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
+    toggleBtn.onclick = () => {
+      card.visible = !card.visible;
+      saveData();
+    };
+
+    // Construction de la carte
     div.appendChild(wordInput);
     div.appendChild(saveBtn);
     div.appendChild(document.createElement('br'));
@@ -262,6 +285,7 @@ function refreshCards() {
     div.appendChild(upBtn);
     div.appendChild(downBtn);
     div.appendChild(deleteBtn);
+    div.appendChild(toggleBtn);
 
     div.appendChild(img);
     div.appendChild(audioInfo);
