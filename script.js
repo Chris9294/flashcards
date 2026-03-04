@@ -32,12 +32,10 @@ teacherBtn.onclick = () => {
   teacherCode.focus();
 };
 
-// Redirection immédiate si code correct
 teacherCode.addEventListener("input", () => {
   if (teacherCode.value === "1515") {
     window.location.href = "./teacher.html";
   } else if (teacherCode.value.length === 4) {
-    // code incorrect → on efface immédiatement
     alert("Code incorrect");
     teacherCode.value = "";
     teacherCode.focus();
@@ -72,7 +70,6 @@ function init() {
   themeSelect.value = '';
   thumbnails.innerHTML = '';
 
-  // écran principal → bouton enseignant visible
   teacherBtn.style.display = "block";
 }
 
@@ -80,7 +77,7 @@ init();
 themeSelect.onchange = loadTheme;
 
 // ================================
-// BOUTON PLEIN ÉCRAN (SIMPLE & FIABLE)
+// BOUTON PLEIN ÉCRAN
 // ================================
 fullscreenBtn.onclick = () => {
   const isFullscreen =
@@ -90,13 +87,13 @@ fullscreenBtn.onclick = () => {
     if (document.documentElement.requestFullscreen) {
       document.documentElement.requestFullscreen();
     } else if (document.documentElement.webkitRequestFullscreen) {
-      document.documentElement.webkitRequestFullscreen(); // Safari
+      document.documentElement.webkitRequestFullscreen();
     }
   } else {
     if (document.exitFullscreen) {
       document.exitFullscreen();
     } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen(); // Safari
+      document.webkitExitFullscreen();
     }
   }
 };
@@ -111,9 +108,10 @@ function loadTheme() {
 
   if (!theme) return;
 
-  currentThemeCards = theme.cards;
+  // On ne garde que les cartes visibles
+  currentThemeCards = theme.cards.filter(card => card.visible !== false);
 
-  theme.cards.forEach((card, index) => {
+  currentThemeCards.forEach((card, index) => {
     const img = document.createElement('img');
     img.src = card.image;
     img.onclick = () => openCardAtIndex(index);
@@ -134,10 +132,9 @@ function openCardAtIndex(index) {
 
 // Image
 function showImage() {
+  if (!currentCard) return;
   cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
-
-  // cacher bouton enseignant uniquement
   teacherBtn.style.display = "none";
 
   const img = document.querySelector('.big-image');
@@ -151,6 +148,7 @@ function showImage() {
 
 // Mot
 function showWord() {
+  if (!currentCard) return;
   cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
   const wordDiv = cardContent.querySelector('.word');
 
@@ -168,8 +166,6 @@ function showWord() {
 function closeCard() {
   flashcard.classList.remove('visible');
   currentCard = null;
-
-  // retour écran principal → bouton enseignant visible
   teacherBtn.style.display = "block";
 }
 
