@@ -5,9 +5,19 @@
 <title>Flashcards Visuel</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
+<body>
   <button id="teacherBtn" title="Interface enseignant">🎓</button>
   <button id="fullscreenBtn" title="Plein écran">⛶</button>
-<body>
+
+  <!-- Champ code enseignant (caché par défaut) -->
+  <input
+    type="password"
+    id="teacherCode"
+    placeholder="Code enseignant"
+    style="display:none; margin-left:8px;"
+  />
+
   <h1>FlashCards!</h1>
 
   <label for="themeSelect"><strong>Choisis une série :</strong></label>
@@ -17,8 +27,8 @@
   <div id="flashcard">
     <div id="overlay"></div>
     <div id="card">
-    <div id="cardContent"></div>
-   </div>
+      <div id="cardContent"></div>
+    </div>
 
     <!-- Boutons à droite -->
     <div id="cardButtons">
@@ -26,14 +36,32 @@
       <button id="speakBtn">🔊</button>
     </div>
 
-    <!-- Flèches navigation (dans le flashcard, superposées à l'image) -->
+    <!-- Flèches navigation -->
     <div id="leftArrow" class="navArrow" style="display:none;">&#8592;</div>
     <div id="rightArrow" class="navArrow" style="display:none;">&#8594;</div>
   </div>
 
-  <!-- Miniatures en bas -->
+  <!-- Miniatures -->
   <div id="thumbnails"></div>
 
   <script src="script.js"></script>
+
+  <!-- Script code enseignant -->
+  <script>
+    const teacherBtn = document.getElementById("teacherBtn");
+    const teacherCode = document.getElementById("teacherCode");
+
+    teacherBtn.addEventListener("click", () => {
+      teacherCode.style.display = "inline-block";
+      teacherCode.focus();
+      teacherCode.value = "";
+    });
+
+    teacherCode.addEventListener("input", () => {
+      if (teacherCode.value === "1515") {
+        window.location.href = "./enseignant.html";
+      }
+    });
+  </script>
 </body>
 </html>
