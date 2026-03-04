@@ -133,14 +133,14 @@ button:disabled {
   position: relative;
   z-index: 2;
   display: inline-block;
-  width: 160px;               /* largeur uniforme */
+  width: 160px;
   background: #ffcc80;
   border-radius: 6px;
   text-align: center;
   color: black;
   cursor: pointer;
   font-size: 13px;
-  font-weight: normal;        /* texte non gras */
+  font-weight: normal; /* texte non gras */
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
   transform-origin: center center;
@@ -155,10 +155,11 @@ button:disabled {
 
 /* hauteur pour cartes existantes */
 .card .file-wrapper {
-  width: 160px;  
+  width: 160px;
   margin-top: 2px;
 }
 
+/* Fix pour que les inputs audio dans les cartes existantes ouvrent le Finder */
 .card .file-wrapper input[type="file"] {
   opacity: 0;
   height: 28px;
@@ -166,11 +167,15 @@ button:disabled {
   left: 0;
   top: 0;
   cursor: pointer;
+  z-index: 2; /* devant le label pour être cliquable */
 }
 
+/* Label reste au-dessus visuellement pour hover et style */
 .card .file-wrapper .file-label {
   height: 28px;
   line-height: 28px;
+  position: relative;
+  z-index: 1; /* derrière l’input pour ne pas bloquer le click */
 }
 
 /* Hover fonctionne pour tous les labels */
