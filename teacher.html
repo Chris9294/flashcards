@@ -30,6 +30,20 @@
 </div>
 
 <!-- ==========================
+     IMPORT ZIP
+     ========================== -->
+<h2>Importer une série (ZIP)</h2>
+<p style="font-size:14px; color:#666;">
+  Le ZIP doit contenir des images + audios avec le <strong>même nom</strong><br>
+  (ex : chat.jpg + chat.mp3)
+</p>
+
+<input type="file" id="zipInput" accept=".zip">
+<button class="primary-btn" onclick="importZipFromInput()">Importer le ZIP</button>
+
+<hr>
+
+<!-- ==========================
      AJOUT DE CARTE
      ========================== -->
 <h2>Créer une carte</h2>
@@ -63,17 +77,52 @@
 <h2 id="cardsTitle">Cartes existantes</h2>
 <div id="cardsList"></div>
 
+<!-- ==========================
+     LIB JSZIP
+     ========================== -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<!-- ==========================
+     SCRIPT PRINCIPAL
+     ========================== -->
 <script src="teacher.js"></script>
+
+<!-- ==========================
+     IMPORT ZIP SCRIPT
+     ========================== -->
 <script>
-  // ================================
-  // Gestion du texte des inputs file
-  // ================================
-  document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
-    const label = input.nextElementSibling;
-    input.addEventListener('change', () => {
-      label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
-    });
-  });
+async function importZipFromInput() {
+  const input = document.getElementById("zipInput");
+  const themeId = document.getElementById("themeSelect").value;
+
+  if (!themeId) {
+    alert("Veuillez sélectionner une série");
+    return;
+  }
+
+  if (!input.files.length) {
+    alert("Veuillez sélectionner un fichier ZIP");
+    return;
+  }
+
+  await importZip(input.files[0], themeId);
+  input.value = "";
+}
 </script>
+
+<!-- ==========================
+     LABELS INPUT FILE
+     ========================== -->
+<script>
+document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
+  const label = input.nextElementSibling;
+  input.addEventListener('change', () => {
+    label.textContent = input.files.length > 0
+      ? input.files[0].name
+      : 'Parcourir…';
+  });
+});
+</script>
+
 </body>
 </html>
