@@ -1,113 +1,4 @@
 /* ==========================
-   Style général
-   ========================== */
-body {
-  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', Arial, sans-serif;
-  background: #fff9f2;
-  color: #333;
-  padding: 15px;
-}
-
-/* ==========================
-   Bouton retour Flashcards
-   ========================== */
-#backToFlashcardsBtn {
-  background: #ffcc80;
-  margin-bottom: 10px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  font-size: 14px;
-}
-#backToFlashcardsBtn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-/* ==========================
-   Titres
-   ========================== */
-h1 {
-  text-align: center;
-  font-size: 2.2em;
-  color: #ff6f61;
-  margin: 6px 0 8px 0;
-}
-h2 {
-  font-size: 1.3em;
-  color: #ff8a65;
-  border-bottom: 2px solid #ffcc80;
-  padding-bottom: 4px;
-  margin-top: 16px;
-  margin-bottom: 8px;
-}
-
-/* ==========================
-   Labels
-   ========================== */
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: bold;
-  color: #ff8a65;
-  margin-bottom: 4px;
-}
-
-/* ==========================
-   Inputs texte
-   ========================== */
-input[type="text"] {
-  font-size: 13px;
-  padding: 5px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #ffcc80;
-  background: #fff;
-  width: 180px;
-  vertical-align: middle;
-}
-
-/* ==========================
-   Menu déroulant
-   ========================== */
-select {
-  font-size: 13px;
-  padding: 5px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  border: 1px solid #ffcc80;
-  width: 180px;
-  color: black;           /* texte en noir */
-  background: #f0f0f0;    /* gris clair */
-}
-
-/* ==========================
-   Boutons généraux
-   ========================== */
-button {
-  font-size: 14px;
-  padding: 5px 9px;
-  margin: 3px 2px;
-  border-radius: 8px;
-  border: none;
-  background: #ffcc80;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-button:disabled {
-  opacity: 0.4;
-  cursor: default;
-  box-shadow: none;
-}
-
-/* ==========================
    Inputs type file (création carte & cartes existantes)
    ========================== */
 .file-wrapper {
@@ -128,8 +19,8 @@ button:disabled {
 
 .file-wrapper .file-label {
   display: inline-block;
-  width: 160px; 
-  height: 32px;
+  width: 160px;        /* bouton réduit */
+  height: 32px;        /* hauteur standard */
   line-height: 32px;
   background: #ffcc80;
   border-radius: 6px;
@@ -143,71 +34,31 @@ button:disabled {
 }
 
 .file-wrapper .file-label:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transform: scale(1.05);                 /* effet agrandissement */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25); /* ombre plus prononcée */
 }
 
 /* ==========================
-   Zone ajout carte
+   Inputs file dans les cartes existantes
    ========================== */
-.add-card-row {
-  display: flex;
-  align-items: flex-start; /* aligne input texte et file verticalement */
-  gap: 14px;
-  margin-bottom: 8px;
-}
-.add-card-field {
-  display: flex;
-  flex-direction: column;
-}
-
-/* ==========================
-   Cartes enseignant
-   ========================== */
-.card {
-  background: #ffffff;
-  border: 2px solid #ffcc80;
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.card input[type="text"] {
-  font-size: 15px;
-  font-weight: bold;
-  width: 100%;
-  margin-bottom: 6px;
-}
-
-.card img {
-  height: 55px;
-  margin-top: 6px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
-}
-
-.card p {
-  margin: 4px 0;
-  font-size: 12.5px;
-}
-
-/* Inputs file dans les cartes */
 .card .file-wrapper {
-  width: 200px;
+  width: 160px;  /* largeur identique aux autres boutons */
   margin-top: 2px;
 }
+
 .card .file-wrapper input[type="file"] {
   opacity: 0;
   height: 28px;
   position: absolute;
   left: 0;
   top: 0;
+  cursor: pointer;
 }
+
 .card .file-wrapper .file-label {
   display: inline-block;
-  width: 160px;
-  height: 28px;
+  width: 160px;       /* largeur identique */
+  height: 28px;       /* hauteur adaptée */
   line-height: 28px;
   background: #ffcc80;
   border-radius: 6px;
@@ -215,20 +66,12 @@ button:disabled {
   color: black;
   cursor: pointer;
   font-size: 13px;
+  font-weight: normal; /* texte non gras */
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
 }
-.card .file-wrapper .file-label:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
 
-/* ==========================
-   Liste des cartes en grille
-   ========================== */
-#cardsList {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 8px;
+.card .file-wrapper .file-label:hover {
+  transform: scale(1.05);                  
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25); 
 }
