@@ -108,7 +108,7 @@ button:disabled {
 }
 
 /* ==========================
-   Inputs type file (création carte & cartes existantes)
+   Inputs type file (Création carte & cartes existantes)
    ========================== */
 .file-wrapper {
   position: relative;
@@ -116,6 +116,7 @@ button:disabled {
   width: 250px;
 }
 
+/* Input invisible derrière le label */
 .file-wrapper input[type="file"] {
   opacity: 0;
   width: 100%;
@@ -124,31 +125,57 @@ button:disabled {
   left: 0;
   top: 0;
   cursor: pointer;
-  z-index: 2; /* devant le label */
+  z-index: 1; /* derrière le label pour hover */
 }
 
+/* Label “Parcourir…” au-dessus pour hover */
 .file-wrapper .file-label {
+  position: relative;
+  z-index: 2;
   display: inline-block;
-  width: 160px;
-  height: 32px;
-  line-height: 32px;
+  width: 160px;               /* largeur uniforme */
   background: #ffcc80;
   border-radius: 6px;
   text-align: center;
   color: black;
   cursor: pointer;
   font-size: 13px;
-  font-weight: normal;
+  font-weight: normal;        /* texte non gras */
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
-  position: absolute; /* derrière l’input */
-  top: 0;
-  left: 0;
-  z-index: 1;
+  transform-origin: center center;
 }
 
+/* hauteur pour création de carte */
+#imageInputWrapper .file-label,
+#audioInputWrapper .file-label {
+  height: 32px;
+  line-height: 32px;
+}
+
+/* hauteur pour cartes existantes */
+.card .file-wrapper {
+  width: 160px;  
+  margin-top: 2px;
+}
+
+.card .file-wrapper input[type="file"] {
+  opacity: 0;
+  height: 28px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+.card .file-wrapper .file-label {
+  height: 28px;
+  line-height: 28px;
+}
+
+/* Hover fonctionne pour tous les labels */
 .file-wrapper .file-label:hover {
-  transform: scale(1.05);
+  transform: scale(1.08);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
@@ -195,48 +222,6 @@ button:disabled {
 .card p {
   margin: 4px 0;
   font-size: 12.5px;
-}
-
-/* Inputs file dans les cartes */
-.card .file-wrapper {
-  position: relative;
-  width: 160px;
-  margin-top: 2px;
-}
-
-.card .file-wrapper input[type="file"] {
-  opacity: 0;
-  height: 28px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  cursor: pointer;
-  z-index: 2; /* devant le label */
-}
-
-.card .file-wrapper .file-label {
-  display: inline-block;
-  width: 160px;
-  height: 28px;
-  line-height: 28px;
-  background: #ffcc80;
-  border-radius: 6px;
-  text-align: center;
-  color: black;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: normal;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  transition: transform 0.15s, box-shadow 0.15s;
-  position: absolute; /* derrière l’input */
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-
-.card .file-wrapper .file-label:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
