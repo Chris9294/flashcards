@@ -79,8 +79,8 @@ select {
   border-radius: 6px;
   border: 1px solid #ffcc80;
   width: 180px;
-  color: black;           /* texte en noir */
-  background: #f0f0f0;    /* gris clair */
+  color: black;
+  background: #f0f0f0;
 }
 
 /* ==========================
@@ -108,7 +108,7 @@ button:disabled {
 }
 
 /* ==========================
-   Inputs type file (création carte & cartes existantes)
+   Inputs type file (Création carte & cartes existantes)
    ========================== */
 .file-wrapper {
   position: relative;
@@ -126,10 +126,12 @@ button:disabled {
   cursor: pointer;
 }
 
-.file-wrapper .file-label {
+/* Labels unifiés pour tous les inputs file */
+.file-wrapper .file-label,
+.card .file-wrapper .file-label {
   display: inline-block;
-  width: 160px;        /* bouton réduit */
-  height: 32px;        
+  width: 160px;               /* largeur réduite */
+  height: 32px;               /* hauteur uniforme */
   line-height: 32px;
   background: #ffcc80;
   border-radius: 6px;
@@ -137,14 +139,16 @@ button:disabled {
   color: black;
   cursor: pointer;
   font-size: 13px;
-  font-weight: normal; /* texte non gras */
+  font-weight: normal;        /* texte non gras */
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
+  transform-origin: center center; /* agrandissement centré */
 }
 
-.file-wrapper .file-label:hover {
-  transform: scale(1.05);                  
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25); 
+.file-wrapper .file-label:hover,
+.card .file-wrapper .file-label:hover {
+  transform: scale(1.08);                 /* effet grossissant visible */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
@@ -152,7 +156,7 @@ button:disabled {
    ========================== */
 .add-card-row {
   display: flex;
-  align-items: flex-start; /* aligne input texte et file verticalement */
+  align-items: flex-start;
   gap: 14px;
   margin-bottom: 8px;
 }
@@ -192,7 +196,7 @@ button:disabled {
   font-size: 12.5px;
 }
 
-/* Inputs file dans les cartes existantes */
+/* Inputs file spécifiques cartes */
 .card .file-wrapper {
   width: 160px;  /* largeur identique aux autres boutons */
   margin-top: 2px;
@@ -205,27 +209,6 @@ button:disabled {
   left: 0;
   top: 0;
   cursor: pointer;
-}
-
-.card .file-wrapper .file-label {
-  display: inline-block;
-  width: 160px;
-  height: 28px;
-  line-height: 28px;
-  background: #ffcc80;
-  border-radius: 6px;
-  text-align: center;
-  color: black;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: normal; /* texte non gras */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.card .file-wrapper .file-label:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* ==========================
