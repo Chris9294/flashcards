@@ -126,12 +126,11 @@ button:disabled {
   cursor: pointer;
 }
 
-/* Labels unifiés pour tous les inputs file */
-.file-wrapper .file-label,
-.card .file-wrapper .file-label {
+/* Labels “Parcourir…” unifiés */
+.file-wrapper .file-label {
   display: inline-block;
-  width: 160px;               /* largeur réduite */
-  height: 32px;               /* hauteur uniforme */
+  width: 160px;                /* largeur réduite */
+  height: 32px;                /* hauteur création carte */
   line-height: 32px;
   background: #ffcc80;
   border-radius: 6px;
@@ -139,16 +138,35 @@ button:disabled {
   color: black;
   cursor: pointer;
   font-size: 13px;
-  font-weight: normal;        /* texte non gras */
+  font-weight: normal;         /* texte non gras */
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   transition: transform 0.15s, box-shadow 0.15s;
-  transform-origin: center center; /* agrandissement centré */
+  transform-origin: center center; /* grossissement centré */
 }
 
-.file-wrapper .file-label:hover,
-.card .file-wrapper .file-label:hover {
-  transform: scale(1.08);                 /* effet grossissant visible */
+.file-wrapper .file-label:hover {
+  transform: scale(1.08);                 
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Labels dans les cartes existantes (hauteur un peu plus petite) */
+.card .file-wrapper {
+  width: 160px;  /* largeur identique */
+  margin-top: 2px;
+}
+
+.card .file-wrapper input[type="file"] {
+  opacity: 0;
+  height: 28px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+.card .file-wrapper .file-label {
+  height: 28px;
+  line-height: 28px;
 }
 
 /* ==========================
@@ -194,21 +212,6 @@ button:disabled {
 .card p {
   margin: 4px 0;
   font-size: 12.5px;
-}
-
-/* Inputs file spécifiques cartes */
-.card .file-wrapper {
-  width: 160px;  /* largeur identique aux autres boutons */
-  margin-top: 2px;
-}
-
-.card .file-wrapper input[type="file"] {
-  opacity: 0;
-  height: 28px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  cursor: pointer;
 }
 
 /* ==========================
