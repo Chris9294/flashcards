@@ -70,7 +70,6 @@ function refreshThemes() {
     themeSelect.appendChild(option);
   });
 
-  // ✅ RESTAURATION DE LA SÉRIE SÉLECTIONNÉE
   if (currentValue && data.themes.some(t => t.id === currentValue)) {
     themeSelect.value = currentValue;
   } else {
@@ -165,14 +164,34 @@ function refreshCards() {
     div.className = 'card';
     if (!card.visible) div.classList.add('card-hidden');
 
+    // Bouton afficher/masquer
     const toggleBtn = document.createElement('button');
     toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
     toggleBtn.onclick = () => {
       card.visible = !card.visible;
       saveData();
     };
-
     div.appendChild(toggleBtn);
+
+    // Texte
+    const wordDiv = document.createElement('div');
+    wordDiv.textContent = card.word || '';
+    wordDiv.style.fontWeight = 'bold';
+    wordDiv.style.marginTop = '4px';
+    div.appendChild(wordDiv);
+
+    // Image
+    if (card.image) {
+      const img = document.createElement('img');
+      img.src = card.image;
+      div.appendChild(img);
+    }
+
+    // Audio info
+    const audioInfo = document.createElement('p');
+    audioInfo.textContent = card.audio ? 'Audio : oui' : 'Audio : non';
+    div.appendChild(audioInfo);
+
     cardsList.appendChild(div);
   });
 }
@@ -198,7 +217,6 @@ async function importZip(file, themeId) {
   let images = files.filter(f => !f.dir && /\.(png|jpg|jpeg|gif)$/i.test(f.name));
   const audios = files.filter(f => !f.dir && /\.(mp3|wav|ogg)$/i.test(f.name));
 
-  // ✅ ordre stable
   images.sort((a, b) => a.name.localeCompare(b.name));
 
   for (const imgFile of images) {
@@ -229,22 +247,26 @@ async function importZip(file, themeId) {
 
     // === SUPABASE (optionnel) ===
     if (window.supabase) {
-      const imgPath = `${themeId}/${imgFile.name}`;
-      await supabase.storage.from('flashcards')
-        .upload(imgPath, base64toBlob(base64Img), { upsert: true });
-
-      card.image = supabase.storage
-        .from('flashcards')
-        .getPublicUrl(imgPath).data.publicUrl;
-
-      if (audioMatch) {
-        const audioPath = `${themeId}/${audioMatch.name}`;
+      try {
+        const imgPath = `${themeId}/${imgFile.name}`;
         await supabase.storage.from('flashcards')
-          .upload(audioPath, base64toBlob(base64Audio), { upsert: true });
+          .upload(imgPath, base64toBlob(base64Img), { upsert: true });
 
-        card.audio = supabase.storage
+        card.image = supabase.storage
           .from('flashcards')
-          .getPublicUrl(audioPath).data.publicUrl;
+          .getPublicUrl(imgPath).data.publicUrl;
+
+        if (audioMatch) {
+          const audioPath = `${themeId}/${audioMatch.name}`;
+          await supabase.storage.from('flashcards')
+            .upload(audioPath, base64toBlob(base64Audio), { upsert: true });
+
+          card.audio = supabase.storage
+            .from('flashcards')
+            .getPublicUrl(audioPath).data.publicUrl;
+        }
+      } catch (err) {
+        console.error("Erreur Supabase upload :", err);
       }
     }
 
@@ -266,6 +288,10 @@ function base64toBlob(base64) {
   for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
   return new Blob([arr], { type });
 }
+
+// ================================
+// IMPORT ZIP INPUT
+// ================================
 const zipInput = document.getElementById("zipInput");
 if (zipInput) {
   zipInput.addEventListener("change", () => {
