@@ -258,3 +258,15 @@ function base64toBlob(base64) {
   for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
   return new Blob([arr], { type });
 }
+const zipInput = document.getElementById("zipInput");
+if (zipInput) {
+  zipInput.addEventListener("change", () => {
+    if (!zipInput.files.length || !themeSelect.value) {
+      alert("Sélectionne d'abord une série.");
+      zipInput.value = "";
+      return;
+    }
+    importZip(zipInput.files[0], themeSelect.value);
+    zipInput.value = "";
+  });
+}
