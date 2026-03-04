@@ -240,3 +240,25 @@ h1 {
   transform: scale(1.1);
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
+/* ==========================
+   Champ code enseignant
+   ========================== */
+#teacherCode {
+  position: fixed;           /* fixe à l’écran */
+  top: 22px;                 /* aligné verticalement avec le bouton */
+  left: 80px;                /* juste à droite du bouton (20px + 50px bouton largeur + marge) */
+  font-size: 18px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 2px solid #ffcc80;
+  outline: none;
+  width: 150px;
+  z-index: 1200;             /* au-dessus de tout */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  background: #fff9f2;
+  display: none;             /* caché par défaut, s’affiche via JS */
+}
+#teacherCode:focus {
+  border-color: #ff6f61;
+  box-shadow: 0 4px 12px rgba(255,111,97,0.5);
+}
