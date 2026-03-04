@@ -4,19 +4,41 @@
 <meta charset="UTF-8">
 <title>Flashcards Visuel</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  /* ==========================
+     Champ code enseignant
+     ========================== */
+  #teacherCode {
+    display: none;        /* caché par défaut */
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid #ffcc80;
+    font-size: 14px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* Conteneur bouton + champ */
+  #teacherContainer {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+</style>
 </head>
 
 <body>
-  <button id="teacherBtn" title="Interface enseignant">🎓</button>
-  <button id="fullscreenBtn" title="Plein écran">⛶</button>
+  <!-- Conteneur bouton + champ -->
+  <div id="teacherContainer">
+    <button id="teacherBtn" title="Interface enseignant">🎓</button>
+    <input
+      type="password"
+      id="teacherCode"
+      placeholder="Code enseignant"
+    />
+  </div>
 
-  <!-- Champ code enseignant (caché par défaut) -->
-  <input
-    type="password"
-    id="teacherCode"
-    placeholder="Code enseignant"
-    style="display:none; margin-left:8px;"
-  />
+  <button id="fullscreenBtn" title="Plein écran">⛶</button>
 
   <h1>FlashCards!</h1>
 
@@ -46,12 +68,23 @@
 
   <script src="script.js"></script>
 
-  <!-- Script code enseignant -->
-  <input
-  type="password"
-  id="teacherCode"
-  placeholder="Code enseignant"
-  style="display:none; margin-left:8px;"
->
+  <script>
+    const teacherBtn = document.getElementById("teacherBtn");
+    const teacherCode = document.getElementById("teacherCode");
+
+    // Affiche le champ à côté du bouton et focus
+    teacherBtn.addEventListener("click", () => {
+      teacherCode.style.display = "inline-block";
+      teacherCode.focus();
+      teacherCode.value = "";
+    });
+
+    // Vérification immédiate du code à la saisie
+    teacherCode.addEventListener("input", () => {
+      if (teacherCode.value === "1515") {
+        window.location.href = "./enseignant.html";
+      }
+    });
+  </script>
 </body>
 </html>
