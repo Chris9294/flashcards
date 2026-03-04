@@ -228,3 +228,19 @@ button:disabled {
   gap: 12px;
   margin-top: 8px;
 }
+/* ==========================
+   Carte masquée
+   ========================== */
+.card-hidden {
+  opacity: 0.45;
+  filter: grayscale(100%);
+}
+
+.card-hidden::after {
+  content: "Carte masquée";
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #ff6f61;
+  font-weight: bold;
+}
