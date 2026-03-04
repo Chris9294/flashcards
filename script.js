@@ -21,15 +21,18 @@ const rightArrow = document.getElementById('rightArrow');
 
 const fullscreenBtn = document.getElementById("fullscreenBtn");
 const teacherBtn = document.getElementById("teacherBtn");
-
 const teacherCode = document.getElementById("teacherCode");
 
+// ================================
+// BOUTON INTERFACE ENSEIGNANT
+// ================================
 teacherBtn.onclick = () => {
-  teacherCode.style.display = "inline-block";
-  teacherCode.value = "";
+  teacherCode.style.display = "inline-block"; // apparait à côté du bouton
+  teacherCode.value = "";                       // reset
   teacherCode.focus();
 };
 
+// Redirection immédiate si code correct
 teacherCode.addEventListener("input", () => {
   if (teacherCode.value === "1515") {
     window.location.href = "./teacher.html";
@@ -70,12 +73,6 @@ function init() {
 
 init();
 themeSelect.onchange = loadTheme;
-
-// ================================
-// BOUTON INTERFACE ENSEIGNANT
-// (la gestion du code est maintenant dans le HTML)
-// ================================
-/* AUCUNE LOGIQUE ICI */
 
 // ================================
 // BOUTON PLEIN ÉCRAN (SIMPLE & FIABLE)
