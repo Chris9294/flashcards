@@ -229,25 +229,17 @@ function refreshCards() {
     number.style.fontWeight = 'bold';
     number.style.color = '#ff6f61';
 
- // input + bouton sur la même ligne
-const wordRow = document.createElement('div');
-wordRow.style.display = 'flex';
-wordRow.style.gap = '5px'; // petit espace entre input et bouton
-
-const wordInput = document.createElement('input');
+ const wordInput = document.createElement('input');
 wordInput.type = 'text';
 wordInput.value = card.word;
 
 const saveBtn = document.createElement('button');
 saveBtn.textContent = '💾 Enregistrer';
+
 saveBtn.onclick = () => {
   card.word = wordInput.value.trim();
   saveData();
 };
-
-// ajouter input et bouton au conteneur, puis le conteneur à la carte
-wordRow.append(wordInput, saveBtn);
-div.appendChild(wordRow);
     const img = document.createElement('img');
     img.src = card.image;
     img.style.height = '60px';
