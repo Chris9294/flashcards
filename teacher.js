@@ -229,13 +229,20 @@ function refreshCards() {
     number.style.fontWeight = 'bold';
     number.style.color = '#ff6f61';
 
- const wordInput = document.createElement('input');
+// -------------------
+// Champ texte + bouton “Enregistrer” (Option 1)
+// -------------------
+const wordInput = document.createElement('input');
 wordInput.type = 'text';
 wordInput.value = card.word;
 
+// ⚡ override la largeur forcée par le CSS
+wordInput.style.width = 'auto';
+wordInput.style.display = 'inline-block';
+wordInput.style.verticalAlign = 'middle'; // pour aligner avec le bouton
+
 const saveBtn = document.createElement('button');
 saveBtn.textContent = '💾 Enregistrer';
-
 saveBtn.onclick = () => {
   card.word = wordInput.value.trim();
   saveData();
