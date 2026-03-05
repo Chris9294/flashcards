@@ -280,8 +280,4 @@ box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 button {
 border-radius: 6px;
 }
-input[type="text"] {
-border-radius: 5px;
-border: 1px solid #ccc;
-padding: 4px;
-}
+
