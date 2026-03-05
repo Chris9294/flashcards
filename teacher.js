@@ -340,8 +340,11 @@ mediaRow.appendChild(img);
 mediaRow.appendChild(audioInfo);
 
 div.appendChild(mediaRow);
-    // Ajouter le texte juste avant
-div.appendChild(document.createTextNode("Remplacer l'audio : "));
+   // Texte plus petit
+const replaceAudioLabel = document.createElement('span');
+replaceAudioLabel.textContent = "Remplacer l'audio : ";
+replaceAudioLabel.style.fontSize = "0.8em"; // tu peux ajuster 0.8em à la taille voulue
+div.appendChild(replaceAudioLabel);
 div.appendChild(audioInput);
 
     cardsList.appendChild(div);
