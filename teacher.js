@@ -103,12 +103,26 @@ deleteThemeBtn.onclick = () => {
 themeSelect.onchange = refreshCards;
 
 // ================================
+// GESTION LABEL INPUT FILE
+// ================================
+function updateFileLabel(input) {
+  const label = input.nextElementSibling;
+  label.textContent = input.files.length > 0
+    ? input.files[0].name
+    : '🔎 Parcourir…';
+}
+
+// appliquer sur tous les inputs file existants
+document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
+  input.addEventListener('change', () => updateFileLabel(input));
+});
+
+// ================================
 // AJOUT CARTE MANUELLE
 // ================================
 function addCard() {
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
-
   if (!theme) return;
 
   const word = document.getElementById('wordInput').value.trim();
@@ -131,28 +145,24 @@ function addCard() {
     card.image = e.target.result;
 
     if (audioInput.files[0]) {
-
       handleAudioUpload(audioInput.files[0], card, theme);
-
     } else {
-
       theme.cards.push(card);
       saveData();
-
     }
 
   };
 
   reader.readAsDataURL(imageInput.files[0]);
 
+  // vider le texte et les fichiers
   document.getElementById('wordInput').value = '';
   imageInput.value = '';
-audioInput.value = '';
+  audioInput.value = '';
 
-// remettre les labels
-document.querySelector('#imageInputWrapper .file-label').textContent = '🔎 Parcourir…';
-document.querySelector('#audioInputWrapper .file-label').textContent = '🔎 Parcourir…';
-  
+  // mettre à jour les labels
+  updateFileLabel(imageInput);
+  updateFileLabel(audioInput);
 
 }
 
@@ -234,141 +244,122 @@ function refreshCards() {
     number.style.fontWeight = 'bold';
     number.style.color = '#ff6f61';
 
-const wordInput = document.createElement('input');
-wordInput.type = 'text';
-wordInput.value = card.word;
+    const wordInput = document.createElement('input');
+    wordInput.type = 'text';
+    wordInput.value = card.word;
 
-const saveBtn = document.createElement('button');
-saveBtn.textContent = '💾 Enregistrer';
-saveBtn.title = "Enregistrer la modification du mot";
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = '💾 Enregistrer';
+    saveBtn.title = "Enregistrer la modification du mot";
 
-saveBtn.onclick = () => {
-  card.word = wordInput.value.trim();
-  saveData();
-};
+    saveBtn.onclick = () => {
+      card.word = wordInput.value.trim();
+      saveData();
+    };
 
-const img = document.createElement('img');
-img.src = card.image;
-img.style.height = '60px';
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.style.height = '60px';
 
-const audioInfo = document.createElement('p');
+    const audioInfo = document.createElement('p');
+    const audioText = document.createElement('span');
+    audioText.textContent = card.audio
+      ? 'Audio : oui '
+      : 'Audio : non (synthèse vocale GB par défaut) ';
+    const playBtn = document.createElement('button');
+    playBtn.textContent = "🔊";
+    playBtn.title = "Écouter le mot";
+    playBtn.style.marginLeft = "5px";
 
-const audioText = document.createElement('span');
-audioText.textContent = card.audio
-  ? 'Audio : oui '
-  : 'Audio : non (synthèse vocale GB par défaut) ';
+    playBtn.onclick = () => {
+      if (card.audio) {
+        const audio = new Audio(card.audio);
+        audio.play();
+      } else {
+        const utterance = new SpeechSynthesisUtterance(card.word);
+        utterance.lang = "en-GB";
+        utterance.rate = 0.7;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+      }
+    };
 
-const playBtn = document.createElement('button');
-playBtn.textContent = "🔊";
-playBtn.title = "Écouter le mot";
-playBtn.style.marginLeft = "5px";
+    audioInfo.appendChild(audioText);
+    audioInfo.appendChild(playBtn);
 
-playBtn.onclick = () => {
+    const audioInput = document.createElement('input');
+    audioInput.type = 'file';
+    audioInput.accept = 'audio/*';
+    audioInput.onchange = () => addAudioToCard(index, audioInput.files[0]);
 
-  if (card.audio) {
+    const upBtn = document.createElement('button');
+    upBtn.textContent = '🔼';
+    upBtn.title = "Monter la carte";
+    upBtn.disabled = index === 0;
+    upBtn.onclick = () => {
+      [theme.cards[index - 1], theme.cards[index]] =
+        [theme.cards[index], theme.cards[index - 1]];
+      saveData();
+    };
 
-    const audio = new Audio(card.audio);
-    audio.play();
+    const downBtn = document.createElement('button');
+    downBtn.textContent = '🔽';
+    downBtn.title = "Descendre la carte";
+    downBtn.disabled = index === theme.cards.length - 1;
+    downBtn.onclick = () => {
+      [theme.cards[index + 1], theme.cards[index]] =
+        [theme.cards[index], theme.cards[index + 1]];
+      saveData();
+    };
 
-  } else {
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '🗑️';
+    deleteBtn.title = "Supprimer la carte";
+    deleteBtn.onclick = () => {
+      theme.cards.splice(index, 1);
+      saveData();
+    };
 
-    const utterance = new SpeechSynthesisUtterance(card.word);
-    utterance.lang = "en-GB";
-    utterance.rate = 0.7;
+    const toggleBtn = document.createElement('button');
+    toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
+    toggleBtn.title = "Afficher ou masquer la carte";
+    toggleBtn.onclick = () => {
+      card.visible = !card.visible;
+      saveData();
+    };
 
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
+    // ajout des éléments
+    div.appendChild(number);
 
-  }
+    const editRow = document.createElement('div');
+    editRow.style.display = "flex";
+    editRow.style.alignItems = "center";
+    editRow.style.gap = "6px";
+    editRow.appendChild(wordInput);
+    editRow.appendChild(saveBtn);
+    div.appendChild(editRow);
 
-};
+    div.appendChild(upBtn);
+    div.appendChild(downBtn);
+    div.appendChild(deleteBtn);
+    div.appendChild(toggleBtn);
 
-audioInfo.appendChild(audioText);
-audioInfo.appendChild(playBtn);
+    const mediaRow = document.createElement('div');
+    mediaRow.style.display = "flex";
+    mediaRow.style.alignItems = "center";
+    mediaRow.style.gap = "10px";
+    mediaRow.appendChild(img);
+    mediaRow.appendChild(audioInfo);
+    div.appendChild(mediaRow);
 
-const audioInput = document.createElement('input');
-audioInput.type = 'file';
-audioInput.accept = 'audio/*';
-audioInput.onchange = () => addAudioToCard(index, audioInput.files[0]);
+    const replaceAudioLabel = document.createElement('span');
+    replaceAudioLabel.textContent = "Remplacer l'audio : ";
+    replaceAudioLabel.style.fontSize = "0.8em";
 
-const upBtn = document.createElement('button');
-upBtn.textContent = '🔼';
-upBtn.title = "Monter la carte";
-upBtn.disabled = index === 0;
+    div.appendChild(replaceAudioLabel);
+    div.appendChild(audioInput);
 
-upBtn.onclick = () => {
-  [theme.cards[index - 1], theme.cards[index]] =
-  [theme.cards[index], theme.cards[index - 1]];
-  saveData();
-};
-
-const downBtn = document.createElement('button');
-downBtn.textContent = '🔽';
-downBtn.title = "Descendre la carte";
-downBtn.disabled = index === theme.cards.length - 1;
-
-downBtn.onclick = () => {
-  [theme.cards[index + 1], theme.cards[index]] =
-  [theme.cards[index], theme.cards[index + 1]];
-  saveData();
-};
-
-const deleteBtn = document.createElement('button');
-deleteBtn.textContent = '🗑️';
-deleteBtn.title = "Supprimer la carte";
-
-deleteBtn.onclick = () => {
-  theme.cards.splice(index, 1);
-  saveData();
-};
-
-const toggleBtn = document.createElement('button');
-
-toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
-toggleBtn.title = "Afficher ou masquer la carte";
-
-toggleBtn.onclick = () => {
-  card.visible = !card.visible;
-  saveData();
-};
-
-// changements +
-div.appendChild(number);
-
-const editRow = document.createElement('div');
-editRow.style.display = "flex";
-editRow.style.alignItems = "center";
-editRow.style.gap = "6px";
-
-editRow.appendChild(wordInput);
-editRow.appendChild(saveBtn);
-
-div.appendChild(editRow);
-// changements -
-
-div.appendChild(upBtn);
-div.appendChild(downBtn);
-div.appendChild(deleteBtn);
-div.appendChild(toggleBtn);
-
-const mediaRow = document.createElement('div');
-mediaRow.style.display = "flex";
-mediaRow.style.alignItems = "center";
-mediaRow.style.gap = "10px";
-
-mediaRow.appendChild(img);
-mediaRow.appendChild(audioInfo);
-
-div.appendChild(mediaRow);
-
-const replaceAudioLabel = document.createElement('span');
-replaceAudioLabel.textContent = "Remplacer l'audio : ";
-replaceAudioLabel.style.fontSize = "0.8em";
-
-div.appendChild(replaceAudioLabel);
-div.appendChild(audioInput);
-
-cardsList.appendChild(div);
+    cardsList.appendChild(div);
 
   });
 
