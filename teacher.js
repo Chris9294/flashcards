@@ -213,7 +213,7 @@ function refreshCards() {
 
   const count = theme.cards.length;
 
-  cardsTitle.textContent = `${count} carte${count > 1 ? 's' : ''}`;
+  cardsTitle.textContent = `${count} carte${count > 1 ? 's' : ''}`existante${count > 1 ? 's' : ''};
 
   theme.cards.forEach((card, index) => {
 
@@ -252,7 +252,7 @@ saveBtn.onclick = () => {
 const audioText = document.createElement('span');
 audioText.textContent = card.audio
   ? 'Audio : oui '
-  : 'Audio : non (synthèse vocale) ';
+  : 'Audio : non (synthèse vocale GB) ';
 
 const playBtn = document.createElement('button');
 playBtn.textContent = "🔊";
