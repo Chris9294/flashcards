@@ -278,4 +278,8 @@ box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 button {
 border-radius: 6px;
 }
-
+hr {
+  border: none;               /* supprime le gris par défaut */
+  border-top: 2px solid #ffcc80; /* couleur orange identique aux autres éléments */
+  margin: 16px 0;             /* garde un espace vertical correct */
+}
