@@ -266,3 +266,12 @@ button:disabled {
   flex: 1;
   min-width: 0;
 }
+button {
+cursor: pointer;
+transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+button:hover {
+transform: translateY(-1px);
+box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
