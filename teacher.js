@@ -331,9 +331,16 @@ audioInfo.appendChild(playBtn);
     div.appendChild(deleteBtn);
     div.appendChild(toggleBtn);
 
-    div.appendChild(img);
-    div.appendChild(audioInfo);
-    div.appendChild(audioInput);
+   const mediaRow = document.createElement('div');
+mediaRow.style.display = "flex";
+mediaRow.style.alignItems = "center";
+mediaRow.style.gap = "10px";
+
+mediaRow.appendChild(img);
+mediaRow.appendChild(audioInfo);
+
+div.appendChild(mediaRow);
+div.appendChild(audioInput);
 
     cardsList.appendChild(div);
 
