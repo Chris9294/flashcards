@@ -202,8 +202,9 @@ button:disabled {
 .card input[type="text"] {
   font-size: 15px;
   font-weight: bold;
-  width: 100%;  /* <-- c’est ça qui force le champ à occuper toute la largeur */
+  width: 200px;      /* largeur fixe pour laisser de la place au bouton */
   margin-bottom: 6px;
+  vertical-align: middle; /* aligne avec le bouton */
 }
 .card img {
   display: block;
