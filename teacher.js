@@ -146,8 +146,8 @@ function addCard() {
   reader.readAsDataURL(imageInput.files[0]);
 
   document.getElementById('wordInput').value = '';
- imageInput.value = '';
-audioInput.value = '';
+  imageInput.value = '';
+  audioInput.value = '';
 
 }
 
