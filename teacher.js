@@ -229,72 +229,58 @@ function refreshCards() {
     number.style.fontWeight = 'bold';
     number.style.color = '#ff6f61';
 
-    div.appendChild(number);
+const wordInput = document.createElement('input');
+wordInput.type = 'text';
+wordInput.value = card.word;
 
-    // -----------------------
-    // FIX : input + bouton sur la même ligne
-    // -----------------------
-    const wordRow = document.createElement('div');
-    wordRow.style.display = 'flex';
-    wordRow.style.alignItems = 'center';
-    wordRow.style.gap = '5px';
+const saveBtn = document.createElement('button');
+saveBtn.textContent = '💾 Enregistrer';
 
-    const wordInput = document.createElement('input');
-    wordInput.type = 'text';
-    wordInput.value = card.word;
-    wordInput.style.flexGrow = '1';
-    wordInput.style.minWidth = '80px';
-    wordInput.style.fontSize = '15px';
-
-    const saveBtn = document.createElement('button');
-    saveBtn.textContent = '💾 Enregistrer';
-    saveBtn.onclick = () => {
-      card.word = wordInput.value.trim();
-      saveData();
-    };
-
-    wordRow.appendChild(wordInput);
-    wordRow.appendChild(saveBtn);
-    div.appendChild(wordRow);
-    // -----------------------
-
+saveBtn.onclick = () => {
+  card.word = wordInput.value.trim();
+  saveData();
+};
+    div.appendChild(wordInput);
+    div.appendChild(saveBtn);
+    
+    
     const img = document.createElement('img');
     img.src = card.image;
     img.style.height = '60px';
 
-    const audioInfo = document.createElement('p');
+   const audioInfo = document.createElement('p');
 
-    const audioText = document.createElement('span');
-    audioText.textContent = card.audio
-      ? 'Audio : oui '
-      : 'Audio : non (synthèse vocale) ';
+const audioText = document.createElement('span');
+audioText.textContent = card.audio
+  ? 'Audio : oui '
+  : 'Audio : non (synthèse vocale) ';
 
-    const playBtn = document.createElement('button');
-    playBtn.textContent = "🔊";
-    playBtn.style.marginLeft = "5px";
+const playBtn = document.createElement('button');
+playBtn.textContent = "🔊";
+playBtn.style.marginLeft = "5px";
 
-    playBtn.onclick = () => {
+playBtn.onclick = () => {
 
-      if (card.audio) {
+  if (card.audio) {
 
-        const audio = new Audio(card.audio);
-        audio.play();
+    const audio = new Audio(card.audio);
+    audio.play();
 
-      } else {
+  } else {
 
-        const utterance = new SpeechSynthesisUtterance(card.word);
-        utterance.lang = "en-GB";
-        utterance.rate = 0.7;
+    const utterance = new SpeechSynthesisUtterance(card.word);
+    utterance.lang = "en-GB";
+    utterance.rate = 0.7;
 
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utterance);
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
 
-      }
+  }
 
-    };
+};
 
-    audioInfo.appendChild(audioText);
-    audioInfo.appendChild(playBtn);
+audioInfo.appendChild(audioText);
+audioInfo.appendChild(playBtn);
 
     const audioInput = document.createElement('input');
     audioInput.type = 'file';
@@ -338,6 +324,8 @@ function refreshCards() {
       saveData();
     };
 
+    div.appendChild(number);
+
     div.appendChild(document.createElement('br'));
 
     div.appendChild(upBtn);
@@ -345,22 +333,21 @@ function refreshCards() {
     div.appendChild(deleteBtn);
     div.appendChild(toggleBtn);
 
-    const mediaRow = document.createElement('div');
-    mediaRow.style.display = "flex";
-    mediaRow.style.alignItems = "center";
-    mediaRow.style.gap = "10px";
+   const mediaRow = document.createElement('div');
+mediaRow.style.display = "flex";
+mediaRow.style.alignItems = "center";
+mediaRow.style.gap = "10px";
 
-    mediaRow.appendChild(img);
-    mediaRow.appendChild(audioInfo);
+mediaRow.appendChild(img);
+mediaRow.appendChild(audioInfo);
 
-    div.appendChild(mediaRow);
-
-    // Texte plus petit
-    const replaceAudioLabel = document.createElement('span');
-    replaceAudioLabel.textContent = "Remplacer l'audio : ";
-    replaceAudioLabel.style.fontSize = "0.8em"; 
-    div.appendChild(replaceAudioLabel);
-    div.appendChild(audioInput);
+div.appendChild(mediaRow);
+   // Texte plus petit
+const replaceAudioLabel = document.createElement('span');
+replaceAudioLabel.textContent = "Remplacer l'audio : ";
+replaceAudioLabel.style.fontSize = "0.8em"; // tu peux ajuster 0.8em à la taille voulue
+div.appendChild(replaceAudioLabel);
+div.appendChild(audioInput);
 
     cardsList.appendChild(div);
 
