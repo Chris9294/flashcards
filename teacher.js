@@ -19,12 +19,13 @@ let data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 const themeSelect = document.getElementById('themeSelect');
 const deleteThemeBtn = document.getElementById('deleteThemeBtn');
 const cardsList = document.getElementById('cardsList');
+const zipInput = document.getElementById("zipInput");
 
 // ================================
 // SAUVEGARDE
 // ================================
 function saveData() {
-  const selectedTheme = themeSelect.value; // mémorise la série courante
+  const selectedTheme = themeSelect.value;
   localStorage.setItem('flashcards', JSON.stringify(data));
   refreshThemes();
   themeSelect.value = selectedTheme;
@@ -40,19 +41,21 @@ function addTheme() {
 
   const newTheme = {
     id: Date.now().toString(),
-    name: name,
+    name,
     cards: []
   };
 
   data.themes.push(newTheme);
-  document.getElementById('themeName').value = '';
-  saveData();
 
+  document.getElementById('themeName').value = '';
+
+  saveData();
   themeSelect.value = newTheme.id;
   refreshCards();
 }
 
 function refreshThemes() {
+
   const currentValue = themeSelect.value;
   themeSelect.innerHTML = '';
 
@@ -60,6 +63,7 @@ function refreshThemes() {
   placeholder.value = '';
   placeholder.textContent = '— Choix de la série —';
   placeholder.disabled = true;
+
   themeSelect.appendChild(placeholder);
 
   data.themes.forEach(theme => {
@@ -77,25 +81,34 @@ function refreshThemes() {
 }
 
 // ================================
-// SUPPRESSION D'UNE SÉRIE
+// SUPPRESSION SÉRIE
 // ================================
 deleteThemeBtn.onclick = () => {
+
   if (!themeSelect.value) return;
+
   const theme = data.themes.find(t => t.id === themeSelect.value);
+
   if (!theme) return;
-  if (confirm(`Voulez-vous vraiment supprimer la série "${theme.name}" et toutes ses cartes ?`)) {
+
+  if (confirm(`Supprimer la série "${theme.name}" ?`)) {
+
     data.themes = data.themes.filter(t => t.id !== theme.id);
+
     saveData();
   }
+
 };
 
 themeSelect.onchange = refreshCards;
 
 // ================================
-// AJOUT DE CARTE MANUEL
+// AJOUT CARTE MANUELLE
 // ================================
 function addCard() {
+
   const theme = data.themes.find(t => t.id === themeSelect.value);
+
   if (!theme) return;
 
   const word = document.getElementById('wordInput').value.trim();
@@ -111,155 +124,173 @@ function addCard() {
     visible: true
   };
 
-  const imgReader = new FileReader();
-  imgReader.onload = e => {
+  const reader = new FileReader();
+
+  reader.onload = e => {
+
     card.image = e.target.result;
 
     if (audioInput.files[0]) {
+
       handleAudioUpload(audioInput.files[0], card, theme);
+
     } else {
+
       theme.cards.push(card);
       saveData();
+
     }
+
   };
 
-  imgReader.readAsDataURL(imageInput.files[0]);
+  reader.readAsDataURL(imageInput.files[0]);
 
   document.getElementById('wordInput').value = '';
   imageInput.value = '';
   audioInput.value = '';
-  document.querySelector('#imageInputWrapper .file-label').textContent = 'Parcourir…';
-  document.querySelector('#audioInputWrapper .file-label').textContent = 'Parcourir…';
+
 }
 
 // ================================
 // AUDIO À LA CRÉATION
 // ================================
 function handleAudioUpload(file, card, theme) {
+
   const reader = new FileReader();
+
   reader.onload = e => {
+
     card.audio = e.target.result;
+
     theme.cards.push(card);
+
     saveData();
+
   };
+
   reader.readAsDataURL(file);
+
 }
 
 // ================================
-// AUDIO SUR CARTE EXISTANTE
+// AJOUT AUDIO SUR CARTE
 // ================================
-function addAudioToCard(cardIndex, file) {
+function addAudioToCard(index, file) {
+
   if (!file) return;
+
   const theme = data.themes.find(t => t.id === themeSelect.value);
-  if (!theme) return;
 
   const reader = new FileReader();
+
   reader.onload = e => {
-    theme.cards[cardIndex].audio = e.target.result;
+
+    theme.cards[index].audio = e.target.result;
+
     saveData();
+
   };
+
   reader.readAsDataURL(file);
+
 }
 
 // ================================
-// AFFICHAGE DES CARTES
+// AFFICHAGE CARTES
 // ================================
 function refreshCards() {
+
   cardsList.innerHTML = '';
 
   const cardsTitle = document.getElementById('cardsTitle');
+
   if (!themeSelect.value) {
     cardsTitle.textContent = 'Cartes existantes';
     return;
   }
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
-  if (!theme) return;
 
   const count = theme.cards.length;
-  cardsTitle.textContent = `${count} carte${count > 1 ? 's' : ''} existante${count > 1 ? 's' : ''}`;
+
+  cardsTitle.textContent = `${count} carte${count > 1 ? 's' : ''}`;
 
   theme.cards.forEach((card, index) => {
+
     if (card.visible === undefined) card.visible = true;
 
     const div = document.createElement('div');
     div.className = 'card';
+
     if (!card.visible) div.classList.add('card-hidden');
 
     const number = document.createElement('div');
     number.textContent = `Carte ${index + 1}`;
     number.style.fontWeight = 'bold';
     number.style.color = '#ff6f61';
-    number.style.marginBottom = '4px';
-    div.appendChild(number);
 
-    // Texte modifiable
     const wordInput = document.createElement('input');
     wordInput.type = 'text';
     wordInput.value = card.word;
-    wordInput.style.fontSize = '16px';
-    wordInput.style.width = '200px';
 
     const saveBtn = document.createElement('button');
     saveBtn.textContent = '💾 Enregistrer';
+
     saveBtn.onclick = () => {
       card.word = wordInput.value.trim();
       saveData();
     };
 
-    // Image
     const img = document.createElement('img');
     img.src = card.image;
     img.style.height = '60px';
-    img.style.display = 'block';
-    img.style.marginTop = '5px';
 
-    // Audio
     const audioInfo = document.createElement('p');
     audioInfo.textContent = card.audio ? 'Audio : oui' : 'Audio : non';
-    const audioWrapper = document.createElement('div');
-    audioWrapper.className = 'file-wrapper';
-    const audioFileInput = document.createElement('input');
-    audioFileInput.type = 'file';
-    audioFileInput.accept = 'audio/*';
-    audioFileInput.onchange = () => addAudioToCard(index, audioFileInput.files[0]);
-    const audioLabel = document.createElement('span');
-    audioLabel.className = 'file-label';
-    audioLabel.textContent = 'Parcourir…';
-    audioWrapper.appendChild(audioFileInput);
-    audioWrapper.appendChild(audioLabel);
 
-    // Déplacer / supprimer
+    const audioInput = document.createElement('input');
+    audioInput.type = 'file';
+    audioInput.accept = 'audio/*';
+    audioInput.onchange = () => addAudioToCard(index, audioInput.files[0]);
+
     const upBtn = document.createElement('button');
     upBtn.textContent = '🔼';
     upBtn.disabled = index === 0;
+
     upBtn.onclick = () => {
-      [theme.cards[index - 1], theme.cards[index]] = [theme.cards[index], theme.cards[index - 1]];
+      [theme.cards[index - 1], theme.cards[index]] =
+      [theme.cards[index], theme.cards[index - 1]];
       saveData();
     };
 
     const downBtn = document.createElement('button');
     downBtn.textContent = '🔽';
     downBtn.disabled = index === theme.cards.length - 1;
+
     downBtn.onclick = () => {
-      [theme.cards[index + 1], theme.cards[index]] = [theme.cards[index], theme.cards[index + 1]];
+      [theme.cards[index + 1], theme.cards[index]] =
+      [theme.cards[index], theme.cards[index + 1]];
       saveData();
     };
 
     const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = '🗑️ Supprimer';
+    deleteBtn.textContent = '🗑️';
+
     deleteBtn.onclick = () => {
       theme.cards.splice(index, 1);
       saveData();
     };
 
     const toggleBtn = document.createElement('button');
+
     toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
+
     toggleBtn.onclick = () => {
       card.visible = !card.visible;
       saveData();
     };
 
+    div.appendChild(number);
     div.appendChild(wordInput);
     div.appendChild(saveBtn);
     div.appendChild(document.createElement('br'));
@@ -271,66 +302,103 @@ function refreshCards() {
 
     div.appendChild(img);
     div.appendChild(audioInfo);
-    div.appendChild(audioWrapper);
+    div.appendChild(audioInput);
 
     cardsList.appendChild(div);
+
   });
+
 }
 
 // ================================
-// IMPORT ZIP (images + audios)
+// IMPORT ZIP
 // ================================
+async function importZipFromInput() {
+
+  if (!zipInput.files.length || !themeSelect.value) {
+    alert("Sélectionne une série et un fichier ZIP.");
+    return;
+  }
+
+  importZip(zipInput.files[0], themeSelect.value);
+
+  zipInput.value = '';
+
+}
+
 async function importZip(file, themeId) {
-  if (!file || !themeId) return;
 
   const theme = data.themes.find(t => t.id === themeId);
-  if (!theme) return;
 
   const zip = await JSZip.loadAsync(file);
-  const files = Object.values(zip.files);
 
-  const images = files.filter(f => !f.dir && /\.(png|jpg|jpeg|gif)$/i.test(f.name));
-  const audios = files.filter(f => !f.dir && /\.(mp3|wav|ogg)$/i.test(f.name));
+  const images = {};
+  const audios = {};
+  const tasks = [];
 
-  for (const imgFile of images) {
-    const baseName = imgFile.name.replace(/\.[^/.]+$/, "");
-    const imgData = await imgFile.async("base64");
-    const ext = imgFile.name.split('.').pop().toLowerCase();
-    const mime = ext === "jpg" ? "jpeg" : ext;
-    const base64Img = `data:image/${mime};base64,${imgData}`;
+  zip.forEach((path, entry) => {
 
-    const audioMatch = audios.find(a => a.name.replace(/\.[^/.]+$/, "") === baseName);
-    let base64Audio = null;
-    if (audioMatch) {
-      const audioData = await audioMatch.async("base64");
-      const audioExt = audioMatch.name.split('.').pop();
-      base64Audio = `data:audio/${audioExt};base64,${audioData}`;
+    if (entry.dir) return;
+    if (path.startsWith("__MACOSX")) return;
+
+    const filename = path.split('/').pop();
+    const ext = filename.split('.').pop().toLowerCase();
+
+    const name = filename.replace(/\.[^/.]+$/, "");
+
+    if (["jpg","jpeg","png","gif","webp"].includes(ext)) {
+
+      tasks.push(
+        entry.async("base64").then(data64 => {
+
+          const mime = ext === "jpg" ? "jpeg" : ext;
+
+          images[name] = `data:image/${mime};base64,${data64}`;
+
+        })
+      );
+
     }
 
+    if (["mp3","wav","ogg","m4a"].includes(ext)) {
+
+      tasks.push(
+        entry.async("base64").then(data64 => {
+
+          audios[name] = `data:audio/${ext};base64,${data64}`;
+
+        })
+      );
+
+    }
+
+  });
+
+  await Promise.all(tasks);
+
+  let added = 0;
+
+  Object.keys(images).forEach(name => {
+
     const card = {
-      word: baseName,
-      image: base64Img,
-      audio: base64Audio,
+
+      word: name,
+      image: images[name],
+      audio: audios[name] || null,
       visible: true
+
     };
 
     theme.cards.push(card);
-  }
+
+    added++;
+
+  });
 
   saveData();
-  alert(`Import terminé : ${images.length} carte(s) ajoutée(s) !`);
-}
 
-// ================================
-// BASE64 → BLOB
-// ================================
-function base64toBlob(base64) {
-  const [meta, data] = base64.split(',');
-  const type = meta.match(/:(.*?);/)[1];
-  const bytes = atob(data);
-  const arr = new Uint8Array(bytes.length);
-  for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
-  return new Blob([arr], { type });
+  alert(`${added} carte(s) importée(s)`);
+
 }
 
 // ================================
@@ -338,19 +406,3 @@ function base64toBlob(base64) {
 // ================================
 refreshThemes();
 refreshCards();
-
-// ================================
-// ZIP INPUT
-// ================================
-const zipInput = document.getElementById("zipInput");
-if (zipInput) {
-  zipInput.addEventListener("change", () => {
-    if (!zipInput.files.length || !themeSelect.value) {
-      alert("Sélectionne d'abord une série.");
-      zipInput.value = "";
-      return;
-    }
-    importZip(zipInput.files[0], themeSelect.value);
-    zipInput.value = "";
-  });
-}
