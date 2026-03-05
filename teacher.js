@@ -252,7 +252,7 @@ saveBtn.onclick = () => {
 const audioText = document.createElement('span');
 audioText.textContent = card.audio
   ? 'Audio : oui '
-  : 'Audio : non (synthèse vocale GB) ';
+  : 'Audio : non (synthèse vocale GB par défaut) ';
 
 const playBtn = document.createElement('button');
 playBtn.textContent = "🔊";
