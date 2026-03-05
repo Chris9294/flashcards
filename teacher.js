@@ -233,13 +233,21 @@ function refreshCards() {
 wordInput.type = 'text';
 wordInput.value = card.word;
 
+// réduire la largeur pour qu'il reste de la place pour le bouton
+wordInput.style.width = 'calc(100% - 90px)'; // 90px pour le bouton, ajuste si besoin
+wordInput.style.boxSizing = 'border-box'; // important pour ne pas dépasser le conteneur
+
 const saveBtn = document.createElement('button');
 saveBtn.textContent = '💾 Enregistrer';
-
+saveBtn.style.width = '80px'; // optionnel, fixe la taille du bouton
 saveBtn.onclick = () => {
   card.word = wordInput.value.trim();
   saveData();
 };
+
+div.appendChild(wordInput);
+div.appendChild(saveBtn);
+    
     const img = document.createElement('img');
     img.src = card.image;
     img.style.height = '60px';
