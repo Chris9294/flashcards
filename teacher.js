@@ -322,11 +322,21 @@ audioInfo.appendChild(playBtn);
       card.visible = !card.visible;
       saveData();
     };
+// changements +
+    
+  div.appendChild(number);
 
-    div.appendChild(number);
-    div.appendChild(wordInput);
-    div.appendChild(saveBtn);
-    div.appendChild(document.createElement('br'));
+const editRow = document.createElement('div');
+editRow.style.display = "flex";
+editRow.style.alignItems = "center";
+editRow.style.gap = "6px";
+
+editRow.appendChild(wordInput);
+editRow.appendChild(saveBtn);
+
+div.appendChild(editRow);
+    
+// changements -
 
     div.appendChild(upBtn);
     div.appendChild(downBtn);
