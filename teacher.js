@@ -146,8 +146,12 @@ function addCard() {
   reader.readAsDataURL(imageInput.files[0]);
 
   document.getElementById('wordInput').value = '';
-  imageInput.value = '';
-  audioInput.value = '';
+ imageInput.value = '';
+audioInput.value = '';
+
+// remettre les labels
+document.querySelector('#imageInputWrapper .file-label').textContent = '🔎 Parcourir…';
+document.querySelector('#audioInputWrapper .file-label').textContent = '🔎 Parcourir…';
 
 }
 
