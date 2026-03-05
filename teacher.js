@@ -246,38 +246,7 @@ function refreshCards() {
     img.style.height = '60px';
 
     const audioInfo = document.createElement('p');
-
-    const audioText = document.createElement('span');
-    audioText.textContent = card.audio
-      ? 'Audio : oui '
-      : 'Audio : non (synthèse vocale par défaut) ';
-
-    const playBtn = document.createElement('button');
-    playBtn.textContent = "🔊";
-    playBtn.style.marginLeft = "5px";
-
-    playBtn.onclick = () => {
-
-      if (card.audio) {
-
-        const audio = new Audio(card.audio);
-        audio.play();
-
-      } else {
-
-        const utterance = new SpeechSynthesisUtterance(card.word);
-        utterance.lang = "en-GB";
-        utterance.rate = 0.7;
-
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utterance);
-
-      }
-
-    };
-
-    audioInfo.appendChild(audioText);
-    audioInfo.appendChild(playBtn);
+    audioInfo.textContent = card.audio ? 'Audio : oui' : 'Audio : non';
 
     const audioInput = document.createElement('input');
     audioInput.type = 'file';
@@ -437,4 +406,3 @@ async function importZip(file, themeId) {
 // ================================
 refreshThemes();
 refreshCards();
-```
