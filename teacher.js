@@ -246,7 +246,35 @@ function refreshCards() {
     img.style.height = '60px';
 
     const audioInfo = document.createElement('p');
-    audioInfo.textContent = card.audio ? 'Audio : oui' : 'Audio : non';
+
+const audioText = document.createElement('span');
+audioText.textContent = card.audio
+  ? 'Audio : oui '
+  : 'Audio : non (synthèse vocale par défaut) ';
+
+const playBtn = document.createElement('button');
+playBtn.textContent = "🔊";
+playBtn.style.marginLeft = "5px";
+
+playBtn.onclick = () => {
+
+  if (card.audio) {
+
+    const audio = new Audio(card.audio);
+    audio.play();
+
+  } else {
+
+    const utterance = new SpeechSynthesisUtterance(card.word);
+    utterance.lang = "fr-FR";
+    speechSynthesis.speak(utterance);
+
+  }
+
+};
+
+audioInfo.appendChild(audioText);
+audioInfo.appendChild(playBtn);
 
     const audioInput = document.createElement('input');
     audioInput.type = 'file';
