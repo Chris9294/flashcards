@@ -147,7 +147,12 @@ function addCard() {
 
   document.getElementById('wordInput').value = '';
   imageInput.value = '';
-  audioInput.value = '';
+audioInput.value = '';
+
+// remettre les labels
+document.querySelector('#imageInputWrapper .file-label').textContent = '🔎 Parcourir…';
+document.querySelector('#audioInputWrapper .file-label').textContent = '🔎 Parcourir…';
+  
 
 }
 
