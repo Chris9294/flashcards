@@ -202,10 +202,10 @@ button:disabled {
 .card input[type="text"] {
   font-size: 15px;
   font-weight: bold;
-  width: 200px;      /* largeur fixe pour laisser de la place au bouton */
+  width: 200px; /* fixée */
   margin-bottom: 6px;
-  vertical-align: middle; /* aligne avec le bouton */
 }
+
 .card img {
   display: block;
   max-width: 100%;
