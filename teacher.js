@@ -235,19 +235,18 @@ wordInput.value = card.word;
 
 const saveBtn = document.createElement('button');
 saveBtn.textContent = '💾 Enregistrer';
+saveBtn.title = "Enregistrer la modification du mot";
 
 saveBtn.onclick = () => {
   card.word = wordInput.value.trim();
   saveData();
 };
-    
-    
-    
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.style.height = '60px';
 
-   const audioInfo = document.createElement('p');
+const img = document.createElement('img');
+img.src = card.image;
+img.style.height = '60px';
+
+const audioInfo = document.createElement('p');
 
 const audioText = document.createElement('span');
 audioText.textContent = card.audio
@@ -256,6 +255,7 @@ audioText.textContent = card.audio
 
 const playBtn = document.createElement('button');
 playBtn.textContent = "🔊";
+playBtn.title = "Écouter le mot";
 playBtn.style.marginLeft = "5px";
 
 playBtn.onclick = () => {
@@ -281,50 +281,54 @@ playBtn.onclick = () => {
 audioInfo.appendChild(audioText);
 audioInfo.appendChild(playBtn);
 
-    const audioInput = document.createElement('input');
-    audioInput.type = 'file';
-    audioInput.accept = 'audio/*';
-    audioInput.onchange = () => addAudioToCard(index, audioInput.files[0]);
+const audioInput = document.createElement('input');
+audioInput.type = 'file';
+audioInput.accept = 'audio/*';
+audioInput.onchange = () => addAudioToCard(index, audioInput.files[0]);
 
-    const upBtn = document.createElement('button');
-    upBtn.textContent = '🔼';
-    upBtn.disabled = index === 0;
+const upBtn = document.createElement('button');
+upBtn.textContent = '🔼';
+upBtn.title = "Monter la carte";
+upBtn.disabled = index === 0;
 
-    upBtn.onclick = () => {
-      [theme.cards[index - 1], theme.cards[index]] =
-      [theme.cards[index], theme.cards[index - 1]];
-      saveData();
-    };
+upBtn.onclick = () => {
+  [theme.cards[index - 1], theme.cards[index]] =
+  [theme.cards[index], theme.cards[index - 1]];
+  saveData();
+};
 
-    const downBtn = document.createElement('button');
-    downBtn.textContent = '🔽';
-    downBtn.disabled = index === theme.cards.length - 1;
+const downBtn = document.createElement('button');
+downBtn.textContent = '🔽';
+downBtn.title = "Descendre la carte";
+downBtn.disabled = index === theme.cards.length - 1;
 
-    downBtn.onclick = () => {
-      [theme.cards[index + 1], theme.cards[index]] =
-      [theme.cards[index], theme.cards[index + 1]];
-      saveData();
-    };
+downBtn.onclick = () => {
+  [theme.cards[index + 1], theme.cards[index]] =
+  [theme.cards[index], theme.cards[index + 1]];
+  saveData();
+};
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = '🗑️';
+const deleteBtn = document.createElement('button');
+deleteBtn.textContent = '🗑️';
+deleteBtn.title = "Supprimer la carte";
 
-    deleteBtn.onclick = () => {
-      theme.cards.splice(index, 1);
-      saveData();
-    };
+deleteBtn.onclick = () => {
+  theme.cards.splice(index, 1);
+  saveData();
+};
 
-    const toggleBtn = document.createElement('button');
+const toggleBtn = document.createElement('button');
 
-    toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
+toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
+toggleBtn.title = "Afficher ou masquer la carte";
 
-    toggleBtn.onclick = () => {
-      card.visible = !card.visible;
-      saveData();
-    };
+toggleBtn.onclick = () => {
+  card.visible = !card.visible;
+  saveData();
+};
+
 // changements +
-    
-  div.appendChild(number);
+div.appendChild(number);
 
 const editRow = document.createElement('div');
 editRow.style.display = "flex";
@@ -335,15 +339,14 @@ editRow.appendChild(wordInput);
 editRow.appendChild(saveBtn);
 
 div.appendChild(editRow);
-    
 // changements -
 
-    div.appendChild(upBtn);
-    div.appendChild(downBtn);
-    div.appendChild(deleteBtn);
-    div.appendChild(toggleBtn);
+div.appendChild(upBtn);
+div.appendChild(downBtn);
+div.appendChild(deleteBtn);
+div.appendChild(toggleBtn);
 
-   const mediaRow = document.createElement('div');
+const mediaRow = document.createElement('div');
 mediaRow.style.display = "flex";
 mediaRow.style.alignItems = "center";
 mediaRow.style.gap = "10px";
@@ -352,14 +355,15 @@ mediaRow.appendChild(img);
 mediaRow.appendChild(audioInfo);
 
 div.appendChild(mediaRow);
-   // Texte plus petit
+
 const replaceAudioLabel = document.createElement('span');
 replaceAudioLabel.textContent = "Remplacer l'audio : ";
-replaceAudioLabel.style.fontSize = "0.8em"; // tu peux ajuster 0.8em à la taille voulue
+replaceAudioLabel.style.fontSize = "0.8em";
+
 div.appendChild(replaceAudioLabel);
 div.appendChild(audioInput);
 
-    cardsList.appendChild(div);
+cardsList.appendChild(div);
 
   });
 
