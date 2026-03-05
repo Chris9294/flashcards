@@ -240,8 +240,7 @@ saveBtn.onclick = () => {
   card.word = wordInput.value.trim();
   saveData();
 };
-    div.appendChild(wordInput);
-    div.appendChild(saveBtn);
+    
     
     
     const img = document.createElement('img');
@@ -325,7 +324,8 @@ audioInfo.appendChild(playBtn);
     };
 
     div.appendChild(number);
-
+    div.appendChild(wordInput);
+    div.appendChild(saveBtn);
     div.appendChild(document.createElement('br'));
 
     div.appendChild(upBtn);
