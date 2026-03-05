@@ -340,6 +340,8 @@ mediaRow.appendChild(img);
 mediaRow.appendChild(audioInfo);
 
 div.appendChild(mediaRow);
+    // Ajouter le texte juste avant
+div.appendChild(document.createTextNode("Remplacer l'audio : "));
 div.appendChild(audioInput);
 
     cardsList.appendChild(div);
