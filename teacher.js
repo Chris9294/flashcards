@@ -374,6 +374,12 @@ refreshThemes();
 refreshCards();
 
 // ================================
+// LIAISON DU BOUTON "AJOUTER SÉRIE"
+// ================================
+const addThemeBtn = document.getElementById('addThemeBtn');
+if (addThemeBtn) addThemeBtn.addEventListener('click', addTheme);
+
+// ================================
 // EXPOSER LES FONCTIONS AU HTML
 // ================================
 window.addTheme = addTheme;
