@@ -104,25 +104,22 @@ async function addTheme() {
   if (!name) return;
 
   // Vérifie si la série existe déjà
-  const exists = await supabase.from('themes').select('id').eq('name', name).single();
-  if (exists.data) { alert("Cette série existe déjà !"); return; }
+  const { data: exists } = await supabase.from('themes').select('id').eq('name', name).single();
+  if (exists) { alert("Cette série existe déjà !"); return; }
 
-  // Crée la nouvelle série
+  // Création série
   const { data: newTheme, error } = await supabase.from('themes').insert([{ name }]).select().single();
-  if (error) { console.error("Erreur création série:", error); alert("Erreur création série"); return; }
+  if (checkError(error, "Erreur création série")) return;
 
-  // Ajoute localement la nouvelle série
   data.themes.push({ id: newTheme.id.toString(), name: newTheme.name, cards: [] });
 
-  // Vide le champ de saisie
+  // Efface champ input
   nameInput.value = '';
 
-  // Rafraîchit le menu déroulant et sélectionne la nouvelle série
+  // Rafraîchit menu et sélectionne la nouvelle série
   refreshThemes();
-  setTimeout(() => {
-    themeSelect.value = newTheme.id.toString();
-    refreshCards();
-  }, 0);
+  themeSelect.value = newTheme.id.toString();
+  refreshCards();
 }
 
 // ================================
@@ -156,11 +153,8 @@ deleteThemeBtn.onclick = async () => {
   if (!theme) return;
   if (!confirm(`Supprimer la série "${theme.name}" ?`)) return;
 
-  const { error: delCardsError } = await supabase.from('cards').delete().eq('theme_id', theme.id);
-  checkError(delCardsError, "Erreur suppression cartes");
-
-  const { error: delThemeError } = await supabase.from('themes').delete().eq('id', theme.id);
-  checkError(delThemeError, "Erreur suppression série");
+  await supabase.from('cards').delete().eq('theme_id', theme.id);
+  await supabase.from('themes').delete().eq('id', theme.id);
 
   data.themes = data.themes.filter(t => t.id !== theme.id);
   refreshThemes();
@@ -175,6 +169,7 @@ themeSelect.onchange = refreshCards;
 async function addCard() {
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
+
   const word = document.getElementById('wordInput').value.trim();
   const imageInput = document.querySelector('#imageInputWrapper input');
   const audioInput = document.querySelector('#audioInputWrapper input');
@@ -202,7 +197,7 @@ async function addCard() {
 }
 
 // ================================
-// AJOUT AUDIO
+// AJOUT AUDIO SUR CARTE
 // ================================
 async function addAudioToCard(index, file) {
   if (!file) return;
@@ -214,9 +209,7 @@ async function addAudioToCard(index, file) {
   const audioUrl = await uploadFile(file);
   if (!audioUrl) return;
 
-  const { error } = await supabase.from('cards').update({ audio_url: audioUrl }).eq('id', card.id);
-  if (checkError(error, "Erreur ajout audio")) return;
-
+  await supabase.from('cards').update({ audio_url: audioUrl }).eq('id', card.id);
   card.audio = audioUrl;
   refreshCards();
 }
@@ -254,8 +247,7 @@ function refreshCards() {
     saveBtn.textContent = '💾 Enregistrer';
     saveBtn.onclick = async () => {
       card.word = wordInput.value.trim();
-      const { error } = await supabase.from('cards').update({ word: card.word }).eq('id', card.id);
-      if (checkError(error, "Erreur sauvegarde mot")) return;
+      await supabase.from('cards').update({ word: card.word }).eq('id', card.id);
       refreshCards();
     };
 
@@ -282,8 +274,7 @@ function refreshCards() {
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '🗑️';
     deleteBtn.onclick = async () => {
-      const { error } = await supabase.from('cards').delete().eq('id', card.id);
-      if (checkError(error, "Erreur suppression carte")) return;
+      await supabase.from('cards').delete().eq('id', card.id);
       theme.cards.splice(index, 1);
       refreshCards();
     };
@@ -292,8 +283,7 @@ function refreshCards() {
     toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
     toggleBtn.onclick = async () => {
       card.visible = !card.visible;
-      const { error } = await supabase.from('cards').update({ visible: card.visible }).eq('id', card.id);
-      if (checkError(error, "Erreur visibilité carte")) return;
+      await supabase.from('cards').update({ visible: card.visible }).eq('id', card.id);
       refreshCards();
     };
 
@@ -305,7 +295,6 @@ function refreshCards() {
     editRow.appendChild(wordInput);
     editRow.appendChild(saveBtn);
     div.appendChild(editRow);
-
     div.appendChild(deleteBtn);
     div.appendChild(toggleBtn);
 
@@ -336,10 +325,53 @@ async function importZipFromInput() {
   zipInput.value = '';
 }
 
+async function importZip(file, themeId) {
+  const theme = data.themes.find(t => t.id === themeId);
+  if (!theme) return;
+
+  const zip = await JSZip.loadAsync(file);
+  const images = {};
+  const audios = {};
+  const tasks = [];
+
+  zip.forEach((path, entry) => {
+    if (entry.dir) return;
+    if (path.startsWith('__MACOSX')) return;
+    const filename = path.split('/').pop();
+    const ext = filename.split('.').pop().toLowerCase();
+    const name = filename.replace(/\.[^/.]+$/, '');
+
+    if (['jpg','jpeg','png','gif','webp'].includes(ext)) {
+      tasks.push(entry.async('base64').then(d => { images[name] = `data:image/${ext==='jpg'?'jpeg':ext};base64,${d}`; }));
+    }
+    if (['mp3','wav','ogg','m4a'].includes(ext)) {
+      tasks.push(entry.async('base64').then(d => { audios[name] = `data:audio/${ext};base64,${d}`; }));
+    }
+  });
+
+  await Promise.all(tasks);
+
+  let added = 0;
+  for (const name of Object.keys(images)) {
+    const imageUrl = await uploadFileBase64(images[name], name);
+    if (!imageUrl) continue;
+    const audioUrl = audios[name] ? await uploadFileBase64(audios[name], name) : null;
+    const { data: newCard, error } = await supabase.from('cards')
+      .insert([{ theme_id: parseInt(themeId), word: name, image_url: imageUrl, audio_url: audioUrl, visible: true }])
+      .select().single();
+    if (!error) { theme.cards.push({ id: newCard.id, word: name, image: imageUrl, audio: audioUrl, visible: true }); added++; }
+  }
+
+  refreshCards();
+  alert(`${added} carte(s) importée(s)`);
+}
+
 // ================================
 // INITIALISATION
 // ================================
 loadData();
+refreshThemes();
+refreshCards();
 
 // ================================
 // EXPOSER LES FONCTIONS AU HTML
