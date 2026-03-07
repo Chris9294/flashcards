@@ -1,4 +1,11 @@
 // ================================
+// CONNEXION SUPABASE
+// ================================
+const supabaseUrl = "TON_URL_SUPABASE";  // exemple: https://abcd1234.supabase.co
+const supabaseKey = "TA_CLE_ANON";       // récupérée dans Settings → API → anon public
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+// ================================
 // RETOUR INTERFACE FLASHCARDS
 // ================================
 const backBtn = document.getElementById("backToFlashcardsBtn");
