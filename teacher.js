@@ -146,9 +146,16 @@ async function addCard() {
   const audioInput = document.querySelector('#audioInputWrapper input');
   if (!word || !imageInput.files[0]) return;
 
-  const imageUrl = await uploadFile(imageInput.files[0]);
-  const audioUrl = audioInput.files[0] ? await uploadFile(audioInput.files[0]) : null;
+ const imageUrl = await uploadFile(imageInput.files[0]);
+if (!imageUrl) {
+  alert("Erreur lors de l'upload de l'image.");
+  return;
+}
 
+const audioUrl = audioInput.files[0]
+  ? await uploadFile(audioInput.files[0])
+  : null;
+  
   const { data: newCard, error } = await supabase.from('cards').insert([{
     theme_id: parseInt(themeSelect.value), word, image_url: imageUrl, audio_url: audioUrl, visible: true
   }]).select().single();
