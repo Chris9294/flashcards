@@ -2,7 +2,7 @@
 // CONNEXION SUPABASE
 // ================================
 const supabaseUrl = "https://sdrwjgylmbgrhfwnphwa.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+const supabaseKey = "sb_publishable_XKoO7J9_lc1OLzpREKWV5A_fo3UFjmV";
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // ================================
