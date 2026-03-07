@@ -6,11 +6,6 @@ const supabaseKey = "sb_publishable_XKoO7J9_lc1OLzpREKWV5A_fo3UFjmV";
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // ================================
-// DONNÉES
-// ================================
-let data = { themes: [] };
-
-// ================================
 // UTILITAIRE GESTION ERREURS
 // ================================
 function checkError(error, message = "Erreur Supabase") {
@@ -23,7 +18,12 @@ function checkError(error, message = "Erreur Supabase") {
 }
 
 // ================================
-// UTILS FICHIERS
+// DONNÉES
+// ================================
+let data = { themes: [] };
+
+// ================================
+// FONCTIONS UTILS
 // ================================
 function updateFileLabel(input) {
   const label = input.nextElementSibling;
@@ -59,12 +59,36 @@ function b64toBlob(b64Data, contentType = '', sliceSize = 512) {
 }
 
 // ================================
+// CHARGEMENT DES THÈMES ET CARTES
+// ================================
+async function loadData() {
+  const { data: themesData, error: themesError } = await supabase.from('themes').select('*');
+  if (checkError(themesError, "Erreur chargement séries")) return;
+  data.themes = themesData.map(t => ({ id: t.id.toString(), name: t.name, cards: [] }));
+
+  const { data: cardsData, error: cardsError } = await supabase.from('cards').select('*');
+  if (checkError(cardsError, "Erreur chargement cartes")) return;
+
+  cardsData.forEach(card => {
+    const themeId = card.theme_id.toString();
+    const theme = data.themes.find(t => t.id === themeId);
+    if (theme) {
+      theme.cards.push({ id: card.id, word: card.word, image: card.image_url, audio: card.audio_url, visible: card.visible });
+    }
+  });
+
+  refreshThemes();
+  refreshCards();
+}
+
+// ================================
 // RAFRAÎCHIR LES THÈMES
 // ================================
 function refreshThemes() {
   const themeSelect = document.getElementById('themeSelect');
   const currentValue = themeSelect.value;
   themeSelect.innerHTML = '';
+
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Choix de la série —';
@@ -82,28 +106,7 @@ function refreshThemes() {
 }
 
 // ================================
-// CHARGEMENT DES DONNÉES
-// ================================
-async function loadData() {
-  // Thèmes
-  const { data: themesData, error: themesError } = await supabase.from('themes').select('*');
-  if (checkError(themesError, "Erreur chargement séries")) return;
-  data.themes = themesData.map(t => ({ id: t.id.toString(), name: t.name, cards: [] }));
-
-  // Cartes
-  const { data: cardsData, error: cardsError } = await supabase.from('cards').select('*');
-  if (checkError(cardsError, "Erreur chargement cartes")) return;
-  cardsData.forEach(card => {
-    const theme = data.themes.find(t => t.id === card.theme_id.toString());
-    if (theme) theme.cards.push({ id: card.id, word: card.word, image: card.image_url, audio: card.audio_url, visible: card.visible });
-  });
-
-  refreshThemes();
-  refreshCards();
-}
-
-// ================================
-// AJOUT DE SÉRIE
+// AJOUT D’UNE SÉRIE
 // ================================
 async function addTheme() {
   const nameInput = document.getElementById('themeName');
@@ -118,13 +121,14 @@ async function addTheme() {
 
   data.themes.push({ id: newTheme.id.toString(), name: newTheme.name, cards: [] });
   nameInput.value = '';
+
   refreshThemes();
   document.getElementById('themeSelect').value = newTheme.id.toString();
   refreshCards();
 }
 
 // ================================
-// SUPPRESSION SÉRIE
+// SUPPRESSION D’UNE SÉRIE
 // ================================
 async function deleteTheme() {
   const themeSelect = document.getElementById('themeSelect');
@@ -142,21 +146,21 @@ async function deleteTheme() {
 }
 
 // ================================
-// AJOUT DE CARTE
+// AJOUT D’UNE CARTE
 // ================================
 async function addCard() {
   const themeSelect = document.getElementById('themeSelect');
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
 
-  const wordInput = document.getElementById('wordInput');
+  const word = document.getElementById('wordInput').value.trim();
   const imageInput = document.querySelector('#imageInputWrapper input');
   const audioInput = document.querySelector('#audioInputWrapper input');
+  if (!word || !imageInput.files[0]) return;
 
-  if (!wordInput.value.trim() || !imageInput.files[0]) return;
-  const word = wordInput.value.trim();
   const imageUrl = await uploadFile(imageInput.files[0]);
-  if (!imageUrl) return;
+  if (!imageUrl) { alert("Erreur lors de l'upload de l'image."); return; }
+
   const audioUrl = audioInput.files[0] ? await uploadFile(audioInput.files[0]) : null;
 
   const { data: newCard, error } = await supabase.from('cards')
@@ -166,16 +170,17 @@ async function addCard() {
 
   theme.cards.push({ id: newCard.id, word: newCard.word, image: newCard.image_url, audio: newCard.audio_url, visible: true });
 
-  wordInput.value = '';
+  document.getElementById('wordInput').value = '';
   imageInput.value = '';
   audioInput.value = '';
   updateFileLabel(imageInput);
   updateFileLabel(audioInput);
+
   refreshCards();
 }
 
 // ================================
-// AJOUT AUDIO SUR CARTE
+// AJOUT / REMPLACEMENT AUDIO CARTE
 // ================================
 async function addAudioToCard(index, file) {
   if (!file) return;
@@ -194,7 +199,7 @@ async function addAudioToCard(index, file) {
 }
 
 // ================================
-// RAFRAÎCHIR CARTES
+// RAFRAÎCHIR LES CARTES
 // ================================
 function refreshCards() {
   const themeSelect = document.getElementById('themeSelect');
@@ -210,23 +215,21 @@ function refreshCards() {
   cardsTitle.textContent = `${theme.cards.length} carte${theme.cards.length > 1 ? 's' : ''} existante${theme.cards.length > 1 ? 's' : ''}`;
 
   theme.cards.forEach((card, index) => {
-    if (card.visible !== false) card.visible = true;
+    card.visible = card.visible !== false;
 
     const div = document.createElement('div');
     div.className = 'card';
     if (!card.visible) div.classList.add('card-hidden');
 
-    // Titre carte
     const number = document.createElement('div');
     number.textContent = `Carte ${index + 1}`;
     number.style.fontWeight = 'bold';
     number.style.color = '#ff6f61';
-    div.appendChild(number);
 
-    // Mot
     const wordInput = document.createElement('input');
     wordInput.type = 'text';
     wordInput.value = card.word;
+
     const saveBtn = document.createElement('button');
     saveBtn.textContent = '💾 Enregistrer';
     saveBtn.onclick = async () => {
@@ -234,36 +237,11 @@ function refreshCards() {
       await supabase.from('cards').update({ word: card.word }).eq('id', card.id);
       refreshCards();
     };
-    const editRow = document.createElement('div');
-    editRow.style.display = 'flex';
-    editRow.style.alignItems = 'center';
-    editRow.style.gap = '6px';
-    editRow.appendChild(wordInput);
-    editRow.appendChild(saveBtn);
-    div.appendChild(editRow);
 
-    // Supprimer / visibilité
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = '🗑️';
-    deleteBtn.onclick = async () => {
-      await supabase.from('cards').delete().eq('id', card.id);
-      theme.cards.splice(index, 1);
-      refreshCards();
-    };
-    const toggleBtn = document.createElement('button');
-    toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
-    toggleBtn.onclick = async () => {
-      card.visible = !card.visible;
-      await supabase.from('cards').update({ visible: card.visible }).eq('id', card.id);
-      refreshCards();
-    };
-    div.appendChild(deleteBtn);
-    div.appendChild(toggleBtn);
-
-    // Image et audio
     const img = document.createElement('img');
     img.src = card.image;
     img.style.height = '60px';
+
     const audioInfo = document.createElement('p');
     const audioText = document.createElement('span');
     audioText.textContent = card.audio ? 'Audio : oui ' : 'Audio : non (synthèse vocale GB par défaut) ';
@@ -273,13 +251,39 @@ function refreshCards() {
       if (card.audio) new Audio(card.audio).play();
       else { const utter = new SpeechSynthesisUtterance(card.word); utter.lang = 'en-GB'; utter.rate = 0.7; speechSynthesis.cancel(); speechSynthesis.speak(utter); }
     };
-    audioInfo.appendChild(audioText);
-    audioInfo.appendChild(playBtn);
+    audioInfo.appendChild(audioText); audioInfo.appendChild(playBtn);
 
     const audioInput = document.createElement('input');
     audioInput.type = 'file';
     audioInput.accept = 'audio/*';
     audioInput.onchange = () => addAudioToCard(index, audioInput.files[0]);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '🗑️';
+    deleteBtn.onclick = async () => {
+      await supabase.from('cards').delete().eq('id', card.id);
+      theme.cards.splice(index, 1);
+      refreshCards();
+    };
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
+    toggleBtn.onclick = async () => {
+      card.visible = !card.visible;
+      await supabase.from('cards').update({ visible: card.visible }).eq('id', card.id);
+      refreshCards();
+    };
+
+    div.appendChild(number);
+    const editRow = document.createElement('div');
+    editRow.style.display = 'flex';
+    editRow.style.alignItems = 'center';
+    editRow.style.gap = '6px';
+    editRow.appendChild(wordInput);
+    editRow.appendChild(saveBtn);
+    div.appendChild(editRow);
+    div.appendChild(deleteBtn);
+    div.appendChild(toggleBtn);
 
     const mediaRow = document.createElement('div');
     mediaRow.style.display = 'flex';
@@ -317,8 +321,13 @@ async function importZip(file, themeId) {
     const filename = path.split('/').pop();
     const ext = filename.split('.').pop().toLowerCase();
     const name = filename.replace(/\.[^/.]+$/, '');
-    if (['jpg','jpeg','png','gif','webp'].includes(ext)) tasks.push(entry.async('base64').then(d => { images[name] = `data:image/${ext==='jpg'?'jpeg':ext};base64,${d}`; }));
-    if (['mp3','wav','ogg','m4a'].includes(ext)) tasks.push(entry.async('base64').then(d => { audios[name] = `data:audio/${ext};base64,${d}`; }));
+
+    if (['jpg','jpeg','png','gif','webp'].includes(ext)) {
+      tasks.push(entry.async('base64').then(d => { images[name] = `data:image/${ext==='jpg'?'jpeg':ext};base64,${d}`; }));
+    }
+    if (['mp3','wav','ogg','m4a'].includes(ext)) {
+      tasks.push(entry.async('base64').then(d => { audios[name] = `data:audio/${ext};base64,${d}`; }));
+    }
   });
 
   await Promise.all(tasks);
@@ -342,35 +351,36 @@ async function importZip(file, themeId) {
 // IMPORT ZIP VIA INPUT
 // ================================
 async function importZipFromInput() {
-  const zipInput = document.getElementById('zipInput');
-  const themeSelect = document.getElementById('themeSelect');
-  if (!zipInput.files.length || !themeSelect.value) { alert("Sélectionne une série et un fichier ZIP."); return; }
+  const zipInput = document.getElementById("zipInput");
+  const themeSelect = document.getElementById("themeSelect");
+
+  if (!themeSelect.value) { alert("Veuillez sélectionner une série"); return; }
+  if (!zipInput.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
+
   await importZip(zipInput.files[0], themeSelect.value);
   zipInput.value = '';
 }
 
 // ================================
-// INITIALISATION AU DOM READY
+// INITIALISATION DOM
 // ================================
 document.addEventListener('DOMContentLoaded', () => {
   loadData();
+  refreshThemes();
+  refreshCards();
 
-  document.getElementById('addThemeBtn')?.addEventListener('click', addTheme);
-  document.getElementById('deleteThemeBtn')?.addEventListener('click', deleteTheme);
-  document.getElementById('themeSelect')?.addEventListener('change', refreshCards);
+  document.getElementById('addThemeBtn').addEventListener('click', addTheme);
+  document.getElementById('deleteThemeBtn').addEventListener('click', deleteTheme);
 
   document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
-    const label = input.nextElementSibling;
-    input.addEventListener('change', () => {
-      label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
-    });
+    input.addEventListener('change', () => updateFileLabel(input));
   });
 
-  document.getElementById('backToFlashcardsBtn')?.addEventListener('click', () => window.location.href = './index.html');
+  document.getElementById('backToFlashcardsBtn').onclick = () => window.location.href = "./index.html";
 });
 
 // ================================
-// EXPOSER LES FONCTIONS AU HTML
+// EXPOSER FONCTIONS AU HTML
 // ================================
 window.addTheme = addTheme;
 window.addCard = addCard;
