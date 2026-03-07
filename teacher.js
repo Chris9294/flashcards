@@ -273,3 +273,10 @@ async function importZip(file, themeId) {
 loadData();
 refreshThemes();
 refreshCards();
+
+// ================================
+// EXPOSER LES FONCTIONS AU HTML
+// ================================
+window.addTheme = addTheme;
+window.addCard = addCard;
+window.importZipFromInput = importZipFromInput;
