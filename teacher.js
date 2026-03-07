@@ -107,18 +107,22 @@ async function addTheme() {
   const exists = await supabase.from('themes').select('id').eq('name', name).single();
   if (exists.data) { alert("Cette série existe déjà !"); return; }
 
+  // Crée la nouvelle série
   const { data: newTheme, error } = await supabase.from('themes').insert([{ name }]).select().single();
   if (error) { console.error("Erreur création série:", error); alert("Erreur création série"); return; }
 
-  // Recharge tous les thèmes
-  const { data: themesData, error: themesError } = await supabase.from('themes').select('*');
-  if (checkError(themesError, "Erreur rechargement séries")) return;
-  data.themes = themesData.map(t => ({ id: t.id.toString(), name: t.name, cards: [] }));
+  // Ajoute localement la nouvelle série
+  data.themes.push({ id: newTheme.id.toString(), name: newTheme.name, cards: [] });
 
+  // Vide le champ de saisie
   nameInput.value = '';
+
+  // Rafraîchit le menu déroulant et sélectionne la nouvelle série
   refreshThemes();
-  themeSelect.value = newTheme.id.toString();
-  refreshCards();
+  setTimeout(() => {
+    themeSelect.value = newTheme.id.toString();
+    refreshCards();
+  }, 0);
 }
 
 // ================================
@@ -144,7 +148,7 @@ function refreshThemes() {
 }
 
 // ================================
-// SUPPRESSION SÉRIE (corrigé)
+// SUPPRESSION SÉRIE
 // ================================
 deleteThemeBtn.onclick = async () => {
   if (!themeSelect.value) return;
@@ -152,15 +156,12 @@ deleteThemeBtn.onclick = async () => {
   if (!theme) return;
   if (!confirm(`Supprimer la série "${theme.name}" ?`)) return;
 
-  // Supprime toutes les cartes associées
   const { error: delCardsError } = await supabase.from('cards').delete().eq('theme_id', theme.id);
   checkError(delCardsError, "Erreur suppression cartes");
 
-  // Supprime la série elle-même
   const { error: delThemeError } = await supabase.from('themes').delete().eq('id', theme.id);
   checkError(delThemeError, "Erreur suppression série");
 
-  // Supprime localement
   data.themes = data.themes.filter(t => t.id !== theme.id);
   refreshThemes();
   refreshCards();
@@ -339,8 +340,6 @@ async function importZipFromInput() {
 // INITIALISATION
 // ================================
 loadData();
-refreshThemes();
-refreshCards();
 
 // ================================
 // EXPOSER LES FONCTIONS AU HTML
