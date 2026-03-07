@@ -185,9 +185,10 @@ function refreshCards() {
   cardsTitle.textContent = `${theme.cards.length} carte${theme.cards.length > 1 ? 's' : ''} existante${theme.cards.length > 1 ? 's' : ''}`;
 
   theme.cards.forEach((card, index) => {
-    if (card.visible === undefined) card.visible = true;
 
-    const div = document.createElement('div'); div.className = 'card'; if (!card.visible) div.classList.add('card-hidden');
+  if (card.visible !== false) card.visible = true;
+
+  const div = document.createElement('div'); div.className = 'card'; if (!card.visible) div.classList.add('card-hidden');
 
     const number = document.createElement('div'); number.textContent = `Carte ${index+1}`; number.style.fontWeight='bold'; number.style.color='#ff6f61';
     const wordInput = document.createElement('input'); wordInput.type='text'; wordInput.value=card.word;
