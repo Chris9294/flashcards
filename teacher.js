@@ -70,7 +70,11 @@ async function loadData() {
 
   });
 
-  data.themes = Object.values(themesMap);
+  const loadedThemes = Object.values(themesMap);
+
+if (loadedThemes.length > 0) {
+  data.themes = loadedThemes;
+}
 
   refreshThemes();
   refreshCards();
