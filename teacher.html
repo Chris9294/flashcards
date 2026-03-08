@@ -17,7 +17,7 @@
 <h2>Ajouter une série</h2>
 <input id="themeName" type="text" placeholder="Nom de la série">
 <button type="button" id="addThemeBtn">Ajouter la série</button>
-  
+
 <!-- ==========================
      SÉLECTION DE SÉRIE
      ========================== -->
@@ -37,8 +37,7 @@
   <input type="file" id="zipInput" accept=".zip">
   <button class="primary-btn" onclick="importZipFromInput()">📦 Importer le ZIP</button>
   <span class="zip-help">
-    Images + audios avec le <strong>même nom</strong>
-    (ex : chat.jpg + chat.mp3).  
+    Images + audios avec le <strong>même nom</strong> (ex : chat.jpg + chat.mp3).
     Les cartes sont ajoutées à la série sélectionnée.
   </span>
 </div>
@@ -54,7 +53,7 @@
   </label>
 
   <label>
-    &#8195;Image (obligatoire)&nbsp
+    Image (obligatoire)&nbsp
     <div class="file-wrapper" id="imageInputWrapper">
       <input id="imageInput" type="file" accept="image/*">
       <span class="file-label">🔎 Parcourir…</span>
@@ -92,34 +91,6 @@
      SCRIPT PRINCIPAL
      ========================== -->
 <script src="teacher.js"></script>
-
-<!-- ==========================
-     IMPORT ZIP SCRIPT
-     ========================== -->
-<script>
-async function importZipFromInput() {
-  const input = document.getElementById("zipInput");
-  const themeId = document.getElementById("themeSelect").value;
-
-  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
-  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
-
-  await importZip(input.files[0], themeId);
-  input.value = "";
-}
-</script>
-
-<!-- ==========================
-     LABELS INPUT FILE
-     ========================== -->
-<script>
-document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
-  const label = input.nextElementSibling;
-  input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0 ? input.files[0].name : '🔎 Parcourir…';
-  });
-});
-</script>
 
 </body>
 </html>
