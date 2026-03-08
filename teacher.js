@@ -157,7 +157,12 @@ async function loadCards(themeId) {
   if (error) { console.error("Erreur chargement cartes :", error); return; }
 
   data.cards = cardsData;
-  renderCards();
+
+// Mettre à jour le titre avec le nombre de cartes
+const title = document.getElementById('cardsTitle');
+title.textContent = `${data.cards.length} carte${data.cards.length > 1 ? 's' : ''} existante${data.cards.length > 1 ? 's' : ''}`;
+
+renderCards();
 }
 
 // ================================
