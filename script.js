@@ -1,15 +1,7 @@
 // ================================
-// CONNEXION SUPABASE
-// ================================
-const supabaseUrl = "https://sdrwjgylmbgrhfwnphwa.supabase.co";
-const supabaseKey = "sb_publishable_XKoO7J9_lc1OLzpREKWV5A_fo3UFjmV";
-
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
-// ================================
 // DONNÉES
 // ================================
-const data = { themes: [] };
+const data = JSON.parse(localStorage.getItem('flashcards')) || { themes: [] };
 
 // ================================
 // VARIABLES
@@ -35,8 +27,8 @@ const teacherCode = document.getElementById("teacherCode");
 // BOUTON INTERFACE ENSEIGNANT
 // ================================
 teacherBtn.onclick = () => {
-  teacherCode.style.display = "inline-block";
-  teacherCode.value = "";
+  teacherCode.style.display = "inline-block"; // apparait à côté du bouton
+  teacherCode.value = "";                       // reset
   teacherCode.focus();
 };
 
@@ -53,23 +45,10 @@ teacherCode.addEventListener("input", () => {
 // ================================
 // INITIALISATION
 // ================================
-async function init() {
-
-  const { data: themes, error } = await supabaseClient
-    .from('themes')
-    .select('*')
-    .order('name');
-
-  if (error) {
-    console.error("Erreur chargement séries", error);
-    return;
-  }
-
-  data.themes = themes;
-
+function init() {
   themeSelect.innerHTML = '';
 
-  if (themes.length === 0) {
+  if (data.themes.length === 0) {
     const opt = document.createElement('option');
     opt.textContent = 'Aucune série';
     themeSelect.appendChild(opt);
@@ -81,7 +60,7 @@ async function init() {
   placeholder.textContent = '— Flashcards —';
   themeSelect.appendChild(placeholder);
 
-  themes.forEach((theme) => {
+  data.themes.forEach((theme) => {
     const option = document.createElement('option');
     option.value = theme.id;
     option.textContent = theme.name;
@@ -122,34 +101,15 @@ fullscreenBtn.onclick = () => {
 // ================================
 // CHARGEMENT D’UNE SÉRIE
 // ================================
-async function loadTheme() {
-
-  const themeId = themeSelect.value;
-
+function loadTheme() {
+  const theme = data.themes.find(t => t.id === themeSelect.value);
   thumbnails.innerHTML = '';
   closeCard();
 
-  if (!themeId) return;
+  if (!theme) return;
 
-  const { data: cards, error } = await supabaseClient
-    .from('cards')
-    .select('*')
-    .eq('theme_id', themeId)
-    .eq('visible', true)
-    .order('position');
-
-  if (error) {
-    console.error("Erreur chargement cartes", error);
-    return;
-  }
-
-  currentThemeCards = cards.map(card => ({
-    word: card.word,
-    image: `${supabaseUrl}/storage/v1/object/public/cards/${card.image_url}`,
-    audio: card.audio_url
-      ? `${supabaseUrl}/storage/v1/object/public/cards/${card.audio_url}`
-      : null
-  }));
+  // On ne garde que les cartes visibles
+  currentThemeCards = theme.cards.filter(card => card.visible !== false);
 
   currentThemeCards.forEach((card, index) => {
     const img = document.createElement('img');
@@ -173,10 +133,7 @@ function openCardAtIndex(index) {
 // Image
 function showImage() {
   if (!currentCard) return;
-
-  cardContent.innerHTML =
-    `<img src="${currentCard.image}" class="big-image">`;
-
+  cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
   teacherBtn.style.display = "none";
 
@@ -192,23 +149,17 @@ function showImage() {
 // Mot
 function showWord() {
   if (!currentCard) return;
-
-  cardContent.innerHTML =
-    `<div class="word">${currentCard.word}</div>`;
-
+  cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
   const wordDiv = cardContent.querySelector('.word');
 
   teacherBtn.style.display = "none";
 
   wordDiv.style.opacity = 0;
   wordDiv.style.transition = "opacity 0.5s ease";
-
   void wordDiv.offsetWidth;
-
   wordDiv.style.opacity = 1;
 
   wordDiv.onclick = closeCard;
-
   updateArrows();
 }
 
@@ -222,23 +173,16 @@ function closeCard() {
 // FLÈCHES NAVIGATION
 // ================================
 function updateArrows() {
-  leftArrow.style.display =
-    currentIndex > 0 ? 'block' : 'none';
-
-  rightArrow.style.display =
-    currentIndex < currentThemeCards.length - 1
-      ? 'block'
-      : 'none';
+  leftArrow.style.display = currentIndex > 0 ? 'block' : 'none';
+  rightArrow.style.display = currentIndex < currentThemeCards.length - 1 ? 'block' : 'none';
 }
 
 leftArrow.onclick = () => {
-  if (currentIndex > 0)
-    openCardAtIndex(currentIndex - 1);
+  if (currentIndex > 0) openCardAtIndex(currentIndex - 1);
 };
 
 rightArrow.onclick = () => {
-  if (currentIndex < currentThemeCards.length - 1)
-    openCardAtIndex(currentIndex + 1);
+  if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1);
 };
 
 // ================================
@@ -246,29 +190,20 @@ rightArrow.onclick = () => {
 // ================================
 document.getElementById('flipBtn').onclick = () => {
   if (!currentCard) return;
-
   showingWord = !showingWord;
-
   showingWord ? showWord() : showImage();
 };
 
 document.getElementById('speakBtn').onclick = () => {
-
   if (!currentCard) return;
 
   if (currentCard.audio) {
-
     new Audio(currentCard.audio).play();
-
   } else {
-
     const u = new SpeechSynthesisUtterance(currentCard.word);
     u.lang = 'en-GB';
     u.rate = 0.7;
-
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
-
   }
-
 };
