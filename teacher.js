@@ -123,7 +123,17 @@ async function addCard() {
     if (audError) { console.error("Erreur upload audio:", audError); alert("Erreur upload audio"); return; }
   }
 
-  // Insert card in DB
+  // Insert card in DB with order = max + 1
+  const { data: lastCard } = await supabaseClient
+    .from('cards')
+    .select('order')
+    .eq('theme_id', themeId)
+    .order('order', { ascending: false })
+    .limit(1)
+    .single();
+
+  const nextOrder = lastCard ? lastCard.order + 1 : 1;
+
   const { data: newCard, error: cardError } = await supabaseClient
     .from('cards')
     .insert([{
@@ -131,7 +141,8 @@ async function addCard() {
       word,
       image_url: imageName,
       audio_url: audioName,
-      visible: true
+      visible: true,
+      order: nextOrder
     }])
     .select()
     .single();
@@ -156,8 +167,7 @@ async function loadCards(themeId) {
     .from('cards')
     .select('*')
     .eq('theme_id', themeId)
-    .eq('visible', true)
-    .order('id');
+    .order('order', { ascending: true });
 
   if (error) { console.error("Erreur chargement cartes :", error); return; }
 
@@ -190,9 +200,8 @@ function renderCards() {
     saveBtn.textContent = '💾';
     saveBtn.title = "Enregistrer modification";
     saveBtn.onclick = async () => {
-      const { error } = await supabaseClient.from('cards').update({ word: wordInput.value.trim() }).eq('id', card.id);
-      if (error) console.error(error);
-      else loadCards(card.theme_id);
+      await supabaseClient.from('cards').update({ word: wordInput.value.trim() }).eq('id', card.id);
+      loadCards(card.theme_id);
     };
 
     const img = document.createElement('img');
@@ -233,18 +242,12 @@ function renderCards() {
     const upBtn = document.createElement('button');
     upBtn.textContent = '🔼';
     upBtn.disabled = index === 0;
-    upBtn.onclick = async () => {
-      if (index === 0) return;
-      await swapCards(index, index - 1);
-    };
+    upBtn.onclick = async () => { await swapCards(card, -1); };
 
     const downBtn = document.createElement('button');
     downBtn.textContent = '🔽';
     downBtn.disabled = index === data.cards.length - 1;
-    downBtn.onclick = async () => {
-      if (index === data.cards.length - 1) return;
-      await swapCards(index, index + 1);
-    };
+    downBtn.onclick = async () => { await swapCards(card, 1); };
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '🗑️';
@@ -297,15 +300,22 @@ function renderCards() {
 // ================================
 // ÉCHANGER DE PLACE 2 CARTES
 // ================================
-async function swapCards(i, j) {
-  const cards = data.cards;
-  const tempOrder = cards[i].id;
-  cards[i].id = cards[j].id;
-  cards[j].id = tempOrder;
+async function swapCards(card, direction) {
+  // direction = -1 pour monter, 1 pour descendre
+  const themeCards = data.cards.sort((a,b)=>a.order-b.order);
+  const index = themeCards.findIndex(c => c.id === card.id);
+  const swapIndex = index + direction;
+  if (swapIndex < 0 || swapIndex >= themeCards.length) return;
 
-  // Ici on simule l'ordre par ID croissant, pour un vrai ordre il faudrait ajouter une colonne `order`
-  // Puis recharger
-  loadCards(cards[i].theme_id);
+  const otherCard = themeCards[swapIndex];
+  const tempOrder = card.order;
+  card.order = otherCard.order;
+  otherCard.order = tempOrder;
+
+  await supabaseClient.from('cards').update({ order: card.order }).eq('id', card.id);
+  await supabaseClient.from('cards').update({ order: otherCard.order }).eq('id', otherCard.id);
+
+  loadCards(card.theme_id);
 }
 
 // ================================
@@ -335,34 +345,39 @@ async function importZip(file, themeId) {
     const name = filename.replace(/\.[^/.]+$/, "");
 
     if (["jpg","jpeg","png","gif","webp"].includes(ext)) {
-      tasks.push(entry.async("blob").then(blob => {
-        images[name] = blob;
-      }));
+      tasks.push(entry.async("blob").then(blob => { images[name] = blob; }));
     }
     if (["mp3","wav","ogg","m4a"].includes(ext)) {
-      tasks.push(entry.async("blob").then(blob => {
-        audios[name] = blob;
-      }));
+      tasks.push(entry.async("blob").then(blob => { audios[name] = blob; }));
     }
   });
 
   await Promise.all(tasks);
 
+  const { data: lastCard } = await supabaseClient
+    .from('cards')
+    .select('order')
+    .eq('theme_id', themeId)
+    .order('order', { ascending: false })
+    .limit(1)
+    .single();
+
+  let nextOrder = lastCard ? lastCard.order + 1 : 1;
+
   for (const name in images) {
     const imgFile = images[name];
     const imgName = `${Date.now()}_${name}.${imgFile.type.split("/")[1]}`;
-    const { error: imgError } = await supabaseClient.storage.from('cards').upload(imgName, imgFile);
-    if (imgError) { console.error(imgError); continue; }
+    await supabaseClient.storage.from('cards').upload(imgName, imgFile);
 
     let audioName = null;
     if (audios[name]) {
       const audFile = audios[name];
       audioName = `${Date.now()}_${name}.${audFile.type.split("/")[1]}`;
-      const { error: audError } = await supabaseClient.storage.from('cards').upload(audioName, audFile);
-      if (audError) { console.error(audError); audioName = null; }
+      await supabaseClient.storage.from('cards').upload(audioName, audFile);
     }
 
-    await supabaseClient.from('cards').insert([{ theme_id: themeId, word: name, image_url: imgName, audio_url: audioName, visible: true }]);
+    await supabaseClient.from('cards').insert([{ theme_id: themeId, word: name, image_url: imgName, audio_url: audioName, visible: true, order: nextOrder }]);
+    nextOrder++;
   }
 
   alert(`Import terminé (${Object.keys(images).length} cartes)`);
