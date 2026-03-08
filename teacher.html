@@ -37,8 +37,7 @@
   <input type="file" id="zipInput" accept=".zip">
   <button class="primary-btn" onclick="importZipFromInput()">📦 Importer le ZIP</button>
   <span class="zip-help">
-    Images + audios avec le <strong>même nom</strong>
-    (ex : chat.jpg + chat.mp3).  
+    Images + audios avec le <strong>même nom</strong> (ex : chat.jpg + chat.mp3).
     Les cartes sont ajoutées à la série sélectionnée.
   </span>
 </div>
@@ -54,7 +53,7 @@
   </label>
 
   <label>
-    &#8195;Image (obligatoire)&nbsp
+    &#8195;Image (obligatoire)&nbsp;
     <div class="file-wrapper" id="imageInputWrapper">
       <input id="imageInput" type="file" accept="image/*">
       <span class="file-label">🔎 Parcourir…</span>
@@ -62,7 +61,7 @@
   </label>
 
   <label>
-    Audio (optionnel)&nbsp
+    Audio (optionnel)&nbsp;
     <div class="file-wrapper" id="audioInputWrapper">
       <input id="audioInput" type="file" accept="audio/*">
       <span class="file-label">🔎 Parcourir…</span>
@@ -84,7 +83,7 @@
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <!-- ==========================
-     LIB SUPABASE
+     LIB SUPABASE (NE PAS MODIFIER)
      ========================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -100,7 +99,6 @@
 async function importZipFromInput() {
   const input = document.getElementById("zipInput");
   const themeId = document.getElementById("themeSelect").value;
-
   if (!themeId) { alert("Veuillez sélectionner une série"); return; }
   if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
 
@@ -116,7 +114,7 @@ async function importZipFromInput() {
 document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
   const label = input.nextElementSibling;
   input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
+    label.textContent = input.files.length > 0 ? input.files[0].name : '🔎 Parcourir…';
   });
 });
 </script>
