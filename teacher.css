@@ -168,7 +168,7 @@ button:disabled {
   line-height: 28px;
 }
 
-/* ✅ HOVER CORRIGÉ (clé du problème) */
+/* ✅ HOVER CORRIGÉ */
 .file-wrapper:hover .file-label {
   transform: scale(1.08);
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
@@ -202,19 +202,19 @@ button:disabled {
 .card input[type="text"] {
   font-size: 15px;
   font-weight: bold;
-  width: 200px; /* fixée */
+  width: 200px;
   margin-bottom: 6px;
 }
 
 .card img {
   display: block;
   max-width: 100%;
-  height: 60px;          /* fixe la hauteur pour que ce soit visible */
+  height: 60px;
   margin-top: 6px;
   border: 1px solid #ccc;
   border-radius: 6px;
   background: #fff;
-  object-fit: contain;    /* assure que l’image n’est pas étirée */
+  object-fit: contain;
 }
 
 .card p {
@@ -231,6 +231,7 @@ button:disabled {
   gap: 12px;
   margin-top: 8px;
 }
+
 /* ==========================
    Carte masquée
    ========================== */
@@ -247,39 +248,42 @@ button:disabled {
   color: #ff6f61;
   font-weight: bold;
 }
+
 .zip-row {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
-  flex-wrap: wrap; /* responsive */
+  flex-wrap: wrap;
 }
 
 .zip-help {
   font-size: 14px;
   color: #555;
   line-height: 1.3;
-  white-space: nowrap;     /* ✅ force une seule ligne */
+  white-space: nowrap;
 }
 
 .card input[type="text"] {
   flex: 1;
   min-width: 0;
 }
+
 button {
-cursor: pointer;
-transition: transform 0.05s ease, box-shadow 0.05s ease;
+  cursor: pointer;
+  transition: transform 0.05s ease, box-shadow 0.05s ease;
 }
 
 button:hover {
-transform: translateY(-1px) scale(1.1);
-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transform: translateY(-1px) scale(1.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 button {
-border-radius: 6px;
+  border-radius: 6px;
 }
+
 hr {
-  border: none;               /* supprime le gris par défaut */
-  border-top: 2px solid #ffcc80; /* couleur orange identique aux autres éléments */
-  margin: 16px 0;             /* garde un espace vertical correct */
+  border: none;
+  border-top: 2px solid #ffcc80;
+  margin: 16px 0;
 }
