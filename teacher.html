@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Interface enseignant</title>
+  <title>Interface enseignant - Flashcards</title>
   <link rel="stylesheet" href="teacher.css">
 </head>
 <body>
@@ -64,11 +64,24 @@
 <!-- JSZIP -->
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.36.0/dist/supabase.min.js"></script>
 <!-- SCRIPT PRINCIPAL -->
 <script src="teacher.js"></script>
 
 <script>
+// ================================
+// LABEL FILE INPUTS
+// ================================
+document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
+  const label = input.nextElementSibling;
+  input.addEventListener('change', () => {
+    label.textContent = input.files.length > 0 ? input.files[0].name : '🔎 Parcourir…';
+  });
+});
+
+// ================================
+// IMPORT ZIP INPUT
+// ================================
 async function importZipFromInput() {
   const input = document.getElementById("zipInput");
   const themeId = document.getElementById("themeSelect").value;
@@ -78,15 +91,9 @@ async function importZipFromInput() {
   input.value = "";
 }
 
-// Label input file
-document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
-  const label = input.nextElementSibling;
-  input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0 ? input.files[0].name : '🔎 Parcourir…';
-  });
-});
-
-// Retour interface flashcards
+// ================================
+// BOUTON RETOUR
+// ================================
 document.getElementById("backToFlashcardsBtn").onclick = () => {
   window.location.href = "./index.html";
 };
