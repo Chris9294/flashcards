@@ -11,16 +11,10 @@
 
 <button id="backToFlashcardsBtn">⬅️ Retour aux flashcards</button>
 
-<!-- ==========================
-     CRÉATION DE SÉRIE
-     ========================== -->
 <h2>Ajouter une série</h2>
 <input id="themeName" type="text" placeholder="Nom de la série">
-<button id="addThemeBtn">Ajouter la série</button>
+<button type="button" id="addThemeBtn">Ajouter la série</button>
 
-<!-- ==========================
-     SÉLECTION DE SÉRIE
-     ========================== -->
 <h2>Choix de la série</h2>
 <div class="theme-row">
   <select id="themeSelect" required>
@@ -29,9 +23,6 @@
   <button id="deleteThemeBtn" class="danger-btn">🗑️ Supprimer la série</button>
 </div>
 
-<!-- ==========================
-     IMPORT ZIP
-     ========================== -->
 <h2>Importer des cartes (ZIP)</h2>
 <div class="zip-row">
   <input type="file" id="zipInput" accept=".zip">
@@ -42,9 +33,6 @@
   </span>
 </div>
 
-<!-- ==========================
-     AJOUT DE CARTE
-     ========================== -->
 <h2>Créer une carte</h2>
 <div class="add-card-row">
   <label>
@@ -55,7 +43,7 @@
   <label>
     &#8195;Image (obligatoire)&nbsp
     <div class="file-wrapper" id="imageInputWrapper">
-      <input type="file" accept="image/*">
+      <input id="imageInput" type="file" accept="image/*">
       <span class="file-label">🔎 Parcourir…</span>
     </div>
   </label>
@@ -63,38 +51,41 @@
   <label>
     Audio (optionnel)&nbsp
     <div class="file-wrapper" id="audioInputWrapper">
-      <input type="file" accept="audio/*">
+      <input id="audioInput" type="file" accept="audio/*">
       <span class="file-label">🔎 Parcourir…</span>
     </div>
   </label>
 </div>
+
 <button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
 
-<!-- ==========================
-     CARTES EXISTANTES
-     ========================== -->
 <h2 id="cardsTitle">Cartes existantes</h2>
 <div id="cardsList"></div>
 
-<!-- ==========================
-     LIB JSZIP
-     ========================== -->
+<!-- Librairies -->
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
 
-<!-- ==========================
-     CHARGEMENT SUPABASE
-     ========================== -->
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+<!-- Script principal -->
+<script src="teacher.js"></script>
 
-  // ✅ Initialise Supabase et le rend global pour teacher.js
-  window.supabase = createClient(
-    'https://sdrwjgylmbgrhfwnphwa.supabase.co',
-    'sb_publishable_XKoO7J9_lc1OLzpREKWV5A_fo3UFjmV'
-  );
+<script>
+async function importZipFromInput() {
+  const input = document.getElementById("zipInput");
+  const themeId = document.getElementById("themeSelect").value;
+  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
+  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
+  await importZip(input.files[0], themeId);
+  input.value = "";
+}
 
-  // Charger ton teacher.js classique
-  import './teacher.js';
+// Labels input file
+document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
+  const label = input.nextElementSibling;
+  input.addEventListener('change', () => {
+    label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
+  });
+});
 </script>
 
 </body>
