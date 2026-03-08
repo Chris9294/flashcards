@@ -127,7 +127,7 @@ async function addCard() {
   if (!imageInput.files[0]) { alert("Sélectionnez une image"); return; }
 
   const themeId = themeSelect.value;
-  const text = wordInput.value.trim();
+  const word = wordInput.value.trim();
   const imageFile = imageInput.files[0];
   const audioFile = audioInput.files[0] || null;
 
@@ -148,21 +148,22 @@ async function addCard() {
     if (audError) { console.error("Erreur upload audio:", audError); alert("Erreur upload audio"); return; }
   }
 
-  // Insert card in DB
+  // Insert card in DB avec visible par défaut
   const { data: newCard, error: cardError } = await supabaseClient
     .from('cards')
     .insert([{
       theme_id: themeId,
-      text,
+      word,
       image_url: imageName,
-      audio_url: audioName
+      audio_url: audioName,
+      visible: true
     }])
     .select()
     .single();
 
   if (cardError) { console.error("Erreur création carte:", cardError); alert("Erreur création carte"); return; }
 
-  console.log("Carte créée :", newCard.text);
+  console.log("Carte créée :", newCard.word);
 
   // Reset form
   wordInput.value = '';
@@ -182,6 +183,7 @@ async function loadCards(themeId) {
     .from('cards')
     .select('*')
     .eq('theme_id', themeId)
+    .eq('visible', true)       // <-- filtrage des cartes visibles
     .order('id');
 
   if (error) { console.error("Erreur chargement cartes :", error); return; }
@@ -201,7 +203,7 @@ function renderCards() {
     const div = document.createElement('div');
     div.className = 'card-item';
     div.innerHTML = `
-      <strong>${c.text}</strong><br>
+      <strong>${c.word}</strong><br>
       <img src="${supabaseClient.storage.from('cards').getPublicUrl(c.image_url).data.publicUrl}" width="100"><br>
       ${c.audio_url ? `<audio controls src="${supabaseClient.storage.from('cards').getPublicUrl(c.audio_url).data.publicUrl}"></audio>` : ''}
     `;
