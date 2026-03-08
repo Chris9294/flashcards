@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Interface enseignant - Supabase</title>
+  <title>Interface enseignant</title>
   <link rel="stylesheet" href="teacher.css">
 </head>
 <body>
@@ -30,14 +30,17 @@
 </div>
 
 <!-- ==========================
-     IMPORT ZIP
+     IMPORT ZIP (UNE SEULE LIGNE)
      ========================== -->
 <h2>Importer des cartes (ZIP)</h2>
 <div class="zip-row">
   <input type="file" id="zipInput" accept=".zip">
-  <button class="primary-btn" onclick="importZipFromInput()">📦 Importer le ZIP</button>
+  <button class="primary-btn" onclick="importZipFromInput()">
+    📦 Importer le ZIP
+  </button>
   <span class="zip-help">
-    Images + audios avec le <strong>même nom</strong> (ex : chat.jpg + chat.mp3).  
+    Images + audios avec le <strong>même nom</strong>
+    (ex : chat.jpg + chat.mp3).  
     Les cartes sont ajoutées à la série sélectionnée.
   </span>
 </div>
@@ -53,7 +56,7 @@
   </label>
 
   <label>
-    Image (obligatoire)
+   &#8195;Image (obligatoire)&nbsp
     <div class="file-wrapper" id="imageInputWrapper">
       <input type="file" accept="image/*">
       <span class="file-label">🔎 Parcourir…</span>
@@ -61,7 +64,7 @@
   </label>
 
   <label>
-    Audio (optionnel)
+    Audio (optionnel)&nbsp
     <div class="file-wrapper" id="audioInputWrapper">
       <input type="file" accept="audio/*">
       <span class="file-label">🔎 Parcourir…</span>
@@ -87,40 +90,17 @@
 <script src="teacher.js"></script>
 
 <!-- ==========================
-     IMPORT ZIP
-     ========================== -->
-<script>
-async function importZipFromInput() {
-  const input = document.getElementById("zipInput");
-  const themeId = document.getElementById("themeSelect").value;
-
-  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
-  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
-
-  await importZip(input.files[0], themeId);
-  input.value = "";
-}
-</script>
-
-<!-- ==========================
      LABELS INPUT FILE
      ========================== -->
 <script>
 document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
   const label = input.nextElementSibling;
   input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0 ? input.files[0].name : '🔎 Parcourir…';
+    label.textContent = input.files.length > 0
+      ? input.files[0].name
+      : 'Parcourir…';
   });
 });
-</script>
-
-<!-- ==========================
-     BOUTON RETOUR
-     ========================== -->
-<script>
-document.getElementById("backToFlashcardsBtn").onclick = () => {
-  window.location.href = "./index.html";
-};
 </script>
 
 </body>
