@@ -33,14 +33,9 @@
      IMPORT ZIP
      ========================== -->
 <h2>Importer des cartes (ZIP)</h2>
-
 <div class="zip-row">
   <input type="file" id="zipInput" accept=".zip">
-
-  <button class="primary-btn" onclick="importZipFromInput()">
-    📦 Importer le ZIP
-  </button>
-
+  <button class="primary-btn" onclick="importZipFromInput()">📦 Importer le ZIP</button>
   <span class="zip-help">
     Images + audios avec le <strong>même nom</strong>
     (ex : chat.jpg + chat.mp3).  
@@ -52,9 +47,7 @@
      AJOUT DE CARTE
      ========================== -->
 <h2>Créer une carte</h2>
-
 <div class="add-card-row">
-
   <label>
     Texte de la carte
     <input id="wordInput" type="text">
@@ -75,7 +68,6 @@
       <span class="file-label">🔎 Parcourir…</span>
     </div>
   </label>
-
 </div>
 
 <button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
@@ -106,24 +98,14 @@
      ========================== -->
 <script>
 async function importZipFromInput() {
-
   const input = document.getElementById("zipInput");
   const themeId = document.getElementById("themeSelect").value;
 
-  if (!themeId) {
-    alert("Veuillez sélectionner une série");
-    return;
-  }
-
-  if (!input.files.length) {
-    alert("Veuillez sélectionner un fichier ZIP");
-    return;
-  }
+  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
+  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
 
   await importZip(input.files[0], themeId);
-
   input.value = "";
-
 }
 </script>
 
@@ -132,18 +114,10 @@ async function importZipFromInput() {
      ========================== -->
 <script>
 document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
-
   const label = input.nextElementSibling;
-
   input.addEventListener('change', () => {
-
-    label.textContent =
-      input.files.length > 0
-      ? input.files[0].name
-      : 'Parcourir…';
-
+    label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
   });
-
 });
 </script>
 
