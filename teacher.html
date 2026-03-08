@@ -3,11 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Interface enseignant</title>
-  <link rel="s<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Interface enseignant</title>
   <link rel="stylesheet" href="teacher.css">
 </head>
 <body>
@@ -22,7 +17,7 @@
 <h2>Ajouter une série</h2>
 <input id="themeName" type="text" placeholder="Nom de la série">
 <button type="button" id="addThemeBtn">Ajouter la série</button>
-
+  
 <!-- ==========================
      SÉLECTION DE SÉRIE
      ========================== -->
@@ -42,7 +37,8 @@
   <input type="file" id="zipInput" accept=".zip">
   <button class="primary-btn" onclick="importZipFromInput()">📦 Importer le ZIP</button>
   <span class="zip-help">
-    Images + audios avec le <strong>même nom</strong> (ex : chat.jpg + chat.mp3).  
+    Images + audios avec le <strong>même nom</strong>
+    (ex : chat.jpg + chat.mp3).  
     Les cartes sont ajoutées à la série sélectionnée.
   </span>
 </div>
@@ -121,123 +117,6 @@ document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
   const label = input.nextElementSibling;
   input.addEventListener('change', () => {
     label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
-  });
-});
-</script>
-
-</body>
-</html>tylesheet" href="teacher.css">
-</head>
-<body>
-
-<h1>FlashCards! - Interface enseignant</h1>
-
-<button id="backToFlashcardsBtn">⬅️ Retour aux flashcards</button>
-
-<!-- ==========================
-     CRÉATION DE SÉRIE
-     ========================== -->
-<h2>Ajouter une série</h2>
-<input id="themeName" type="text" placeholder="Nom de la série">
-<button type="button" id="addThemeBtn">Ajouter la série</button>
-  
-<!-- ==========================
-     SÉLECTION DE SÉRIE
-     ========================== -->
-<h2>Choix de la série</h2>
-<div class="theme-row">
-  <select id="themeSelect" required>
-    <option value="" disabled selected>— Choix de la série —</option>
-  </select>
-  <button id="deleteThemeBtn" class="danger-btn">🗑️ Supprimer la série</button>
-</div>
-
-<!-- ==========================
-     IMPORT ZIP
-     ========================== -->
-<h2>Importer des cartes (ZIP)</h2>
-<div class="zip-row">
-  <input type="file" id="zipInput" accept=".zip">
-  <button class="primary-btn" onclick="importZipFromInput()">📦 Importer le ZIP</button>
-  <span class="zip-help">
-    Images + audios avec le <strong>même nom</strong> (ex : chat.jpg + chat.mp3).
-    Les cartes sont ajoutées à la série sélectionnée.
-  </span>
-</div>
-
-<!-- ==========================
-     AJOUT DE CARTE
-     ========================== -->
-<h2>Créer une carte</h2>
-<div class="add-card-row">
-  <label>
-    Texte de la carte
-    <input id="wordInput" type="text">
-  </label>
-
-  <label>
-    &#8195;Image (obligatoire)&nbsp;
-    <div class="file-wrapper" id="imageInputWrapper">
-      <input id="imageInput" type="file" accept="image/*">
-      <span class="file-label">🔎 Parcourir…</span>
-    </div>
-  </label>
-
-  <label>
-    Audio (optionnel)&nbsp;
-    <div class="file-wrapper" id="audioInputWrapper">
-      <input id="audioInput" type="file" accept="audio/*">
-      <span class="file-label">🔎 Parcourir…</span>
-    </div>
-  </label>
-</div>
-
-<button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
-
-<!-- ==========================
-     CARTES EXISTANTES
-     ========================== -->
-<h2 id="cardsTitle">Cartes existantes</h2>
-<div id="cardsList"></div>
-
-<!-- ==========================
-     LIB JSZIP
-     ========================== -->
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-
-<!-- ==========================
-     LIB SUPABASE (NE PAS MODIFIER)
-     ========================== -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- ==========================
-     SCRIPT PRINCIPAL
-     ========================== -->
-<script src="teacher.js"></script>
-
-<!-- ==========================
-     IMPORT ZIP SCRIPT
-     ========================== -->
-<script>
-async function importZipFromInput() {
-  const input = document.getElementById("zipInput");
-  const themeId = document.getElementById("themeSelect").value;
-  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
-  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
-
-  await importZip(input.files[0], themeId);
-  input.value = "";
-}
-</script>
-
-<!-- ==========================
-     LABELS INPUT FILE
-     ========================== -->
-<script>
-document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
-  const label = input.nextElementSibling;
-  input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0 ? input.files[0].name : '🔎 Parcourir…';
   });
 });
 </script>
