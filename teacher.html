@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Interface enseignant - Flashcards</title>
+  <title>Interface enseignant</title>
   <link rel="stylesheet" href="teacher.css">
 </head>
 <body>
@@ -11,10 +11,16 @@
 
 <button id="backToFlashcardsBtn">⬅️ Retour aux flashcards</button>
 
+<!-- ==========================
+     CRÉATION DE SÉRIE
+     ========================== -->
 <h2>Ajouter une série</h2>
 <input id="themeName" type="text" placeholder="Nom de la série">
 <button id="addThemeBtn">Ajouter la série</button>
 
+<!-- ==========================
+     SÉLECTION DE SÉRIE
+     ========================== -->
 <h2>Choix de la série</h2>
 <div class="theme-row">
   <select id="themeSelect" required>
@@ -23,16 +29,22 @@
   <button id="deleteThemeBtn" class="danger-btn">🗑️ Supprimer la série</button>
 </div>
 
+<!-- ==========================
+     IMPORT ZIP
+     ========================== -->
 <h2>Importer des cartes (ZIP)</h2>
 <div class="zip-row">
   <input type="file" id="zipInput" accept=".zip">
   <button class="primary-btn" onclick="importZipFromInput()">📦 Importer le ZIP</button>
   <span class="zip-help">
-    Images + audios avec le <strong>même nom</strong> (ex: chat.jpg + chat.mp3). 
+    Images + audios avec le <strong>même nom</strong> (ex : chat.jpg + chat.mp3).  
     Les cartes sont ajoutées à la série sélectionnée.
   </span>
 </div>
 
+<!-- ==========================
+     AJOUT DE CARTE
+     ========================== -->
 <h2>Créer une carte</h2>
 <div class="add-card-row">
   <label>
@@ -41,7 +53,7 @@
   </label>
 
   <label>
-    Image (obligatoire)
+    &#8195;Image (obligatoire)&nbsp
     <div class="file-wrapper" id="imageInputWrapper">
       <input type="file" accept="image/*">
       <span class="file-label">🔎 Parcourir…</span>
@@ -49,7 +61,7 @@
   </label>
 
   <label>
-    Audio (optionnel)
+    Audio (optionnel)&nbsp
     <div class="file-wrapper" id="audioInputWrapper">
       <input type="file" accept="audio/*">
       <span class="file-label">🔎 Parcourir…</span>
@@ -58,45 +70,51 @@
 </div>
 <button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
 
+<!-- ==========================
+     CARTES EXISTANTES
+     ========================== -->
 <h2 id="cardsTitle">Cartes existantes</h2>
 <div id="cardsList"></div>
 
-<!-- JSZIP -->
+<!-- ==========================
+     LIBS JS
+     ========================== -->
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.36.0/dist/supabase.min.js"></script>
-<!-- SCRIPT PRINCIPAL -->
+<script src="https://unpkg.com/@supabase/supabase-js@2.36.0/dist/supabase.min.js"></script>
+
+<!-- ==========================
+     SCRIPT PRINCIPAL
+     ========================== -->
 <script src="teacher.js"></script>
 
+<!-- ==========================
+     IMPORT ZIP SCRIPT
+     ========================== -->
 <script>
-// ================================
-// LABEL FILE INPUTS
-// ================================
-document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
-  const label = input.nextElementSibling;
-  input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0 ? input.files[0].name : '🔎 Parcourir…';
-  });
-});
-
-// ================================
-// IMPORT ZIP INPUT
-// ================================
 async function importZipFromInput() {
   const input = document.getElementById("zipInput");
   const themeId = document.getElementById("themeSelect").value;
+
   if (!themeId) { alert("Veuillez sélectionner une série"); return; }
-  if (!input.files.length) { alert("Veuillez sélectionner un ZIP"); return; }
+  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
+
   await importZip(input.files[0], themeId);
   input.value = "";
 }
+</script>
 
-// ================================
-// BOUTON RETOUR
-// ================================
-document.getElementById("backToFlashcardsBtn").onclick = () => {
-  window.location.href = "./index.html";
-};
+<!-- ==========================
+     LABELS INPUT FILE
+     ========================== -->
+<script>
+document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
+  const label = input.nextElementSibling;
+  input.addEventListener('change', () => {
+    label.textContent = input.files.length > 0
+      ? input.files[0].name
+      : '🔎 Parcourir…';
+  });
+});
 </script>
 
 </body>
