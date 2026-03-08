@@ -116,7 +116,7 @@ async function importZipFromInput() {
 document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
   const label = input.nextElementSibling;
   input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
+    label.textContent = input.files.length > 0 ? input.files[0].name : '🔎 Parcourir…';
   });
 });
 </script>
