@@ -30,7 +30,7 @@
 </div>
 
 <!-- ==========================
-     IMPORT ZIP (UNE SEULE LIGNE)
+     IMPORT ZIP
      ========================== -->
 <h2>Importer des cartes (ZIP)</h2>
 
@@ -48,13 +48,13 @@
   </span>
 </div>
 
-
-
 <!-- ==========================
      AJOUT DE CARTE
      ========================== -->
 <h2>Créer une carte</h2>
+
 <div class="add-card-row">
+
   <label>
     Texte de la carte
     <input id="wordInput" type="text">
@@ -75,7 +75,9 @@
       <span class="file-label">🔎 Parcourir…</span>
     </div>
   </label>
+
 </div>
+
 <button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
 
 <!-- ==========================
@@ -90,6 +92,11 @@
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <!-- ==========================
+     LIB SUPABASE (MANQUANTE AVANT)
+     ========================== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- ==========================
      SCRIPT PRINCIPAL
      ========================== -->
 <script src="teacher.js"></script>
@@ -99,6 +106,7 @@
      ========================== -->
 <script>
 async function importZipFromInput() {
+
   const input = document.getElementById("zipInput");
   const themeId = document.getElementById("themeSelect").value;
 
@@ -113,7 +121,9 @@ async function importZipFromInput() {
   }
 
   await importZip(input.files[0], themeId);
+
   input.value = "";
+
 }
 </script>
 
@@ -122,12 +132,18 @@ async function importZipFromInput() {
      ========================== -->
 <script>
 document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
+
   const label = input.nextElementSibling;
+
   input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0
+
+    label.textContent =
+      input.files.length > 0
       ? input.files[0].name
       : 'Parcourir…';
+
   });
+
 });
 </script>
 
