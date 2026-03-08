@@ -77,44 +77,24 @@
 <div id="cardsList"></div>
 
 <!-- ==========================
-     LIBS JS
+     LIB JSZIP
      ========================== -->
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2.36.0/dist/supabase.min.js"></script>
 
 <!-- ==========================
-     SCRIPT PRINCIPAL
+     CHARGEMENT SUPABASE
      ========================== -->
-<script src="teacher.js"></script>
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-<!-- ==========================
-     IMPORT ZIP SCRIPT
-     ========================== -->
-<script>
-async function importZipFromInput() {
-  const input = document.getElementById("zipInput");
-  const themeId = document.getElementById("themeSelect").value;
+  // ✅ Initialise Supabase et le rend global pour teacher.js
+  window.supabase = createClient(
+    'https://sdrwjgylmbgrhfwnphwa.supabase.co',
+    'sb_publishable_XKoO7J9_lc1OLzpREKWV5A_fo3UFjmV'
+  );
 
-  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
-  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
-
-  await importZip(input.files[0], themeId);
-  input.value = "";
-}
-</script>
-
-<!-- ==========================
-     LABELS INPUT FILE
-     ========================== -->
-<script>
-document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
-  const label = input.nextElementSibling;
-  input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0
-      ? input.files[0].name
-      : '🔎 Parcourir…';
-  });
-});
+  // Charger ton teacher.js classique
+  import './teacher.js';
 </script>
 
 </body>
