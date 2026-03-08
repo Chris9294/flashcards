@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Interface enseignant</title>
+  <title>Interface enseignant - Supabase</title>
   <link rel="stylesheet" href="teacher.css">
 </head>
 <body>
@@ -16,8 +16,8 @@
      ========================== -->
 <h2>Ajouter une série</h2>
 <input id="themeName" type="text" placeholder="Nom de la série">
-<button type="button" id="addThemeBtn">Ajouter la série</button>
-  
+<button id="addThemeBtn">Ajouter la série</button>
+
 <!-- ==========================
      SÉLECTION DE SÉRIE
      ========================== -->
@@ -37,8 +37,7 @@
   <input type="file" id="zipInput" accept=".zip">
   <button class="primary-btn" onclick="importZipFromInput()">📦 Importer le ZIP</button>
   <span class="zip-help">
-    Images + audios avec le <strong>même nom</strong>
-    (ex : chat.jpg + chat.mp3).  
+    Images + audios avec le <strong>même nom</strong> (ex : chat.jpg + chat.mp3).  
     Les cartes sont ajoutées à la série sélectionnée.
   </span>
 </div>
@@ -54,22 +53,21 @@
   </label>
 
   <label>
-    &#8195;Image (obligatoire)&nbsp
+    Image (obligatoire)
     <div class="file-wrapper" id="imageInputWrapper">
-      <input id="imageInput" type="file" accept="image/*">
+      <input type="file" accept="image/*">
       <span class="file-label">🔎 Parcourir…</span>
     </div>
   </label>
 
   <label>
-    Audio (optionnel)&nbsp
+    Audio (optionnel)
     <div class="file-wrapper" id="audioInputWrapper">
-      <input id="audioInput" type="file" accept="audio/*">
+      <input type="file" accept="audio/*">
       <span class="file-label">🔎 Parcourir…</span>
     </div>
   </label>
 </div>
-
 <button class="primary-btn" onclick="addCard()">Ajouter la carte</button>
 
 <!-- ==========================
@@ -84,17 +82,12 @@
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <!-- ==========================
-     LIB SUPABASE
-     ========================== -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- ==========================
      SCRIPT PRINCIPAL
      ========================== -->
 <script src="teacher.js"></script>
 
 <!-- ==========================
-     IMPORT ZIP SCRIPT
+     IMPORT ZIP
      ========================== -->
 <script>
 async function importZipFromInput() {
@@ -116,9 +109,18 @@ async function importZipFromInput() {
 document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
   const label = input.nextElementSibling;
   input.addEventListener('change', () => {
-    label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
+    label.textContent = input.files.length > 0 ? input.files[0].name : '🔎 Parcourir…';
   });
 });
+</script>
+
+<!-- ==========================
+     BOUTON RETOUR
+     ========================== -->
+<script>
+document.getElementById("backToFlashcardsBtn").onclick = () => {
+  window.location.href = "./index.html";
+};
 </script>
 
 </body>
