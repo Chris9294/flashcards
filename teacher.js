@@ -3,7 +3,9 @@
 // ================================
 const supabaseUrl = "https://sdrwjgylmbgrhfwnphwa.supabase.co";
 const supabaseKey = "sb_publishable_XKoO7J9_lc1OLzpREKWV5A_fo3UFjmV";
-const supabase = supabaseJs.createClient(supabaseUrl, supabaseKey); // Supabase v2
+
+// la lib Supabase v2 fournit déjà un global "supabase"
+supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 // ================================
 // DONNÉES LOCALES
