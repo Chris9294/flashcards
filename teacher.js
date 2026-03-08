@@ -3,8 +3,6 @@
 // ================================
 const supabaseUrl = "https://sdrwjgylmbgrhfwnphwa.supabase.co";
 const supabaseKey = "sb_publishable_XKoO7J9_lc1OLzpREKWV5A_fo3UFjmV";
-
-// Supabase v2 fournit déjà un global "supabase"
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 // ================================
@@ -13,7 +11,7 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 let data = { themes: [], cards: [] };
 
 // ================================
-// CHARGER LES SÉRIES DEPUIS SUPABASE
+// CHARGER LES SÉRIES
 // ================================
 async function loadThemes() {
   const { data: themesData, error } = await supabaseClient
@@ -21,17 +19,9 @@ async function loadThemes() {
     .select('*')
     .order('name');
 
-  if (error) {
-    console.error("Erreur chargement séries :", error);
-    alert("Erreur chargement séries");
-    return;
-  }
+  if (error) { console.error(error); alert("Erreur chargement séries"); return; }
 
-  data.themes = themesData.map(t => ({
-    id: t.id.toString(),
-    name: t.name,
-  }));
-
+  data.themes = themesData.map(t => ({ id: t.id.toString(), name: t.name }));
   refreshThemes();
 }
 
@@ -63,10 +53,11 @@ function refreshThemes() {
 async function addTheme() {
   const nameInput = document.getElementById('themeName');
   const name = nameInput.value.trim();
-  if (!name) { alert("Merci de saisir un nom de série"); return; }
+  if (!name) return alert("Merci de saisir un nom de série");
 
-  const exists = data.themes.some(t => t.name.toLowerCase() === name.toLowerCase());
-  if (exists) { alert("Cette série existe déjà"); return; }
+  if (data.themes.some(t => t.name.toLowerCase() === name.toLowerCase())) {
+    return alert("Cette série existe déjà");
+  }
 
   const { data: newTheme, error } = await supabaseClient
     .from('themes')
@@ -74,11 +65,7 @@ async function addTheme() {
     .select()
     .single();
 
-  if (error) { 
-    console.error("Erreur création série :", error); 
-    alert("Erreur création série"); 
-    return; 
-  }
+  if (error) { console.error(error); return alert("Erreur création série"); }
 
   data.themes.push({ id: newTheme.id.toString(), name: newTheme.name });
   nameInput.value = '';
@@ -95,19 +82,10 @@ async function deleteTheme() {
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
-
   if (!confirm(`Supprimer la série "${theme.name}" ?`)) return;
 
-  const { error } = await supabaseClient
-    .from('themes')
-    .delete()
-    .eq('id', theme.id);
-
-  if (error) {
-    console.error("Erreur suppression série :", error);
-    alert("Erreur suppression série");
-    return;
-  }
+  const { error } = await supabaseClient.from('themes').delete().eq('id', theme.id);
+  if (error) { console.error(error); return alert("Erreur suppression série"); }
 
   data.themes = data.themes.filter(t => t.id !== theme.id);
   refreshThemes();
@@ -122,57 +100,42 @@ async function addCard() {
   const imageInput = document.querySelector('#imageInputWrapper input[type="file"]');
   const audioInput = document.querySelector('#audioInputWrapper input[type="file"]');
 
-  if (!themeSelect.value) { alert("Sélectionnez une série"); return; }
-  if (!wordInput.value.trim()) { alert("Saisissez le texte de la carte"); return; }
-  if (!imageInput.files[0]) { alert("Sélectionnez une image"); return; }
+  if (!themeSelect.value) return alert("Sélectionnez une série");
+  if (!wordInput.value.trim()) return alert("Saisissez le texte de la carte");
+  if (!imageInput.files[0]) return alert("Sélectionnez une image");
 
   const themeId = themeSelect.value;
   const word = wordInput.value.trim();
   const imageFile = imageInput.files[0];
   const audioFile = audioInput.files[0] || null;
 
-  // Upload image
   const imageName = `${Date.now()}_${imageFile.name}`;
-  const { error: imgError } = await supabaseClient.storage
-    .from('cards')
-    .upload(imageName, imageFile);
-
-  if (imgError) { console.error("Erreur upload image:", imgError); alert("Erreur upload image"); return; }
+  const { error: imgError } = await supabaseClient.storage.from('cards').upload(imageName, imageFile);
+  if (imgError) { console.error(imgError); return alert("Erreur upload image"); }
 
   let audioName = null;
   if (audioFile) {
     audioName = `${Date.now()}_${audioFile.name}`;
-    const { error: audError } = await supabaseClient.storage
-      .from('cards')
-      .upload(audioName, audioFile);
-    if (audError) { console.error("Erreur upload audio:", audError); alert("Erreur upload audio"); return; }
+    const { error: audError } = await supabaseClient.storage.from('cards').upload(audioName, audioFile);
+    if (audError) { console.error(audError); return alert("Erreur upload audio"); }
   }
 
-  // Insert card in DB avec visible par défaut
   const { data: newCard, error: cardError } = await supabaseClient
     .from('cards')
-    .insert([{
-      theme_id: themeId,
-      word,
-      image_url: imageName,
-      audio_url: audioName,
-      visible: true
-    }])
+    .insert([{ theme_id: themeId, word, image_url: imageName, audio_url: audioName, visible: true }])
     .select()
     .single();
 
-  if (cardError) { console.error("Erreur création carte:", cardError); alert("Erreur création carte"); return; }
+  if (cardError) { console.error(cardError); return alert("Erreur création carte"); }
 
   console.log("Carte créée :", newCard.word);
 
-  // Reset form
   wordInput.value = '';
   imageInput.value = '';
   audioInput.value = '';
   document.querySelector('#imageInputWrapper .file-label').textContent = '🔎 Parcourir…';
   document.querySelector('#audioInputWrapper .file-label').textContent = '🔎 Parcourir…';
 
-  // Rafraîchir les cartes affichées
   await loadCards(themeId);
 }
 
@@ -184,10 +147,9 @@ async function loadCards(themeId) {
     .from('cards')
     .select('*')
     .eq('theme_id', themeId)
-    .eq('visible', true)
     .order('id');
 
-  if (error) { console.error("Erreur chargement cartes :", error); return; }
+  if (error) { console.error(error); return; }
 
   data.cards = cardsData;
   renderCards();
@@ -200,14 +162,61 @@ function renderCards() {
   const cardsList = document.getElementById('cardsList');
   cardsList.innerHTML = '';
 
-  data.cards.forEach(c => {
+  data.cards.forEach((card, index) => {
     const div = document.createElement('div');
     div.className = 'card-item';
-    div.innerHTML = `
-      <strong>${c.word}</strong><br>
-      <img src="${supabaseClient.storage.from('cards').getPublicUrl(c.image_url).data.publicUrl}" width="100"><br>
-      ${c.audio_url ? `<audio controls src="${supabaseClient.storage.from('cards').getPublicUrl(c.audio_url).data.publicUrl}"></audio>` : ''}
-    `;
+    if (!card.visible) div.style.opacity = 0.5;
+
+    const wordInput = document.createElement('input');
+    wordInput.type = 'text';
+    wordInput.value = card.word;
+
+    const saveBtn = document.createElement('button');
+    saveBtn.textContent = '💾';
+    saveBtn.title = "Enregistrer modification";
+    saveBtn.onclick = async () => {
+      await supabaseClient.from('cards').update({ word: wordInput.value.trim() }).eq('id', card.id);
+      loadCards(card.theme_id);
+    };
+
+    const img = document.createElement('img');
+    img.src = supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
+    img.width = 100;
+
+    const audioBtn = document.createElement('button');
+    audioBtn.textContent = '🔊';
+    audioBtn.onclick = () => {
+      if (card.audio_url) {
+        new Audio(supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl).play();
+      } else {
+        const utter = new SpeechSynthesisUtterance(card.word);
+        utter.lang = 'en-GB'; utter.rate = 0.7;
+        speechSynthesis.cancel(); speechSynthesis.speak(utter);
+      }
+    };
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.textContent = card.visible ? '👁️ Visible' : '🚫 Masquée';
+    toggleBtn.onclick = async () => {
+      await supabaseClient.from('cards').update({ visible: !card.visible }).eq('id', card.id);
+      loadCards(card.theme_id);
+    };
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '🗑️';
+    deleteBtn.onclick = async () => {
+      if (!confirm("Supprimer cette carte ?")) return;
+      await supabaseClient.from('cards').delete().eq('id', card.id);
+      loadCards(card.theme_id);
+    };
+
+    div.appendChild(wordInput);
+    div.appendChild(saveBtn);
+    div.appendChild(img);
+    div.appendChild(audioBtn);
+    div.appendChild(toggleBtn);
+    div.appendChild(deleteBtn);
+
     cardsList.appendChild(div);
   });
 }
@@ -222,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('deleteThemeBtn').addEventListener('click', deleteTheme);
   document.getElementById('themeSelect').addEventListener('change', e => loadCards(e.target.value));
 
-  // Expose addCard globalement pour onclick
   window.addCard = addCard;
 
   loadThemes();
