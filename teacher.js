@@ -118,7 +118,7 @@ async function addCard() {
     if (audError) { console.error("Erreur upload audio:", audError); alert("Erreur upload audio"); return; }
   }
 
-  // Déterminer la position max actuelle pour la série
+  // Déterminer position max pour la série
   const { data: maxPosData } = await supabaseClient.from('cards')
     .select('position')
     .eq('theme_id', themeId)
@@ -172,11 +172,13 @@ function renderCards() {
     div.className = 'card';
     if (!card.visible) div.classList.add('card-hidden');
 
+    // Numéro
     const number = document.createElement('div');
     number.textContent = `Carte ${index + 1}`;
     number.style.fontWeight = 'bold';
     number.style.color = '#ff6f61';
 
+    // Texte et sauvegarde
     const wordInput = document.createElement('input');
     wordInput.type = 'text';
     wordInput.value = card.word;
@@ -188,9 +190,11 @@ function renderCards() {
       loadCards(card.theme_id);
     };
 
+    // Image
     const img = document.createElement('img');
     img.src = supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
 
+    // Audio info
     const audioInfo = document.createElement('p');
     const audioText = document.createElement('span');
     audioText.textContent = card.audio_url ? 'Audio : oui ' : 'Audio : non (synthèse vocale GB)';
@@ -210,6 +214,7 @@ function renderCards() {
     audioInfo.appendChild(audioText);
     audioInfo.appendChild(playBtn);
 
+    // Remplacer audio
     const audioInput = document.createElement('input');
     audioInput.type = 'file';
     audioInput.accept = 'audio/*';
@@ -223,7 +228,7 @@ function renderCards() {
       }
     };
 
-    // Boutons déplacer
+    // Déplacer carte
     const upBtn = document.createElement('button');
     upBtn.textContent = '🔼';
     upBtn.disabled = index === 0;
@@ -234,6 +239,7 @@ function renderCards() {
     downBtn.disabled = index === data.cards.length - 1;
     downBtn.onclick = async () => moveCard(card.id, card.position, 'down');
 
+    // Supprimer et masquer
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '🗑️';
     deleteBtn.onclick = async () => {
@@ -249,6 +255,7 @@ function renderCards() {
       loadCards(card.theme_id);
     };
 
+    // Append éléments
     div.appendChild(number);
     const editRow = document.createElement('div');
     editRow.style.display = 'flex';
@@ -296,31 +303,39 @@ async function moveCard(cardId, position, direction) {
 
   if (!targetCard) return;
 
-  // Échanger les positions
   await supabaseClient.from('cards').update({ position: targetPos }).eq('id', cardId);
   await supabaseClient.from('cards').update({ position: position }).eq('id', targetCard.id);
 
   loadCards(themeId);
 }
 
-
 // ================================
 // IMPORT ZIP
 // ================================
+async function importZipFromInput() {
+  const input = document.getElementById("zipInput");
+  const themeId = document.getElementById("themeSelect").value;
+
+  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
+  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
+
+  await importZip(input.files[0], themeId);
+  input.value = "";
+}
+
 async function importZip(file, themeId) {
   const zip = await JSZip.loadAsync(file);
   const images = {};
   const audios = {};
-
-  // Extraire fichiers
   const tasks = [];
+
   zip.forEach((path, entry) => {
     if (entry.dir) return;
     const filename = path.split('/').pop();
-    if (filename.startsWith("._") || filename.startsWith("__MACOSX")) return; // Ignorer doublons macOS
+    if (filename.startsWith("._") || filename.startsWith("__MACOSX")) return;
 
     const ext = filename.split('.').pop().toLowerCase();
-    const name = filename.replace(/\.[^/.]+$/, ""); // nom sans extension
+    const name = filename.replace(/\.[^/.]+$/, "");
 
     if (["jpg","jpeg","png","gif","webp"].includes(ext)) {
       tasks.push(entry.async("blob").then(blob => images[name] = blob));
@@ -331,7 +346,14 @@ async function importZip(file, themeId) {
 
   await Promise.all(tasks);
 
-  // Créer les cartes
+  // Déterminer position max
+  const { data: maxPosData } = await supabaseClient.from('cards')
+    .select('position')
+    .eq('theme_id', themeId)
+    .order('position', { ascending: false })
+    .limit(1);
+  let nextPos = maxPosData.length ? maxPosData[0].position + 1 : 1;
+
   for (const name in images) {
     const imgFile = images[name];
     const imgExt = imgFile.type.split("/")[1];
@@ -346,27 +368,20 @@ async function importZip(file, themeId) {
       await supabaseClient.storage.from('cards').upload(audioName, audFile);
     }
 
-    // Position max pour la série
-    const { data: maxPosData } = await supabaseClient.from('cards')
-      .select('position')
-      .eq('theme_id', themeId)
-      .order('position', { ascending: false })
-      .limit(1);
-
-    const position = maxPosData.length ? maxPosData[0].position + 1 : 1;
-
     await supabaseClient.from('cards').insert([{
       theme_id: themeId,
       word: name,
       image_url: imgName,
       audio_url: audioName,
       visible: true,
-      position
+      position: nextPos
     }]);
+    nextPos++;
   }
 
   loadCards(themeId);
 }
+
 // ================================
 // INITIALISATION
 // ================================
@@ -375,7 +390,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('deleteThemeBtn').addEventListener('click', deleteTheme);
   document.getElementById('themeSelect').addEventListener('change', e => loadCards(e.target.value));
 
+  // Permet d'appeler addCard depuis le HTML
   window.addCard = addCard;
 
   loadThemes();
+
+  // Label input file
+  document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
+    const label = input.nextElementSibling;
+    input.addEventListener('change', () => {
+      label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
+    });
+  });
 });
