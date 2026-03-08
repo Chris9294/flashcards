@@ -550,6 +550,10 @@ document.addEventListener('DOMContentLoaded', () => {
     e => loadCards(e.target.value)
   );
 
+  document.getElementById("backToFlashcardsBtn").addEventListener("click", () => {
+  window.location.href = "index.html";
+});
+  
   window.addCard = addCard;
 
   loadThemes();
