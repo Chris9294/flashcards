@@ -3,6 +3,8 @@
 // ================================
 const supabaseUrl = "https://sdrwjgylmbgrhfwnphwa.supabase.co";
 const supabaseKey = "sb_publishable_XKoO7J9_lc1OLzpREKWV5A_fo3UFjmV";
+
+// Supabase v2 fournit déjà un global "supabase"
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 // ================================
@@ -19,9 +21,17 @@ async function loadThemes() {
     .select('*')
     .order('name');
 
-  if (error) { console.error("Erreur chargement séries :", error); alert("Erreur chargement séries"); return; }
+  if (error) {
+    console.error("Erreur chargement séries :", error);
+    alert("Erreur chargement séries");
+    return;
+  }
 
-  data.themes = themesData.map(t => ({ id: t.id.toString(), name: t.name }));
+  data.themes = themesData.map(t => ({
+    id: t.id.toString(),
+    name: t.name,
+  }));
+
   refreshThemes();
 }
 
@@ -55,9 +65,8 @@ async function addTheme() {
   const name = nameInput.value.trim();
   if (!name) { alert("Merci de saisir un nom de série"); return; }
 
-  if (data.themes.some(t => t.name.toLowerCase() === name.toLowerCase())) {
-    alert("Cette série existe déjà"); return;
-  }
+  const exists = data.themes.some(t => t.name.toLowerCase() === name.toLowerCase());
+  if (exists) { alert("Cette série existe déjà"); return; }
 
   const { data: newTheme, error } = await supabaseClient
     .from('themes')
@@ -65,11 +74,16 @@ async function addTheme() {
     .select()
     .single();
 
-  if (error) { console.error("Erreur création série :", error); alert("Erreur création série"); return; }
+  if (error) { 
+    console.error("Erreur création série :", error); 
+    alert("Erreur création série"); 
+    return; 
+  }
 
   data.themes.push({ id: newTheme.id.toString(), name: newTheme.name });
   nameInput.value = '';
   refreshThemes();
+  console.log("Série créée :", newTheme.name);
 }
 
 // ================================
@@ -81,6 +95,7 @@ async function deleteTheme() {
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
+
   if (!confirm(`Supprimer la série "${theme.name}" ?`)) return;
 
   const { error } = await supabaseClient
@@ -88,7 +103,11 @@ async function deleteTheme() {
     .delete()
     .eq('id', theme.id);
 
-  if (error) { console.error("Erreur suppression série :", error); alert("Erreur suppression série"); return; }
+  if (error) {
+    console.error("Erreur suppression série :", error);
+    alert("Erreur suppression série");
+    return;
+  }
 
   data.themes = data.themes.filter(t => t.id !== theme.id);
   refreshThemes();
@@ -112,31 +131,49 @@ async function addCard() {
   const imageFile = imageInput.files[0];
   const audioFile = audioInput.files[0] || null;
 
+  // Upload image
   const imageName = `${Date.now()}_${imageFile.name}`;
-  const { error: imgError } = await supabaseClient.storage.from('cards').upload(imageName, imageFile);
+  const { error: imgError } = await supabaseClient.storage
+    .from('cards')
+    .upload(imageName, imageFile);
+
   if (imgError) { console.error("Erreur upload image:", imgError); alert("Erreur upload image"); return; }
 
   let audioName = null;
   if (audioFile) {
     audioName = `${Date.now()}_${audioFile.name}`;
-    const { error: audError } = await supabaseClient.storage.from('cards').upload(audioName, audioFile);
+    const { error: audError } = await supabaseClient.storage
+      .from('cards')
+      .upload(audioName, audioFile);
     if (audError) { console.error("Erreur upload audio:", audError); alert("Erreur upload audio"); return; }
   }
 
-  const { data: newCard, error: cardError } = await supabaseClient.from('cards')
-    .insert([{ theme_id: themeId, word, image_url: imageName, audio_url: audioName, visible: true }])
+  // Insert card in DB avec visible par défaut
+  const { data: newCard, error: cardError } = await supabaseClient
+    .from('cards')
+    .insert([{
+      theme_id: themeId,
+      word,
+      image_url: imageName,
+      audio_url: audioName,
+      visible: true
+    }])
     .select()
     .single();
 
   if (cardError) { console.error("Erreur création carte:", cardError); alert("Erreur création carte"); return; }
 
+  console.log("Carte créée :", newCard.word);
+
+  // Reset form
   wordInput.value = '';
   imageInput.value = '';
   audioInput.value = '';
   document.querySelector('#imageInputWrapper .file-label').textContent = '🔎 Parcourir…';
   document.querySelector('#audioInputWrapper .file-label').textContent = '🔎 Parcourir…';
 
-  loadCards(themeId);
+  // Rafraîchir les cartes affichées
+  await loadCards(themeId);
 }
 
 // ================================
@@ -163,78 +200,29 @@ function renderCards() {
   const cardsList = document.getElementById('cardsList');
   cardsList.innerHTML = '';
 
-  data.cards.forEach((card, index) => {
+  data.cards.forEach(c => {
     const div = document.createElement('div');
-    div.className = 'card';
+    div.className = 'card-item';
     div.innerHTML = `
-      <div><strong>Carte ${index + 1}:</strong> ${card.word}</div>
-      <img src="${supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl}" width="120">
-      <div>
-        ${card.audio_url 
-          ? `<audio controls src="${supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl}"></audio>` 
-          : 'Audio : non (synthèse vocale GB)'}
-      </div>
+      <strong>${c.word}</strong><br>
+      <img src="${supabaseClient.storage.from('cards').getPublicUrl(c.image_url).data.publicUrl}" width="100"><br>
+      ${c.audio_url ? `<audio controls src="${supabaseClient.storage.from('cards').getPublicUrl(c.audio_url).data.publicUrl}"></audio>` : ''}
     `;
     cardsList.appendChild(div);
   });
 }
 
 // ================================
-// IMPORT ZIP
-// ================================
-async function importZip(file, themeId) {
-  const zip = await JSZip.loadAsync(file);
-  const tasks = [];
-  const images = {};
-  const audios = {};
-
-  zip.forEach((path, entry) => {
-    if (entry.dir) return;
-    const filename = path.split('/').pop();
-    if (filename.startsWith("__MACOSX")) return;
-
-    const ext = filename.split('.').pop().toLowerCase();
-    const name = filename.replace(/\.[^/.]+$/, "");
-
-    if (["jpg","jpeg","png","gif","webp"].includes(ext)) {
-      tasks.push(entry.async("blob").then(blob => { images[name] = blob; }));
-    }
-    if (["mp3","wav","ogg","m4a"].includes(ext)) {
-      tasks.push(entry.async("blob").then(blob => { audios[name] = blob; }));
-    }
-  });
-
-  await Promise.all(tasks);
-
-  for (const name in images) {
-    const imgFile = images[name];
-    const imgName = `${Date.now()}_${name}.${imgFile.type.split("/")[1]}`;
-    const { error: imgError } = await supabaseClient.storage.from('cards').upload(imgName, imgFile);
-    if (imgError) { console.error(imgError); continue; }
-
-    let audioName = null;
-    if (audios[name]) {
-      const audFile = audios[name];
-      audioName = `${Date.now()}_${name}.${audFile.type.split("/")[1]}`;
-      const { error: audError } = await supabaseClient.storage.from('cards').upload(audioName, audFile);
-      if (audError) { console.error(audError); audioName = null; }
-    }
-
-    await supabaseClient.from('cards').insert([{ theme_id: themeId, word: name, image_url: imgName, audio_url: audioName, visible: true }]);
-  }
-
-  alert(`Import terminé (${Object.keys(images).length} cartes)`);
-  loadCards(themeId);
-}
-
-// ================================
 // INITIALISATION
 // ================================
 document.addEventListener('DOMContentLoaded', () => {
+  console.log("teacher.js chargé");
+
   document.getElementById('addThemeBtn').addEventListener('click', addTheme);
   document.getElementById('deleteThemeBtn').addEventListener('click', deleteTheme);
   document.getElementById('themeSelect').addEventListener('change', e => loadCards(e.target.value));
 
+  // Expose addCard globalement pour onclick
   window.addCard = addCard;
 
   loadThemes();
