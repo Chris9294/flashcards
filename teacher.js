@@ -172,7 +172,8 @@ async function addCard() {
   document.querySelector('#imageInputWrapper .file-label').textContent = '🔎 Parcourir…';
   document.querySelector('#audioInputWrapper .file-label').textContent = '🔎 Parcourir…';
 
-  loadCards(themeId);
+  // Rafraîchir les cartes affichées
+  await loadCards(themeId);
 }
 
 // ================================
@@ -183,7 +184,7 @@ async function loadCards(themeId) {
     .from('cards')
     .select('*')
     .eq('theme_id', themeId)
-    .eq('visible', true)       // <-- filtrage des cartes visibles
+    .eq('visible', true)
     .order('id');
 
   if (error) { console.error("Erreur chargement cartes :", error); return; }
