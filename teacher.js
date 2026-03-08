@@ -3,7 +3,8 @@
 // ================================
 const supabaseUrl = "https://sdrwjgylmbgrhfwnphwa.supabase.co";
 const supabaseKey = "sb_publishable_XKoO7J9_lc1OLzpREKWV5A_fo3UFjmV";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 // ================================
 // DONNÉES
@@ -15,7 +16,7 @@ let data = { themes: [] };
 // ================================
 async function loadThemes() {
 
-  const { data: themesData, error } = await supabase
+  const { data: themesData, error } = await supabaseClient
     .from('themes')
     .select('*')
     .order('name');
@@ -86,7 +87,7 @@ async function addTheme() {
   }
 
   // insertion Supabase
-  const { data: newTheme, error } = await supabase
+  const { data: newTheme, error } = await supabaseClient
     .from('themes')
     .insert([{ name }])
     .select()
@@ -105,7 +106,6 @@ async function addTheme() {
     cards: []
   });
 
-  // reset champ
   nameInput.value = '';
 
   refreshThemes();
@@ -129,7 +129,7 @@ async function deleteTheme() {
 
   if (!confirm(`Supprimer la série "${theme.name}" ?`)) return;
 
-  await supabase
+  await supabaseClient
     .from('themes')
     .delete()
     .eq('id', theme.id);
