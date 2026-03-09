@@ -136,15 +136,11 @@ function loadThumbnails() {
   currentThemeCards.forEach((card, index) => {
     const img = document.createElement('img');
     img.src = card.image;
-    img.classList.add('thumbnail-fade'); // animation fade-in
-    img.style.display = 'inline-block';
+    img.classList.add('thumbnail-fade'); // animation fade
     img.onclick = () => openCardAtIndex(index);
     thumbnails.appendChild(img);
-
-    // Apparition progressive
-    setTimeout(() => {
-      img.classList.add('visible');
-    }, index * 80); // 80ms de décalage par miniature
+    // activation de la classe visible avec léger délai pour le fade-in
+    setTimeout(() => img.classList.add('visible'), 50 * index);
   });
 }
 
