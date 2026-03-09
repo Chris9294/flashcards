@@ -134,7 +134,7 @@ async function loadTheme() {
 }
 
 // ================================
-// AFFICHAGE MINIATURES AVEC REBOND
+// AFFICHAGE MINIATURES AVEC REBOND LISSE
 // ================================
 function loadThumbnails() {
   thumbnails.innerHTML = '';
@@ -143,18 +143,18 @@ function loadThumbnails() {
     const img = document.createElement('img');
     img.src = card.image;
     img.style.opacity = "0";
-    img.style.transform = 'translateY(20px)';
+    img.style.transform = 'translateY(20px) scale(0.9)'; // départ plus petit
     img.style.display = 'inline-block';
     img.style.cursor = 'pointer';
     img.onclick = () => openCardAtIndex(index);
     thumbnails.appendChild(img);
 
-    // Animation rebond en cascade
+    // Animation rebond + scale en cascade
     img.onload = () => {
       setTimeout(() => {
         img.style.transition = 'transform 0.5s cubic-bezier(.68,-0.55,.27,1.55), opacity 0.5s ease';
         img.style.opacity = '1';
-        img.style.transform = 'translateY(0)';
+        img.style.transform = 'translateY(0) scale(1)'; // position finale et taille normale
       }, 60 * index); // effet cascade
     };
   });
