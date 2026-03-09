@@ -13,6 +13,10 @@ let showingWord = false;
 let currentIndex = 0;
 let currentThemeCards = [];
 
+let memoryMode = false;
+let firstCard = null;
+let secondCard = null;
+
 const themeSelect = document.getElementById('themeSelect');
 const thumbnails = document.getElementById('thumbnails');
 const flashcard = document.getElementById('flashcard');
@@ -45,7 +49,7 @@ teacherCode.addEventListener("input", () => {
 });
 
 // ================================
-// BOUTON MÉLANGER discret
+// BOUTON MÉLANGER
 // ================================
 const shuffleBtn = document.createElement('button');
 shuffleBtn.textContent = "🔀";
@@ -56,14 +60,18 @@ shuffleBtn.style.padding = "2px 6px";
 shuffleBtn.style.border = "none";
 shuffleBtn.style.background = "transparent";
 shuffleBtn.style.cursor = "pointer";
+
 shuffleBtn.onclick = () => {
   if (!currentThemeCards.length) return;
+
   currentThemeCards = currentThemeCards
-    .map(value => ({ value, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value);
+    .map(v => ({v, r: Math.random()}))
+    .sort((a,b)=>a.r-b.r)
+    .map(o=>o.v);
+
   loadThumbnails();
 };
+
 themeSelect.parentNode.insertBefore(shuffleBtn, themeSelect.nextSibling);
 
 // ================================
@@ -71,116 +79,36 @@ themeSelect.parentNode.insertBefore(shuffleBtn, themeSelect.nextSibling);
 // ================================
 const memoryBtn = document.createElement('button');
 memoryBtn.textContent = "🎮";
-memoryBtn.title = "Mode Memory";
+memoryBtn.title = "Memory";
 memoryBtn.style.marginLeft = "4px";
 memoryBtn.style.fontSize = "16px";
 memoryBtn.style.padding = "2px 6px";
 memoryBtn.style.border = "none";
 memoryBtn.style.background = "transparent";
 memoryBtn.style.cursor = "pointer";
-themeSelect.parentNode.insertBefore(memoryBtn, shuffleBtn.nextSibling);
-
-let memoryMode = false;
-let firstCard = null;
-let secondCard = null;
 
 memoryBtn.onclick = () => {
   memoryMode = !memoryMode;
-  memoryBtn.style.opacity = memoryMode ? 0.6 : 1;
-  if (memoryMode) startMemory();
+  memoryBtn.style.opacity = memoryMode ? 0.5 : 1;
+
+  if(memoryMode) startMemory();
   else loadThumbnails();
 };
 
-function startMemory() {
-  thumbnails.innerHTML = '';
-  firstCard = null;
-  secondCard = null;
-
-  // Duplique les cartes pour former les paires
-  const memoryCards = currentThemeCards.concat(currentThemeCards)
-    .map((card, idx) => ({ ...card, id: idx, flipped: false, matched: false }));
-
-  // Mélange
-  memoryCards.sort(() => Math.random() - 0.5);
-
-  memoryCards.forEach(card => {
-    const img = document.createElement('img');
-    img.src = card.image;
-    img.style.opacity = "1";
-    img.style.transform = 'translateY(30px) scale(0.85)';
-    img.style.display = 'inline-block';
-    img.style.cursor = "pointer";
-
-    // état initial face cachée
-    img.dataset.flipped = 'false';
-    img.style.filter = 'brightness(0)';
-    img.style.transition = 'transform 0.4s ease, filter 0.4s ease';
-
-    img.onclick = () => {
-      if (card.matched || img.dataset.flipped === 'true' || secondCard) return;
-
-      // retourner
-      img.dataset.flipped = 'true';
-      img.style.filter = 'brightness(1)';
-      img.style.transform = 'scale(1.05)';
-
-      if (!firstCard) firstCard = { card, img };
-      else {
-        secondCard = { card, img };
-        if (firstCard.card.word === secondCard.card.word) {
-          firstCard.card.matched = true;
-          secondCard.card.matched = true;
-          firstCard.img.style.transform = 'scale(1)';
-          secondCard.img.style.transform = 'scale(1)';
-          firstCard = null;
-          secondCard = null;
-        } else {
-          setTimeout(() => {
-            firstCard.img.dataset.flipped = 'false';
-            secondCard.img.dataset.flipped = 'false';
-            firstCard.img.style.filter = 'brightness(0)';
-            secondCard.img.style.filter = 'brightness(0)';
-            firstCard.img.style.transform = 'scale(0.85)';
-            secondCard.img.style.transform = 'scale(0.85)';
-            firstCard = null;
-            secondCard = null;
-          }, 1000);
-        }
-      }
-    };
-
-    thumbnails.appendChild(img);
-
-    // Animation rebond cascade
-    img.onload = () => {
-      setTimeout(() => {
-        img.style.transition = 'transform 0.6s cubic-bezier(.68,-0.6,.32,1.6), opacity 0.5s ease';
-        img.style.opacity = '1';
-        img.style.transform = 'translateY(-5px) scale(1.05)';
-        setTimeout(() => {
-          img.style.transition = 'transform 0.3s ease';
-          img.style.transform = 'translateY(0) scale(0.85)';
-        }, 600);
-      }, 80 * card.id);
-    };
-  });
-}
+themeSelect.parentNode.insertBefore(memoryBtn, shuffleBtn.nextSibling);
 
 // ================================
 // CHARGER LES SERIES
 // ================================
 async function loadThemes() {
-  const { data: themes, error } = await supabaseClient
-    .from('themes')
-    .select('*')
-    .order('name');
 
-  if (error) {
-    console.error("Erreur chargement séries", error);
-    return;
-  }
+  const { data: themes } = await supabaseClient
+  .from('themes')
+  .select('*')
+  .order('name');
 
   themeSelect.innerHTML = '';
+
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Flashcards —';
@@ -192,32 +120,35 @@ async function loadThemes() {
     option.textContent = theme.name;
     themeSelect.appendChild(option);
   });
+
 }
 
 // ================================
 // CHARGEMENT D’UNE SÉRIE
 // ================================
 async function loadTheme() {
+
   const themeId = themeSelect.value;
+
   thumbnails.innerHTML = '';
   closeCard();
 
   if (!themeId) return;
 
-  const { data: cards, error } = await supabaseClient
-    .from('cards')
-    .select('*')
-    .eq('theme_id', themeId)
-    .eq('visible', true)
-    .order('position');
-
-  if (error) {
-    console.error("Erreur chargement cartes", error);
-    return;
-  }
+  const { data: cards } = await supabaseClient
+  .from('cards')
+  .select('*')
+  .eq('theme_id', themeId)
+  .eq('visible', true)
+  .order('position');
 
   currentThemeCards = cards.map(card => {
-    const imageUrl = supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
+
+    const imageUrl = supabaseClient
+    .storage
+    .from('cards')
+    .getPublicUrl(card.image_url).data.publicUrl;
+
     const audioUrl = card.audio_url
       ? supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl
       : null;
@@ -226,134 +157,315 @@ async function loadTheme() {
     img.src = imageUrl;
 
     return { word: card.word, image: imageUrl, audio: audioUrl };
+
   });
 
   memoryMode ? startMemory() : loadThumbnails();
+
 }
 
 // ================================
-// AFFICHAGE MINIATURES
+// MINIATURES
 // ================================
 function loadThumbnails() {
+
   thumbnails.innerHTML = '';
 
-  currentThemeCards.forEach((card, index) => {
+  currentThemeCards.forEach((card,index)=>{
+
     const img = document.createElement('img');
+
     img.src = card.image;
-    img.style.opacity = "0";
-    img.style.transform = 'translateY(30px) scale(0.85)';
-    img.style.display = 'inline-block';
-    img.style.cursor = 'pointer';
+    img.style.opacity="0";
+    img.style.transform='translateY(30px) scale(0.85)';
+    img.style.display='inline-block';
+    img.style.cursor='pointer';
+
     img.onclick = () => openCardAtIndex(index);
+
     thumbnails.appendChild(img);
 
-    img.onload = () => {
-      setTimeout(() => {
-        img.style.transition = 'transform 0.6s cubic-bezier(.68,-0.6,.32,1.6), opacity 0.5s ease';
-        img.style.opacity = '1';
-        img.style.transform = 'translateY(-5px) scale(1.05)';
-        setTimeout(() => {
-          img.style.transition = 'transform 0.3s ease';
-          img.style.transform = 'translateY(0) scale(1)';
-        }, 600);
-      }, 80 * index);
+    img.onload = ()=>{
+
+      setTimeout(()=>{
+
+        img.style.transition='transform 0.6s cubic-bezier(.68,-0.6,.32,1.6), opacity 0.5s ease';
+        img.style.opacity='1';
+        img.style.transform='translateY(-5px) scale(1.05)';
+
+        setTimeout(()=>{
+          img.style.transition='transform 0.3s ease';
+          img.style.transform='translateY(0) scale(1)';
+        },600);
+
+      },80*index);
+
     };
+
   });
+
 }
 
 // ================================
-// AFFICHAGE CARTE
+// MEMORY IMAGE ↔ MOT
 // ================================
-function openCardAtIndex(index) {
-  currentIndex = index;
-  currentCard = currentThemeCards[currentIndex];
-  showingWord = false;
+function startMemory(){
+
+  thumbnails.innerHTML='';
+  firstCard=null;
+  secondCard=null;
+
+  let memoryCards=[];
+
+  currentThemeCards.forEach((card,i)=>{
+
+    memoryCards.push({
+      type:"image",
+      pairId:i,
+      image:card.image,
+      word:card.word,
+      audio:card.audio
+    });
+
+    memoryCards.push({
+      type:"word",
+      pairId:i,
+      image:card.image,
+      word:card.word,
+      audio:card.audio
+    });
+
+  });
+
+  memoryCards.sort(()=>Math.random()-0.5);
+
+  memoryCards.forEach(card=>{
+
+    const div=document.createElement("div");
+
+    div.className="memoryCard";
+    div.dataset.flipped="false";
+
+    div.style.width="90px";
+    div.style.height="90px";
+    div.style.display="inline-flex";
+    div.style.alignItems="center";
+    div.style.justifyContent="center";
+    div.style.margin="6px";
+    div.style.background="#444";
+    div.style.color="white";
+    div.style.fontSize="18px";
+    div.style.cursor="pointer";
+    div.style.borderRadius="8px";
+
+    div.onclick=()=>{
+
+      if(div.dataset.flipped==="true" || secondCard) return;
+
+      div.dataset.flipped="true";
+
+      revealCard(div,card);
+
+      if(!firstCard){
+
+        firstCard={div,card};
+
+      }else{
+
+        secondCard={div,card};
+
+        if(firstCard.card.pairId===secondCard.card.pairId){
+
+          firstCard=null;
+          secondCard=null;
+
+        }else{
+
+          setTimeout(()=>{
+
+            hideCard(firstCard.div);
+            hideCard(secondCard.div);
+
+            firstCard=null;
+            secondCard=null;
+
+          },1000);
+
+        }
+
+      }
+
+    };
+
+    thumbnails.appendChild(div);
+
+  });
+
+}
+
+function revealCard(div,card){
+
+  div.innerHTML="";
+
+  if(card.type==="image"){
+
+    const img=document.createElement("img");
+    img.src=card.image;
+    img.style.maxWidth="80%";
+    img.style.maxHeight="80%";
+    div.appendChild(img);
+
+  }else{
+
+    div.textContent=card.word;
+
+    if(card.audio){
+      new Audio(card.audio).play();
+    }
+
+  }
+
+}
+
+function hideCard(div){
+
+  div.dataset.flipped="false";
+  div.innerHTML="";
+  div.style.background="#444";
+
+}
+
+// ================================
+// FLASHCARD
+// ================================
+function openCardAtIndex(index){
+
+  currentIndex=index;
+  currentCard=currentThemeCards[currentIndex];
+  showingWord=false;
   showImage();
   updateArrows();
+
 }
 
-function showImage() {
-  if (!currentCard) return;
-  cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
-  flashcard.classList.add('visible');
-  teacherBtn.style.display = "none";
+function showImage(){
 
-  const img = document.querySelector('.big-image');
-  img.onclick = closeCard;
+  if(!currentCard) return;
+
+  cardContent.innerHTML=`<img src="${currentCard.image}" class="big-image">`;
+
+  flashcard.classList.add('visible');
+  teacherBtn.style.display="none";
+
+  const img=document.querySelector('.big-image');
+
+  img.onclick=closeCard;
 
   void img.offsetWidth;
   img.classList.add('active');
+
   updateArrows();
+
 }
 
-function showWord() {
-  if (!currentCard) return;
-  cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
-  const wordDiv = cardContent.querySelector('.word');
-  teacherBtn.style.display = "none";
+function showWord(){
 
-  wordDiv.style.opacity = 0;
-  wordDiv.style.transition = "opacity 0.5s ease";
+  if(!currentCard) return;
+
+  cardContent.innerHTML=`<div class="word">${currentCard.word}</div>`;
+
+  const wordDiv=cardContent.querySelector('.word');
+
+  teacherBtn.style.display="none";
+
+  wordDiv.style.opacity=0;
+  wordDiv.style.transition="opacity 0.5s ease";
+
   void wordDiv.offsetWidth;
-  wordDiv.style.opacity = 1;
-  wordDiv.onclick = closeCard;
+
+  wordDiv.style.opacity=1;
+  wordDiv.onclick=closeCard;
 
   updateArrows();
+
 }
 
-function closeCard() {
+function closeCard(){
+
   flashcard.classList.remove('visible');
-  currentCard = null;
-  teacherBtn.style.display = "block";
+  currentCard=null;
+  teacherBtn.style.display="block";
+
 }
 
 // ================================
-// FLÈCHES NAVIGATION
+// NAVIGATION
 // ================================
-function updateArrows() {
-  leftArrow.style.display = currentIndex > 0 ? 'block' : 'none';
-  rightArrow.style.display = currentIndex < currentThemeCards.length - 1 ? 'block' : 'none';
+function updateArrows(){
+
+  leftArrow.style.display=currentIndex>0?'block':'none';
+  rightArrow.style.display=currentIndex<currentThemeCards.length-1?'block':'none';
+
 }
 
-leftArrow.onclick = () => { if (currentIndex > 0) openCardAtIndex(currentIndex - 1); };
-rightArrow.onclick = () => { if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1); };
+leftArrow.onclick=()=>{if(currentIndex>0)openCardAtIndex(currentIndex-1)};
+rightArrow.onclick=()=>{if(currentIndex<currentThemeCards.length-1)openCardAtIndex(currentIndex+1)};
 
 // ================================
-// BOUTONS FLIP ET SPEAK
+// FLIP / SPEAK
 // ================================
-document.getElementById('flipBtn').onclick = () => {
-  if (!currentCard) return;
-  showingWord = !showingWord;
+document.getElementById('flipBtn').onclick=()=>{
+
+  if(!currentCard) return;
+
+  showingWord=!showingWord;
+
   showingWord ? showWord() : showImage();
+
 };
 
-document.getElementById('speakBtn').onclick = () => {
-  if (!currentCard) return;
-  if (currentCard.audio) {
+document.getElementById('speakBtn').onclick=()=>{
+
+  if(!currentCard) return;
+
+  if(currentCard.audio){
+
     new Audio(currentCard.audio).play();
-  } else {
-    const u = new SpeechSynthesisUtterance(currentCard.word);
-    u.lang = 'en-GB';
-    u.rate = 0.7;
+
+  }else{
+
+    const u=new SpeechSynthesisUtterance(currentCard.word);
+    u.lang='en-GB';
+    u.rate=0.7;
+
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
+
   }
+
 };
 
 // ================================
-// BOUTON PLEIN ÉCRAN
+// FULLSCREEN
 // ================================
-fullscreenBtn.onclick = () => {
-  const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
-  if (!isFullscreen) {
-    document.documentElement.requestFullscreen?.() || document.documentElement.webkitRequestFullscreen?.();
-  } else {
-    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+fullscreenBtn.onclick=()=>{
+
+  const isFullscreen=document.fullscreenElement||document.webkitFullscreenElement;
+
+  if(!isFullscreen){
+
+    document.documentElement.requestFullscreen?.()
+    || document.documentElement.webkitRequestFullscreen?.();
+
+  }else{
+
+    document.exitFullscreen?.()
+    || document.webkitExitFullscreen?.();
+
   }
+
 };
 
-// ================================
-// INITIALISATION
 // ================================
 loadThemes();
-themeSelect.onchange = loadTheme;
+themeSelect.onchange=loadTheme;
