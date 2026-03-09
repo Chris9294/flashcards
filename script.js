@@ -247,8 +247,11 @@ function startMemory(){
     div.style.cursor = "pointer";
     div.style.borderRadius = "10px";
     div.style.lineHeight = "1.2";
-    div.style.overflowWrap = "break-word";
-    div.style.wordBreak = "break-word";
+    div.style.whiteSpace = "normal";
+    div.style.wordBreak = "normal";
+    div.style.overflowWrap = "anywhere";
+    div.style.hyphens = "auto";
+    div.lang = "en";
 
     div.onclick=()=>{
       if(div.dataset.flipped==="true" || secondCard) return;
