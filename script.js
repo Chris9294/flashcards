@@ -232,16 +232,27 @@ function startMemory(){
     div.className="memoryCard";
     div.dataset.flipped="false";
 
-    const totalCards = memoryCards.length;
+   // ================================
+// CALCUL DU NOMBRE DE CARTES PAR LIGNE
+// ================================
+const totalCards = memoryCards.length;
 
-// nombre de cartes par ligne
-let cardsPerRow = Math.ceil(Math.sqrt(totalCards));
+let cardsPerRow = 4; // valeur par défaut
 
-// si nombre pair de paires → privilégier 4 ou 5 par ligne
-if(totalCards % 4 === 0) cardsPerRow = 4;
-if(totalCards % 10 === 0) cardsPerRow = 5;
+if(totalCards <= 8) cardsPerRow = 4;
+else if(totalCards <= 12) cardsPerRow = 4;
+else if(totalCards <= 16) cardsPerRow = 4;
+else cardsPerRow = 5;
 
-const cardSize = Math.floor((flashcard.clientWidth * 0.8) / cardsPerRow);
+// ================================
+// CALCUL TAILLE CARTE POUR TENIR SUR UNE LIGNE
+// ================================
+const gap = 12;
+const containerWidth = flashcard.clientWidth * 0.9;
+
+const cardSize = Math.floor(
+  (containerWidth - (gap * (cardsPerRow - 1))) / cardsPerRow
+);
     
     div.style.width = cardSize + "px";
     div.style.height = cardSize + "px";
