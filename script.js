@@ -184,60 +184,64 @@ function loadThumbnails(){
   });
 }
 
-// ================================
-// MEMORY - GRILLE RECTANGULAIRE ESPACÉE
-// ================================
-function startMemory(){
+function startMemory() {
   flashcard.classList.add('visible');
 
   // MASQUER LES FLÈCHES
   leftArrow.style.display = 'none';
   rightArrow.style.display = 'none';
 
-  cardContent.innerHTML="";
+  cardContent.innerHTML = "";
 
-  // GRID RESPONSIVE
+  // ===== GRILLE RECTANGULAIRE FIXE =====
+  const columns = 4;      // nombre de colonnes
+  const cardWidth = 140;  // largeur fixe des cartes
+  const cardHeight = 140; // hauteur fixe des cartes
+  const gap = 12;         // espace entre cartes en px
+
   cardContent.style.display = "grid";
-  cardContent.style.gridTemplateColumns = `repeat(auto-fit, minmax(140px, 1fr))`; // colonnes auto-fit
-  cardContent.style.gridAutoRows = "160px";
-  cardContent.style.gap = "12px"; // espace entre les cartes
+  cardContent.style.gridTemplateColumns = `repeat(${columns}, ${cardWidth}px)`;
+  cardContent.style.gridAutoRows = `${cardHeight}px`;
+  cardContent.style.gap = `${gap}px`;
   cardContent.style.justifyContent = "center";
   cardContent.style.alignContent = "center";
   cardContent.style.position = "relative";
 
-  firstCard=null;
-  secondCard=null;
-  matchedPairs=0;
+  firstCard = null;
+  secondCard = null;
+  matchedPairs = 0;
 
-  let memoryCards=[];
-  currentThemeCards.forEach((card,i)=>{
-    memoryCards.push({ type:"image", pairId:i, image:card.image, word:card.word, audio:card.audio });
-    memoryCards.push({ type:"word", pairId:i, image:card.image, word:card.word, audio:card.audio });
+  // Créer les paires
+  let memoryCards = [];
+  currentThemeCards.forEach((card, i) => {
+    memoryCards.push({ type: "image", pairId: i, image: card.image, word: card.word, audio: card.audio });
+    memoryCards.push({ type: "word", pairId: i, image: card.image, word: card.word, audio: card.audio });
   });
+  totalPairs = currentThemeCards.length;
+  memoryCards.sort(() => Math.random() - 0.5);
 
-  totalPairs=currentThemeCards.length;
-  memoryCards.sort(()=>Math.random()-0.5);
-
-  const quitBtn=document.createElement("button");
-  quitBtn.textContent="✖";
-  quitBtn.style.position="absolute";
-  quitBtn.style.bottom="20px";
-  quitBtn.style.right="20px";
-  quitBtn.style.zIndex="1000";
-  quitBtn.style.fontSize="28px";
-  quitBtn.style.background="transparent";
-  quitBtn.style.border="none";
-  quitBtn.style.cursor="pointer";
-  quitBtn.onclick=exitMemory;
+  // Bouton quitter
+  const quitBtn = document.createElement("button");
+  quitBtn.textContent = "✖";
+  quitBtn.style.position = "absolute";
+  quitBtn.style.bottom = "20px";
+  quitBtn.style.right = "20px";
+  quitBtn.style.zIndex = "1000";
+  quitBtn.style.fontSize = "28px";
+  quitBtn.style.background = "transparent";
+  quitBtn.style.border = "none";
+  quitBtn.style.cursor = "pointer";
+  quitBtn.onclick = exitMemory;
   cardContent.appendChild(quitBtn);
 
-  memoryCards.forEach(card=>{
-    const div=document.createElement("div");
-    div.className="memoryCard";
-    div.dataset.flipped="false";
+  // Créer les cartes
+  memoryCards.forEach(card => {
+    const div = document.createElement("div");
+    div.className = "memoryCard";
+    div.dataset.flipped = "false";
 
-    div.style.width = "100%";
-    div.style.height = "100%";
+    div.style.width = `${cardWidth}px`;
+    div.style.height = `${cardHeight}px`;
     div.style.display = "flex";
     div.style.alignItems = "center";
     div.style.justifyContent = "center";
@@ -253,36 +257,41 @@ function startMemory(){
     div.style.overflowWrap = "break-word";
     div.style.wordBreak = "break-word";
 
-    div.onclick=()=>{
-      if(div.dataset.flipped==="true" || secondCard) return;
-      div.dataset.flipped="true";
-      revealCard(div,card);
+    div.onclick = () => {
+      if (div.dataset.flipped === "true" || secondCard) return;
+      div.dataset.flipped = "true";
+      revealCard(div, card);
 
-      if(!firstCard){
-        firstCard={div,card};
-      }else{
-        secondCard={div,card};
-        if(firstCard.card.pairId===secondCard.card.pairId){
+      if (!firstCard) {
+        firstCard = { div, card };
+      } else {
+        secondCard = { div, card };
+
+        if (firstCard.card.pairId === secondCard.card.pairId) {
           showCheck();
           matchedPairs++;
 
-          setTimeout(()=>{
+          // Faire disparaître les cartes
+          setTimeout(() => {
             firstCard.div.remove();
             secondCard.div.remove();
-            firstCard=null;
-            secondCard=null;
-            if(matchedPairs===totalPairs) showBravo();
-          },400);
+            firstCard = null;
+            secondCard = null;
+
+            if (matchedPairs === totalPairs) showBravo();
+          }, 400);
+
         } else {
-          setTimeout(()=>{
+          setTimeout(() => {
             hideCard(firstCard.div);
             hideCard(secondCard.div);
-            firstCard=null;
-            secondCard=null;
-          },1000);
+            firstCard = null;
+            secondCard = null;
+          }, 1000);
         }
       }
     };
+
     cardContent.appendChild(div);
   });
 }
