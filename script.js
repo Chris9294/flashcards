@@ -45,9 +45,35 @@ teacherCode.addEventListener("input", () => {
 });
 
 // ================================
-// CHARGER LES SÉRIES
+// BOUTON MÉLANGER (à côté du menu séries)
+// ================================
+const shuffleBtn = document.createElement('button');
+shuffleBtn.textContent = "🔀";
+shuffleBtn.title = "Mélanger les cartes";
+shuffleBtn.style.marginLeft = "8px";
+shuffleBtn.style.fontSize = "18px";
+shuffleBtn.style.padding = "4px 8px";
+shuffleBtn.style.borderRadius = "6px";
+shuffleBtn.style.border = "none";
+shuffleBtn.style.cursor = "pointer";
+shuffleBtn.style.background = "#ffcc80";
+shuffleBtn.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+shuffleBtn.onclick = () => {
+  currentThemeCards = currentThemeCards
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+  loadThumbnails();
+};
+
+// Insérer le bouton juste après le select
+themeSelect.parentNode.insertBefore(shuffleBtn, themeSelect.nextSibling);
+
+// ================================
+// CHARGER LES SERIES
 // ================================
 async function loadThemes() {
+
   const { data: themes, error } = await supabaseClient
     .from('themes')
     .select('*')
@@ -59,6 +85,7 @@ async function loadThemes() {
   }
 
   themeSelect.innerHTML = '';
+
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Flashcards —';
@@ -76,6 +103,7 @@ async function loadThemes() {
 // CHARGEMENT D’UNE SÉRIE
 // ================================
 async function loadTheme() {
+
   const themeId = themeSelect.value;
   thumbnails.innerHTML = '';
   closeCard();
@@ -95,61 +123,49 @@ async function loadTheme() {
   }
 
   currentThemeCards = cards.map(card => {
+
     const imageUrl =
-      supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
+      supabaseClient
+        .storage
+        .from('cards')
+        .getPublicUrl(card.image_url)
+        .data.publicUrl;
 
-    const audioUrl = card.audio_url
-      ? supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl
-      : null;
+    let audioUrl = null;
+    if (card.audio_url) {
+      audioUrl =
+        supabaseClient
+          .storage
+          .from('cards')
+          .getPublicUrl(card.audio_url)
+          .data.publicUrl;
+    }
 
-    // Préchargement de l'image
-    const imgPreload = new Image();
-    imgPreload.src = imageUrl;
-
-    return { word: card.word, image: imageUrl, audio: audioUrl };
+    return {
+      word: card.word,
+      image: imageUrl,
+      audio: audioUrl
+    };
   });
 
   loadThumbnails();
 }
 
 // ================================
-// CHARGEMENT DES MINIATURES
+// AFFICHAGE MINIATURES
 // ================================
 function loadThumbnails() {
   thumbnails.innerHTML = '';
   currentThemeCards.forEach((card, index) => {
     const img = document.createElement('img');
     img.src = card.image;
+    img.style.opacity = 0;
+    img.style.transition = "opacity 0.3s ease";
+    img.onload = () => img.style.opacity = 1;
     img.onclick = () => openCardAtIndex(index);
     thumbnails.appendChild(img);
   });
 }
-
-// ================================
-// BOUTON MÉLANGER
-// ================================
-function shuffleCards() {
-  for (let i = currentThemeCards.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [currentThemeCards[i], currentThemeCards[j]] = [currentThemeCards[j], currentThemeCards[i]];
-  }
-  loadThumbnails();
-}
-
-const shuffleBtn = document.createElement('button');
-shuffleBtn.textContent = "🔀 Mélanger";
-shuffleBtn.style.position = "fixed";
-shuffleBtn.style.top = "80px";
-shuffleBtn.style.right = "20px";
-shuffleBtn.style.zIndex = 1200;
-shuffleBtn.style.fontSize = "24px";
-shuffleBtn.style.background = "#ffcc80";
-shuffleBtn.style.border = "none";
-shuffleBtn.style.borderRadius = "12px";
-shuffleBtn.style.padding = "8px 12px";
-shuffleBtn.style.cursor = "pointer";
-shuffleBtn.onclick = shuffleCards;
-document.body.appendChild(shuffleBtn);
 
 // ================================
 // AFFICHAGE CARTE
@@ -170,9 +186,9 @@ function showImage() {
 
   const img = document.querySelector('.big-image');
   img.onclick = closeCard;
+
   void img.offsetWidth;
   img.classList.add('active');
-
   updateArrows();
 }
 
@@ -180,15 +196,14 @@ function showWord() {
   if (!currentCard) return;
   cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
   const wordDiv = cardContent.querySelector('.word');
-
   teacherBtn.style.display = "none";
 
   wordDiv.style.opacity = 0;
   wordDiv.style.transition = "opacity 0.5s ease";
   void wordDiv.offsetWidth;
   wordDiv.style.opacity = 1;
-
   wordDiv.onclick = closeCard;
+
   updateArrows();
 }
 
@@ -206,15 +221,11 @@ function updateArrows() {
   rightArrow.style.display = currentIndex < currentThemeCards.length - 1 ? 'block' : 'none';
 }
 
-leftArrow.onclick = () => {
-  if (currentIndex > 0) openCardAtIndex(currentIndex - 1);
-};
-rightArrow.onclick = () => {
-  if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1);
-};
+leftArrow.onclick = () => { if (currentIndex > 0) openCardAtIndex(currentIndex - 1); };
+rightArrow.onclick = () => { if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1); };
 
 // ================================
-// BOUTONS FLIP / SPEAK
+// BOUTONS
 // ================================
 document.getElementById('flipBtn').onclick = () => {
   if (!currentCard) return;
@@ -239,14 +250,11 @@ document.getElementById('speakBtn').onclick = () => {
 // BOUTON PLEIN ÉCRAN
 // ================================
 fullscreenBtn.onclick = () => {
-  const isFullscreen =
-    document.fullscreenElement || document.webkitFullscreenElement;
+  const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
   if (!isFullscreen) {
-    document.documentElement.requestFullscreen?.();
-    document.documentElement.webkitRequestFullscreen?.();
+    document.documentElement.requestFullscreen?.() || document.documentElement.webkitRequestFullscreen?.();
   } else {
-    document.exitFullscreen?.();
-    document.webkitExitFullscreen?.();
+    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
   }
 };
 
