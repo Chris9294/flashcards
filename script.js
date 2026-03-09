@@ -218,7 +218,7 @@ function loadThumbnails(){
 }
 
 // ================================
-// MEMORY
+// MEMORY IMAGE ↔ MOT (RESPONSIVE)
 // ================================
 function startMemory(){
 
@@ -231,99 +231,111 @@ function startMemory(){
   cardContent.style.alignItems="center";
   cardContent.style.gap="12px";
 
-  firstCard=null;
-  secondCard=null;
-  matchedPairs=0;
+  firstCard = null;
+  secondCard = null;
+  matchedPairs = 0;
 
-  let memoryCards=[];
+  let memoryCards = [];
 
   currentThemeCards.forEach((card,i)=>{
 
-    memoryCards.push({type:"image",pairId:i,image:card.image,word:card.word,audio:card.audio});
-    memoryCards.push({type:"word",pairId:i,image:card.image,word:card.word,audio:card.audio});
+    memoryCards.push({
+      type:"image",
+      pairId:i,
+      image:card.image,
+      word:card.word,
+      audio:card.audio
+    });
+
+    memoryCards.push({
+      type:"word",
+      pairId:i,
+      image:card.image,
+      word:card.word,
+      audio:card.audio
+    });
 
   });
 
-  totalPairs=currentThemeCards.length;
+  totalPairs = currentThemeCards.length;
+
   memoryCards.sort(()=>Math.random()-0.5);
 
-  const quitBtn=document.createElement("button");
-  quitBtn.textContent="✖";
-  quitBtn.style.position="absolute";
-  quitBtn.style.bottom="20px";
-  quitBtn.style.right="20px";
-  quitBtn.style.zIndex="1000";
-  quitBtn.style.fontSize="22px";
-  quitBtn.style.background="transparent";
-  quitBtn.style.border="none";
-  quitBtn.style.cursor="pointer";
+  // Calcul responsive taille cartes
+  const cardCount = memoryCards.length;
+  let cardSize = 140; // taille par défaut
+  if(cardCount > 12){
+    cardSize = Math.max(80, 800 / Math.ceil(Math.sqrt(cardCount)));
+  }
 
-  quitBtn.onclick=exitMemory;
+  // Bouton quitter
+  const quitBtn = document.createElement("button");
+  quitBtn.textContent = "✖";
+  quitBtn.style.position = "absolute";
+  quitBtn.style.bottom = "20px";
+  quitBtn.style.right = "20px";
+  quitBtn.style.zIndex = "1000";
+  quitBtn.style.fontSize = "28px";
+  quitBtn.style.background = "transparent";
+  quitBtn.style.border = "none";
+  quitBtn.style.cursor = "pointer";
+
+  quitBtn.onclick = exitMemory;
   cardContent.appendChild(quitBtn);
 
   memoryCards.forEach(card=>{
 
-    const div=document.createElement("div");
-    div.className="memoryCard";
-    div.dataset.flipped="false";
+    const div = document.createElement("div");
 
-    div.style.width="140px";
-    div.style.height="140px";
-    div.style.display="flex";
-    div.style.alignItems="center";
-    div.style.justifyContent="center";
-    div.style.textAlign="center";
-    div.style.padding="10px";
-    div.style.background="#444";
-    div.style.color="white";
-    div.style.fontSize="clamp(14px,2vw,26px)";
-    div.style.fontWeight="600";
-    div.style.cursor="pointer";
-    div.style.borderRadius="10px";
+    div.className = "memoryCard";
+    div.dataset.flipped = "false";
 
-    div.onclick=()=>{
+    div.style.width = cardSize + "px";
+    div.style.height = cardSize + "px";
+    div.style.display = "flex";
+    div.style.alignItems = "center";
+    div.style.justifyContent = "center";
+    div.style.textAlign = "center";
+    div.style.padding = "10px";
+    div.style.background = "#444";
+    div.style.color = "white";
+    div.style.fontSize = `clamp(12px, ${cardSize/6}px, 26px)`;
+    div.style.fontWeight = "600";
+    div.style.cursor = "pointer";
+    div.style.borderRadius = "10px";
+    div.style.lineHeight = "1.2";
+
+    div.onclick = ()=>{
 
       if(div.dataset.flipped==="true" || secondCard) return;
 
-      div.dataset.flipped="true";
+      div.dataset.flipped = "true";
+
       revealCard(div,card);
 
       if(!firstCard){
-
-        firstCard={div,card};
-
+        firstCard = {div, card};
       }else{
+        secondCard = {div, card};
 
-        secondCard={div,card};
-
-        if(firstCard.card.pairId===secondCard.card.pairId){
-
+        if(firstCard.card.pairId === secondCard.card.pairId){
           showCheck();
-
-          firstCard.div.style.transition="opacity 0.6s";
-          secondCard.div.style.transition="opacity 0.6s";
-          firstCard.div.style.opacity="0";
-          secondCard.div.style.opacity="0";
-
           matchedPairs++;
 
-          firstCard=null;
-          secondCard=null;
+          firstCard = null;
+          secondCard = null;
 
-          if(matchedPairs===totalPairs){
+          if(matchedPairs === totalPairs){
             showBravo();
           }
 
         }else{
 
           setTimeout(()=>{
-
             hideCard(firstCard.div);
             hideCard(secondCard.div);
-
-            firstCard=null;
-            secondCard=null;
-
+            firstCard = null;
+            secondCard = null;
           },1000);
 
         }
@@ -338,14 +350,17 @@ function startMemory(){
 
 }
 
+// ================================
+// REVEAL / HIDE CARD
+// ================================
 function revealCard(div,card){
 
   div.innerHTML="";
 
   if(card.type==="image"){
 
-    const img=document.createElement("img");
-    img.src=card.image;
+    const img = document.createElement("img");
+    img.src = card.image;
     img.style.maxWidth="90%";
     img.style.maxHeight="90%";
     img.style.objectFit="contain";
@@ -354,7 +369,7 @@ function revealCard(div,card){
 
   }else{
 
-    div.textContent=card.word;
+    div.textContent = card.word;
 
     if(card.audio){
       new Audio(card.audio).play();
@@ -365,9 +380,11 @@ function revealCard(div,card){
 }
 
 function hideCard(div){
+
   div.dataset.flipped="false";
   div.innerHTML="";
   div.style.background="#444";
+
 }
 
 // ================================
@@ -375,64 +392,66 @@ function hideCard(div){
 // ================================
 function exitMemory(){
 
-  memoryMode=false;
-  memoryBtn.style.opacity=1;
+  memoryMode = false;
+  memoryBtn.style.opacity = 1;
 
   flashcard.classList.remove('visible');
-  cardContent.innerHTML="";
+  cardContent.innerHTML = "";
 
   loadThumbnails();
 
 }
 
+// ================================
+// CHECK & BRAVO
+// ================================
 function showCheck(){
 
-  const check=document.createElement("div");
+  const check = document.createElement("div");
 
-  check.textContent="✔";
-  check.style.position="fixed";
-  check.style.top="50%";
-  check.style.left="50%";
-  check.style.transform="translate(-50%,-50%)";
-  check.style.fontSize="240px";
-  check.style.color="#4CAF50";
-  check.style.pointerEvents="none";
-  check.style.zIndex="2000";
+  check.textContent = "✔";
+  check.style.position = "fixed";
+  check.style.top = "50%";
+  check.style.left = "50%";
+  check.style.transform = "translate(-50%,-50%)";
+  check.style.fontSize = "240px"; // deux fois plus gros
+  check.style.color = "#4CAF50";
+  check.style.pointerEvents = "none";
+  check.style.zIndex = "2000";
 
   flashcard.appendChild(check);
 
-  setTimeout(()=>check.remove(),800);
+  setTimeout(()=> check.remove(), 800); // deux fois plus longtemps
 
 }
 
 function showBravo(){
 
-  const bravo=document.createElement("div");
+  const bravo = document.createElement("div");
 
-  bravo.style.position="fixed";
-  bravo.style.top="0";
-  bravo.style.left="0";
-  bravo.style.width="100%";
-  bravo.style.height="100%";
-  bravo.style.background="rgba(0,0,0,0.9)";
-  bravo.style.display="flex";
-  bravo.style.alignItems="center";
-  bravo.style.justifyContent="center";
-  bravo.style.fontSize="120px";
-  bravo.style.color="white";
-  bravo.style.fontWeight="bold";
-  bravo.style.zIndex="2000";
-  bravo.textContent="🎉 BRAVO !";
+  bravo.style.position = "fixed";
+  bravo.style.top = "0";
+  bravo.style.left = "0";
+  bravo.style.width = "100%";
+  bravo.style.height = "100%";
+  bravo.style.background = "rgba(0,0,0,0.85)";
+  bravo.style.display = "flex";
+  bravo.style.alignItems = "center";
+  bravo.style.justifyContent = "center";
+  bravo.style.fontSize = "160px"; // deux fois plus gros
+  bravo.style.color = "white";
+  bravo.style.textAlign = "center";
+  bravo.textContent = "🎉 BRAVO !";
+  bravo.style.zIndex = "2000";
 
   flashcard.appendChild(bravo);
 
   setTimeout(()=>{
     bravo.remove();
     exitMemory();
-  },3500);
+  },4000); // deux fois plus longtemps
 
 }
-
 // ================================
 // FLASHCARD
 // ================================
