@@ -267,8 +267,9 @@ function startMemory(){
   const quitBtn=document.createElement("button");
   quitBtn.textContent="✖";
   quitBtn.style.position="absolute";
-  quitBtn.style.top="10px";
-  quitBtn.style.right="10px";
+  quitBtn.style.bottom="20px";
+  quitBtn.style.right="20px";
+  quitBtn.style.zIndex="1000";
   quitBtn.style.fontSize="22px";
   quitBtn.style.background="transparent";
   quitBtn.style.border="none";
@@ -413,8 +414,8 @@ function showCheck(){
   check.style.color="#4CAF50";
   check.style.pointerEvents="none";
 
-  document.body.appendChild(check);
-
+  flashcard.appendChild(check);
+  check.style.zIndex="2000";
   setTimeout(()=>check.remove(),400);
 
 }
@@ -436,8 +437,9 @@ function showBravo(){
   bravo.style.color="white";
   bravo.textContent="🎉 BRAVO !";
 
-  document.body.appendChild(bravo);
-
+  flashcard.appendChild(bravo);
+  bravo.style.zIndex="2000";
+  
   setTimeout(()=>{
     bravo.remove();
     exitMemory();
