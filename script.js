@@ -45,35 +45,32 @@ teacherCode.addEventListener("input", () => {
 });
 
 // ================================
-// BOUTON MÉLANGER (à côté du menu séries)
+// BOUTON MÉLANGER discret
 // ================================
 const shuffleBtn = document.createElement('button');
 shuffleBtn.textContent = "🔀";
 shuffleBtn.title = "Mélanger les cartes";
-shuffleBtn.style.marginLeft = "8px";
-shuffleBtn.style.fontSize = "18px";
-shuffleBtn.style.padding = "4px 8px";
-shuffleBtn.style.borderRadius = "6px";
-shuffleBtn.style.border = "none";
+shuffleBtn.style.marginLeft = "4px";
+shuffleBtn.style.fontSize = "16px";
+shuffleBtn.style.padding = "2px 6px";
+shuffleBtn.style.borderRadius = "4px";
+shuffleBtn.style.border = "1px solid #ccc";
+shuffleBtn.style.background = "#f9f9f9";
 shuffleBtn.style.cursor = "pointer";
-shuffleBtn.style.background = "#ffcc80";
-shuffleBtn.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
 shuffleBtn.onclick = () => {
+  if (!currentThemeCards.length) return;
   currentThemeCards = currentThemeCards
     .map(value => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value);
   loadThumbnails();
 };
-
-// Insérer le bouton juste après le select
 themeSelect.parentNode.insertBefore(shuffleBtn, themeSelect.nextSibling);
 
 // ================================
 // CHARGER LES SERIES
 // ================================
 async function loadThemes() {
-
   const { data: themes, error } = await supabaseClient
     .from('themes')
     .select('*')
@@ -85,7 +82,6 @@ async function loadThemes() {
   }
 
   themeSelect.innerHTML = '';
-
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Flashcards —';
@@ -103,7 +99,6 @@ async function loadThemes() {
 // CHARGEMENT D’UNE SÉRIE
 // ================================
 async function loadTheme() {
-
   const themeId = themeSelect.value;
   thumbnails.innerHTML = '';
   closeCard();
@@ -123,29 +118,11 @@ async function loadTheme() {
   }
 
   currentThemeCards = cards.map(card => {
-
-    const imageUrl =
-      supabaseClient
-        .storage
-        .from('cards')
-        .getPublicUrl(card.image_url)
-        .data.publicUrl;
-
-    let audioUrl = null;
-    if (card.audio_url) {
-      audioUrl =
-        supabaseClient
-          .storage
-          .from('cards')
-          .getPublicUrl(card.audio_url)
-          .data.publicUrl;
-    }
-
-    return {
-      word: card.word,
-      image: imageUrl,
-      audio: audioUrl
-    };
+    const imageUrl = supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
+    const audioUrl = card.audio_url
+      ? supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl
+      : null;
+    return { word: card.word, image: imageUrl, audio: audioUrl };
   });
 
   loadThumbnails();
@@ -159,9 +136,7 @@ function loadThumbnails() {
   currentThemeCards.forEach((card, index) => {
     const img = document.createElement('img');
     img.src = card.image;
-    img.style.opacity = 0;
-    img.style.transition = "opacity 0.3s ease";
-    img.onload = () => img.style.opacity = 1;
+    img.style.opacity = "1";  // pas de transition pour éviter bug d'affichage
     img.onclick = () => openCardAtIndex(index);
     thumbnails.appendChild(img);
   });
