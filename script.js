@@ -185,7 +185,7 @@ function loadThumbnails(){
 }
 
 // ================================
-// MEMORY - GRILLE RECTANGULAIRE
+// MEMORY - GRILLE RECTANGULAIRE ESPACÉE
 // ================================
 function startMemory(){
   flashcard.classList.add('visible');
@@ -195,13 +195,12 @@ function startMemory(){
   rightArrow.style.display = 'none';
 
   cardContent.innerHTML="";
-  
-  // GRID RECTANGULAIRE
-  const cols = 4; // nombre de colonnes fixe
+
+  // GRID RESPONSIVE
   cardContent.style.display = "grid";
-  cardContent.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  cardContent.style.gridTemplateColumns = `repeat(auto-fit, minmax(140px, 1fr))`; // colonnes auto-fit
   cardContent.style.gridAutoRows = "160px";
-  cardContent.style.gap = "12px";
+  cardContent.style.gap = "12px"; // espace entre les cartes
   cardContent.style.justifyContent = "center";
   cardContent.style.alignContent = "center";
   cardContent.style.position = "relative";
@@ -267,7 +266,6 @@ function startMemory(){
           showCheck();
           matchedPairs++;
 
-          // disparition des cartes
           setTimeout(()=>{
             firstCard.div.remove();
             secondCard.div.remove();
@@ -288,7 +286,6 @@ function startMemory(){
     cardContent.appendChild(div);
   });
 }
-
 // ================================
 // REVEAL / HIDE CARD
 // ================================
