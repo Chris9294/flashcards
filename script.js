@@ -53,9 +53,8 @@ shuffleBtn.title = "Mélanger les cartes";
 shuffleBtn.style.marginLeft = "4px";
 shuffleBtn.style.fontSize = "16px";
 shuffleBtn.style.padding = "2px 6px";
-shuffleBtn.style.borderRadius = "4px";
-shuffleBtn.style.border = "1px solid #ccc";
-shuffleBtn.style.background = "#f9f9f9";
+shuffleBtn.style.border = "none";
+shuffleBtn.style.background = "transparent";
 shuffleBtn.style.cursor = "pointer";
 shuffleBtn.onclick = () => {
   if (!currentThemeCards.length) return;
@@ -117,11 +116,17 @@ async function loadTheme() {
     return;
   }
 
+  // Préchargement des images + mapping
   currentThemeCards = cards.map(card => {
     const imageUrl = supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
     const audioUrl = card.audio_url
       ? supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl
       : null;
+
+    // Précharger l'image
+    const img = new Image();
+    img.src = imageUrl;
+
     return { word: card.word, image: imageUrl, audio: audioUrl };
   });
 
@@ -129,22 +134,17 @@ async function loadTheme() {
 }
 
 // ================================
-// AFFICHAGE MINIATURES AVEC ANIMATION SÛRE
+// AFFICHAGE MINIATURES
 // ================================
 function loadThumbnails() {
   thumbnails.innerHTML = '';
-
   currentThemeCards.forEach((card, index) => {
     const img = document.createElement('img');
     img.src = card.image;
-    img.classList.add('thumbnail-fade'); // classe pour animation
+    img.style.opacity = "1";
+    img.style.display = 'inline-block';
     img.onclick = () => openCardAtIndex(index);
     thumbnails.appendChild(img);
-
-    // On attend que l'image soit chargée avant de déclencher la transition
-    img.onload = () => {
-      setTimeout(() => img.classList.add('visible'), 50 * index);
-    };
   });
 }
 
@@ -206,7 +206,7 @@ leftArrow.onclick = () => { if (currentIndex > 0) openCardAtIndex(currentIndex -
 rightArrow.onclick = () => { if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1); };
 
 // ================================
-// BOUTONS
+// BOUTONS FLIP ET SPEAK
 // ================================
 document.getElementById('flipBtn').onclick = () => {
   if (!currentCard) return;
@@ -243,3 +243,4 @@ fullscreenBtn.onclick = () => {
 // INITIALISATION
 // ================================
 loadThemes();
+themeSelect.onchange = loadTheme;
