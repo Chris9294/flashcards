@@ -242,7 +242,7 @@ function startMemory(){
     div.style.padding = "8px"; // moins de marge pour agrandir le texte
     div.style.background = "#444";
     div.style.color = "white";
-    div.style.fontSize = `clamp(14px, ${cardSize/6}px, 28px)`; // texte un peu plus grand
+    div.style.fontSize = `clamp(18px, ${cardSize/5}px, 32px)`; // texte un peu plus grand
     div.style.fontWeight = "600";
     div.style.cursor = "pointer";
     div.style.borderRadius = "10px";
