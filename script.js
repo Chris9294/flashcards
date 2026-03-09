@@ -67,6 +67,106 @@ shuffleBtn.onclick = () => {
 themeSelect.parentNode.insertBefore(shuffleBtn, themeSelect.nextSibling);
 
 // ================================
+// BOUTON MEMORY
+// ================================
+const memoryBtn = document.createElement('button');
+memoryBtn.textContent = "🎮";
+memoryBtn.title = "Mode Memory";
+memoryBtn.style.marginLeft = "4px";
+memoryBtn.style.fontSize = "16px";
+memoryBtn.style.padding = "2px 6px";
+memoryBtn.style.border = "none";
+memoryBtn.style.background = "transparent";
+memoryBtn.style.cursor = "pointer";
+themeSelect.parentNode.insertBefore(memoryBtn, shuffleBtn.nextSibling);
+
+let memoryMode = false;
+let firstCard = null;
+let secondCard = null;
+
+memoryBtn.onclick = () => {
+  memoryMode = !memoryMode;
+  memoryBtn.style.opacity = memoryMode ? 0.6 : 1;
+  if (memoryMode) startMemory();
+  else loadThumbnails();
+};
+
+function startMemory() {
+  thumbnails.innerHTML = '';
+  firstCard = null;
+  secondCard = null;
+
+  // Duplique les cartes pour former les paires
+  const memoryCards = currentThemeCards.concat(currentThemeCards)
+    .map((card, idx) => ({ ...card, id: idx, flipped: false, matched: false }));
+
+  // Mélange
+  memoryCards.sort(() => Math.random() - 0.5);
+
+  memoryCards.forEach(card => {
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.style.opacity = "1";
+    img.style.transform = 'translateY(30px) scale(0.85)';
+    img.style.display = 'inline-block';
+    img.style.cursor = "pointer";
+
+    // état initial face cachée
+    img.dataset.flipped = 'false';
+    img.style.filter = 'brightness(0)';
+    img.style.transition = 'transform 0.4s ease, filter 0.4s ease';
+
+    img.onclick = () => {
+      if (card.matched || img.dataset.flipped === 'true' || secondCard) return;
+
+      // retourner
+      img.dataset.flipped = 'true';
+      img.style.filter = 'brightness(1)';
+      img.style.transform = 'scale(1.05)';
+
+      if (!firstCard) firstCard = { card, img };
+      else {
+        secondCard = { card, img };
+        if (firstCard.card.word === secondCard.card.word) {
+          firstCard.card.matched = true;
+          secondCard.card.matched = true;
+          firstCard.img.style.transform = 'scale(1)';
+          secondCard.img.style.transform = 'scale(1)';
+          firstCard = null;
+          secondCard = null;
+        } else {
+          setTimeout(() => {
+            firstCard.img.dataset.flipped = 'false';
+            secondCard.img.dataset.flipped = 'false';
+            firstCard.img.style.filter = 'brightness(0)';
+            secondCard.img.style.filter = 'brightness(0)';
+            firstCard.img.style.transform = 'scale(0.85)';
+            secondCard.img.style.transform = 'scale(0.85)';
+            firstCard = null;
+            secondCard = null;
+          }, 1000);
+        }
+      }
+    };
+
+    thumbnails.appendChild(img);
+
+    // Animation rebond cascade
+    img.onload = () => {
+      setTimeout(() => {
+        img.style.transition = 'transform 0.6s cubic-bezier(.68,-0.6,.32,1.6), opacity 0.5s ease';
+        img.style.opacity = '1';
+        img.style.transform = 'translateY(-5px) scale(1.05)';
+        setTimeout(() => {
+          img.style.transition = 'transform 0.3s ease';
+          img.style.transform = 'translateY(0) scale(0.85)';
+        }, 600);
+      }, 80 * card.id);
+    };
+  });
+}
+
+// ================================
 // CHARGER LES SERIES
 // ================================
 async function loadThemes() {
@@ -116,25 +216,23 @@ async function loadTheme() {
     return;
   }
 
-  // Préchargement des images + mapping
   currentThemeCards = cards.map(card => {
     const imageUrl = supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
     const audioUrl = card.audio_url
       ? supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl
       : null;
 
-    // Précharger l'image
     const img = new Image();
     img.src = imageUrl;
 
     return { word: card.word, image: imageUrl, audio: audioUrl };
   });
 
-  loadThumbnails();
+  memoryMode ? startMemory() : loadThumbnails();
 }
 
 // ================================
-// AFFICHAGE MINIATURES AVEC REBOND FINAL LISSE
+// AFFICHAGE MINIATURES
 // ================================
 function loadThumbnails() {
   thumbnails.innerHTML = '';
@@ -143,24 +241,22 @@ function loadThumbnails() {
     const img = document.createElement('img');
     img.src = card.image;
     img.style.opacity = "0";
-    img.style.transform = 'translateY(30px) scale(0.85)'; // départ plus bas et plus petit
+    img.style.transform = 'translateY(30px) scale(0.85)';
     img.style.display = 'inline-block';
     img.style.cursor = 'pointer';
     img.onclick = () => openCardAtIndex(index);
     thumbnails.appendChild(img);
 
-    // Animation rebond avec effet final “bounce”
     img.onload = () => {
       setTimeout(() => {
         img.style.transition = 'transform 0.6s cubic-bezier(.68,-0.6,.32,1.6), opacity 0.5s ease';
         img.style.opacity = '1';
-        img.style.transform = 'translateY(-5px) scale(1.05)'; // léger dépassement
-        // Après rebond final, revenir à taille normale
+        img.style.transform = 'translateY(-5px) scale(1.05)';
         setTimeout(() => {
           img.style.transition = 'transform 0.3s ease';
           img.style.transform = 'translateY(0) scale(1)';
         }, 600);
-      }, 80 * index); // effet cascade
+      }, 80 * index);
     };
   });
 }
