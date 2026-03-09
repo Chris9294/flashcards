@@ -185,7 +185,7 @@ function loadThumbnails(){
 }
 
 // ================================
-// MEMORY
+// MEMORY - GRILLE RECTANGULAIRE
 // ================================
 function startMemory(){
   flashcard.classList.add('visible');
@@ -195,11 +195,16 @@ function startMemory(){
   rightArrow.style.display = 'none';
 
   cardContent.innerHTML="";
-  cardContent.style.display="flex";
-  cardContent.style.flexWrap="wrap";
-  cardContent.style.justifyContent="center";
-  cardContent.style.alignItems="center";
-  cardContent.style.gap="12px";
+  
+  // GRID RECTANGULAIRE
+  const cols = 4; // nombre de colonnes fixe
+  cardContent.style.display = "grid";
+  cardContent.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  cardContent.style.gridAutoRows = "160px";
+  cardContent.style.gap = "12px";
+  cardContent.style.justifyContent = "center";
+  cardContent.style.alignContent = "center";
+  cardContent.style.position = "relative";
 
   firstCard=null;
   secondCard=null;
@@ -232,17 +237,16 @@ function startMemory(){
     div.className="memoryCard";
     div.dataset.flipped="false";
 
-    const cardSize = 140;
-    div.style.width = cardSize + "px";
-    div.style.height = cardSize + "px";
+    div.style.width = "100%";
+    div.style.height = "100%";
     div.style.display = "flex";
     div.style.alignItems = "center";
     div.style.justifyContent = "center";
     div.style.textAlign = "center";
-    div.style.padding = "8px"; // moins de marge pour agrandir le texte
+    div.style.padding = "8px";
     div.style.background = "#444";
     div.style.color = "white";
-    div.style.fontSize = `clamp(14px, ${cardSize/6}px, 28px)`; // texte un peu plus grand
+    div.style.fontSize = `clamp(14px, 2vw, 28px)`;
     div.style.fontWeight = "600";
     div.style.cursor = "pointer";
     div.style.borderRadius = "10px";
@@ -259,34 +263,26 @@ function startMemory(){
         firstCard={div,card};
       }else{
         secondCard={div,card};
-      if(firstCard.card.pairId===secondCard.card.pairId){
+        if(firstCard.card.pairId===secondCard.card.pairId){
+          showCheck();
+          matchedPairs++;
 
-  showCheck();
-  matchedPairs++;
-
-  // faire disparaître les cartes au lieu de les laisser visibles
-  setTimeout(()=>{
-    firstCard.div.remove();
-    secondCard.div.remove();
-
-    firstCard=null;
-    secondCard=null;
-
-    // si toutes les paires trouvées, bravo
-    if(matchedPairs===totalPairs){
-      showBravo();
-    }
-  },400); // léger délai pour voir le check
-
-} else {
-  setTimeout(()=>{
-    hideCard(firstCard.div);
-    hideCard(secondCard.div);
-
-    firstCard=null;
-    secondCard=null;
-  },1000);
-}
+          // disparition des cartes
+          setTimeout(()=>{
+            firstCard.div.remove();
+            secondCard.div.remove();
+            firstCard=null;
+            secondCard=null;
+            if(matchedPairs===totalPairs) showBravo();
+          },400);
+        } else {
+          setTimeout(()=>{
+            hideCard(firstCard.div);
+            hideCard(secondCard.div);
+            firstCard=null;
+            secondCard=null;
+          },1000);
+        }
       }
     };
     cardContent.appendChild(div);
@@ -325,13 +321,9 @@ function hideCard(div){
 function exitMemory(){
   memoryMode = false;
   memoryBtn.style.opacity = 1;
-
   flashcard.classList.remove('visible');
   cardContent.innerHTML = "";
-
-  // RESTAURE LES FLÈCHES
   updateArrows();
-
   loadThumbnails();
 }
 
@@ -392,13 +384,10 @@ function showImage(){
   cardContent.innerHTML=`<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
   teacherBtn.style.display="none";
-
   const img=document.querySelector('.big-image');
   img.onclick=closeCard;
-
   void img.offsetWidth;
   img.classList.add('active');
-
   updateArrows();
 }
 
@@ -407,25 +396,20 @@ function showWord(){
   cardContent.innerHTML=`<div class="word">${currentCard.word}</div>`;
   const wordDiv = cardContent.querySelector('.word');
   teacherBtn.style.display="none";
-
-  // Centrer le texte
   wordDiv.style.display = "flex";
   wordDiv.style.alignItems = "center";
   wordDiv.style.justifyContent = "center";
   wordDiv.style.textAlign = "center";
-  wordDiv.style.padding = "8px"; // moins de marge
-  wordDiv.style.fontSize = "clamp(18px, 6vw, 70px)"; // texte plus lisible
+  wordDiv.style.padding = "8px";
+  wordDiv.style.fontSize = "clamp(18px, 6vw, 70px)";
   wordDiv.style.lineHeight = "1.2";
   wordDiv.style.wordBreak = "break-word";
   wordDiv.style.overflowWrap = "break-word";
-
   wordDiv.style.opacity = 0;
   wordDiv.style.transition = "opacity 0.5s ease";
-
   void wordDiv.offsetWidth;
   wordDiv.style.opacity = 1;
   wordDiv.onclick = closeCard;
-
   updateArrows();
 }
 
@@ -447,7 +431,6 @@ function updateArrows(){
     rightArrow.style.display=currentIndex<currentThemeCards.length-1?'block':'none';
   }
 }
-
 leftArrow.onclick=()=>{if(currentIndex>0)openCardAtIndex(currentIndex-1)};
 rightArrow.onclick=()=>{if(currentIndex<currentThemeCards.length-1)openCardAtIndex(currentIndex+1)};
 
@@ -459,7 +442,6 @@ document.getElementById('flipBtn').onclick=()=>{
   showingWord=!showingWord;
   showingWord ? showWord() : showImage();
 };
-
 document.getElementById('speakBtn').onclick=()=>{
   if(!currentCard) return;
   if(currentCard.audio){
