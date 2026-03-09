@@ -88,11 +88,17 @@ memoryBtn.style.background = "transparent";
 memoryBtn.style.cursor = "pointer";
 
 memoryBtn.onclick = () => {
+
   memoryMode = !memoryMode;
   memoryBtn.style.opacity = memoryMode ? 0.5 : 1;
 
-  if(memoryMode) startMemory();
-  else loadThumbnails();
+  if(memoryMode) {
+    startMemory();
+  } else {
+    flashcard.classList.remove('visible');
+    loadThumbnails();
+  }
+
 };
 
 themeSelect.parentNode.insertBefore(memoryBtn, shuffleBtn.nextSibling);
@@ -207,11 +213,19 @@ function loadThumbnails() {
 }
 
 // ================================
-// MEMORY IMAGE ↔ MOT
+// MEMORY IMAGE ↔ MOT (PLEIN ÉCRAN)
 // ================================
 function startMemory(){
 
-  thumbnails.innerHTML='';
+  flashcard.classList.add('visible');
+
+  cardContent.innerHTML="";
+  cardContent.style.display="flex";
+  cardContent.style.flexWrap="wrap";
+  cardContent.style.justifyContent="center";
+  cardContent.style.alignItems="center";
+  cardContent.style.gap="12px";
+
   firstCard=null;
   secondCard=null;
 
@@ -246,17 +260,20 @@ function startMemory(){
     div.className="memoryCard";
     div.dataset.flipped="false";
 
-    div.style.width="90px";
-    div.style.height="90px";
-    div.style.display="inline-flex";
+    div.style.width="140px";
+    div.style.height="140px";
+    div.style.display="flex";
     div.style.alignItems="center";
     div.style.justifyContent="center";
-    div.style.margin="6px";
+    div.style.textAlign="center";
+    div.style.padding="10px";
     div.style.background="#444";
     div.style.color="white";
-    div.style.fontSize="18px";
+    div.style.fontSize="clamp(14px,2vw,26px)";
+    div.style.fontWeight="600";
     div.style.cursor="pointer";
-    div.style.borderRadius="8px";
+    div.style.borderRadius="10px";
+    div.style.lineHeight="1.2";
 
     div.onclick=()=>{
 
@@ -297,7 +314,7 @@ function startMemory(){
 
     };
 
-    thumbnails.appendChild(div);
+    cardContent.appendChild(div);
 
   });
 
@@ -311,8 +328,9 @@ function revealCard(div,card){
 
     const img=document.createElement("img");
     img.src=card.image;
-    img.style.maxWidth="80%";
-    img.style.maxHeight="80%";
+    img.style.maxWidth="90%";
+    img.style.maxHeight="90%";
+    img.style.objectFit="contain";
     div.appendChild(img);
 
   }else{
