@@ -220,6 +220,7 @@ function loadThumbnails(){
 // ================================
 // MEMORY IMAGE ↔ MOT (RESPONSIVE)
 // ================================
+
 function startMemory(){
 
   flashcard.classList.add('visible');
@@ -231,11 +232,11 @@ function startMemory(){
   cardContent.style.alignItems="center";
   cardContent.style.gap="12px";
 
-  firstCard = null;
-  secondCard = null;
-  matchedPairs = 0;
+  firstCard=null;
+  secondCard=null;
+  matchedPairs=0;
 
-  let memoryCards = [];
+  let memoryCards=[];
 
   currentThemeCards.forEach((card,i)=>{
 
@@ -257,38 +258,33 @@ function startMemory(){
 
   });
 
-  totalPairs = currentThemeCards.length;
+  totalPairs=currentThemeCards.length;
 
   memoryCards.sort(()=>Math.random()-0.5);
 
-  // Calcul responsive taille cartes
-  const cardCount = memoryCards.length;
-  let cardSize = 140; // taille par défaut
-  if(cardCount > 12){
-    cardSize = Math.max(80, 800 / Math.ceil(Math.sqrt(cardCount)));
-  }
+  const quitBtn=document.createElement("button");
+  quitBtn.textContent="✖";
+  quitBtn.style.position="absolute";
+  quitBtn.style.bottom="20px";
+  quitBtn.style.right="20px";
+  quitBtn.style.zIndex="1000";
+  quitBtn.style.fontSize="22px";
+  quitBtn.style.background="transparent";
+  quitBtn.style.border="none";
+  quitBtn.style.cursor="pointer";
 
-  // Bouton quitter
-  const quitBtn = document.createElement("button");
-  quitBtn.textContent = "✖";
-  quitBtn.style.position = "absolute";
-  quitBtn.style.bottom = "20px";
-  quitBtn.style.right = "20px";
-  quitBtn.style.zIndex = "1000";
-  quitBtn.style.fontSize = "28px";
-  quitBtn.style.background = "transparent";
-  quitBtn.style.border = "none";
-  quitBtn.style.cursor = "pointer";
+  quitBtn.onclick=exitMemory;
 
-  quitBtn.onclick = exitMemory;
   cardContent.appendChild(quitBtn);
 
   memoryCards.forEach(card=>{
 
-    const div = document.createElement("div");
+    const div=document.createElement("div");
 
-    div.className = "memoryCard";
-    div.dataset.flipped = "false";
+    div.className="memoryCard";
+    div.dataset.flipped="false";
+
+    const cardSize = 140;
 
     div.style.width = cardSize + "px";
     div.style.height = cardSize + "px";
@@ -296,46 +292,55 @@ function startMemory(){
     div.style.alignItems = "center";
     div.style.justifyContent = "center";
     div.style.textAlign = "center";
-    div.style.padding = "10px";
+    div.style.padding = "12px"; // plus de padding pour éviter que le texte touche les bords
     div.style.background = "#444";
     div.style.color = "white";
-    div.style.fontSize = `clamp(12px, ${cardSize/6}px, 26px)`;
+    div.style.fontSize = `clamp(12px, ${cardSize/7}px, 26px)`; // ajuste automatiquement selon la taille de la carte
     div.style.fontWeight = "600";
     div.style.cursor = "pointer";
     div.style.borderRadius = "10px";
     div.style.lineHeight = "1.2";
+    div.style.overflowWrap = "break-word";
+    div.style.wordBreak = "break-word";
 
-    div.onclick = ()=>{
+    div.onclick=()=>{
 
       if(div.dataset.flipped==="true" || secondCard) return;
 
-      div.dataset.flipped = "true";
+      div.dataset.flipped="true";
 
       revealCard(div,card);
 
       if(!firstCard){
-        firstCard = {div, card};
-      }else{
-        secondCard = {div, card};
 
-        if(firstCard.card.pairId === secondCard.card.pairId){
+        firstCard={div,card};
+
+      }else{
+
+        secondCard={div,card};
+
+        if(firstCard.card.pairId===secondCard.card.pairId){
+
           showCheck();
           matchedPairs++;
 
-          firstCard = null;
-          secondCard = null;
+          firstCard=null;
+          secondCard=null;
 
-          if(matchedPairs === totalPairs){
+          if(matchedPairs===totalPairs){
             showBravo();
           }
 
         }else{
 
           setTimeout(()=>{
+
             hideCard(firstCard.div);
             hideCard(secondCard.div);
-            firstCard = null;
-            secondCard = null;
+
+            firstCard=null;
+            secondCard=null;
+
           },1000);
 
         }
