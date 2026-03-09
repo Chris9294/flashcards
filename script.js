@@ -45,19 +45,7 @@ teacherCode.addEventListener("input", () => {
 });
 
 // ================================
-// BOUTON MELANGE DES CARTES
-// ================================
-const shuffleBtn = document.createElement('button');
-shuffleBtn.textContent = '🔀 Mélanger';
-shuffleBtn.style.marginLeft = '8px';
-shuffleBtn.onclick = () => {
-  currentThemeCards.sort(() => Math.random() - 0.5);
-  loadThumbnails();
-};
-themeSelect.parentNode.appendChild(shuffleBtn);
-
-// ================================
-// CHARGER LES SERIES
+// CHARGER LES SÉRIES
 // ================================
 async function loadThemes() {
   const { data: themes, error } = await supabaseClient
@@ -71,7 +59,6 @@ async function loadThemes() {
   }
 
   themeSelect.innerHTML = '';
-
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Flashcards —';
@@ -90,7 +77,6 @@ async function loadThemes() {
 // ================================
 async function loadTheme() {
   const themeId = themeSelect.value;
-
   thumbnails.innerHTML = '';
   closeCard();
 
@@ -110,30 +96,24 @@ async function loadTheme() {
 
   currentThemeCards = cards.map(card => {
     const imageUrl =
-      supabaseClient
-        .storage
-        .from('cards')
-        .getPublicUrl(card.image_url)
-        .data.publicUrl;
+      supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
 
     const audioUrl = card.audio_url
       ? supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl
       : null;
 
-    return { word: card.word, image: imageUrl, audio: audioUrl };
-  });
+    // Préchargement de l'image
+    const imgPreload = new Image();
+    imgPreload.src = imageUrl;
 
-  // Précharger toutes les images pour un affichage instantané
-  currentThemeCards.forEach(card => {
-    const img = new Image();
-    img.src = card.image;
+    return { word: card.word, image: imageUrl, audio: audioUrl };
   });
 
   loadThumbnails();
 }
 
 // ================================
-// CHARGER LES MINIATURES
+// CHARGEMENT DES MINIATURES
 // ================================
 function loadThumbnails() {
   thumbnails.innerHTML = '';
@@ -144,6 +124,32 @@ function loadThumbnails() {
     thumbnails.appendChild(img);
   });
 }
+
+// ================================
+// BOUTON MÉLANGER
+// ================================
+function shuffleCards() {
+  for (let i = currentThemeCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [currentThemeCards[i], currentThemeCards[j]] = [currentThemeCards[j], currentThemeCards[i]];
+  }
+  loadThumbnails();
+}
+
+const shuffleBtn = document.createElement('button');
+shuffleBtn.textContent = "🔀 Mélanger";
+shuffleBtn.style.position = "fixed";
+shuffleBtn.style.top = "80px";
+shuffleBtn.style.right = "20px";
+shuffleBtn.style.zIndex = 1200;
+shuffleBtn.style.fontSize = "24px";
+shuffleBtn.style.background = "#ffcc80";
+shuffleBtn.style.border = "none";
+shuffleBtn.style.borderRadius = "12px";
+shuffleBtn.style.padding = "8px 12px";
+shuffleBtn.style.cursor = "pointer";
+shuffleBtn.onclick = shuffleCards;
+document.body.appendChild(shuffleBtn);
 
 // ================================
 // AFFICHAGE CARTE
@@ -166,6 +172,7 @@ function showImage() {
   img.onclick = closeCard;
   void img.offsetWidth;
   img.classList.add('active');
+
   updateArrows();
 }
 
@@ -173,11 +180,14 @@ function showWord() {
   if (!currentCard) return;
   cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
   const wordDiv = cardContent.querySelector('.word');
+
   teacherBtn.style.display = "none";
+
   wordDiv.style.opacity = 0;
   wordDiv.style.transition = "opacity 0.5s ease";
   void wordDiv.offsetWidth;
   wordDiv.style.opacity = 1;
+
   wordDiv.onclick = closeCard;
   updateArrows();
 }
@@ -196,11 +206,15 @@ function updateArrows() {
   rightArrow.style.display = currentIndex < currentThemeCards.length - 1 ? 'block' : 'none';
 }
 
-leftArrow.onclick = () => { if (currentIndex > 0) openCardAtIndex(currentIndex - 1); };
-rightArrow.onclick = () => { if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1); };
+leftArrow.onclick = () => {
+  if (currentIndex > 0) openCardAtIndex(currentIndex - 1);
+};
+rightArrow.onclick = () => {
+  if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1);
+};
 
 // ================================
-// BOUTONS
+// BOUTONS FLIP / SPEAK
 // ================================
 document.getElementById('flipBtn').onclick = () => {
   if (!currentCard) return;
@@ -225,27 +239,16 @@ document.getElementById('speakBtn').onclick = () => {
 // BOUTON PLEIN ÉCRAN
 // ================================
 fullscreenBtn.onclick = () => {
-  const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+  const isFullscreen =
+    document.fullscreenElement || document.webkitFullscreenElement;
   if (!isFullscreen) {
-    document.documentElement.requestFullscreen?.() || document.documentElement.webkitRequestFullscreen?.();
+    document.documentElement.requestFullscreen?.();
+    document.documentElement.webkitRequestFullscreen?.();
   } else {
-    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+    document.exitFullscreen?.();
+    document.webkitExitFullscreen?.();
   }
 };
-
-// ================================
-// MISE À JOUR AUTOMATIQUE DES CARTES (SUPABASE REaltime)
-// ================================
-supabaseClient
-  .channel('realtime-cards')
-  .on(
-    'postgres_changes',
-    { event: '*', schema: 'public', table: 'cards' },
-    payload => {
-      if (themeSelect.value) loadTheme();
-    }
-  )
-  .subscribe();
 
 // ================================
 // INITIALISATION
