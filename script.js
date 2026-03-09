@@ -167,9 +167,6 @@ async function loadTheme(){
       ? supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl
       : null;
 
-    const img = new Image();
-    img.src = imageUrl;
-
     return { word: card.word, image: imageUrl, audio: audioUrl };
 
   });
@@ -242,26 +239,12 @@ function startMemory(){
 
   currentThemeCards.forEach((card,i)=>{
 
-    memoryCards.push({
-      type:"image",
-      pairId:i,
-      image:card.image,
-      word:card.word,
-      audio:card.audio
-    });
-
-    memoryCards.push({
-      type:"word",
-      pairId:i,
-      image:card.image,
-      word:card.word,
-      audio:card.audio
-    });
+    memoryCards.push({type:"image",pairId:i,image:card.image,word:card.word,audio:card.audio});
+    memoryCards.push({type:"word",pairId:i,image:card.image,word:card.word,audio:card.audio});
 
   });
 
   totalPairs=currentThemeCards.length;
-
   memoryCards.sort(()=>Math.random()-0.5);
 
   const quitBtn=document.createElement("button");
@@ -276,13 +259,11 @@ function startMemory(){
   quitBtn.style.cursor="pointer";
 
   quitBtn.onclick=exitMemory;
-
   cardContent.appendChild(quitBtn);
 
   memoryCards.forEach(card=>{
 
     const div=document.createElement("div");
-
     div.className="memoryCard";
     div.dataset.flipped="false";
 
@@ -305,7 +286,6 @@ function startMemory(){
       if(div.dataset.flipped==="true" || secondCard) return;
 
       div.dataset.flipped="true";
-
       revealCard(div,card);
 
       if(!firstCard){
@@ -319,6 +299,12 @@ function startMemory(){
         if(firstCard.card.pairId===secondCard.card.pairId){
 
           showCheck();
+
+          firstCard.div.style.transition="opacity 0.6s";
+          secondCard.div.style.transition="opacity 0.6s";
+          firstCard.div.style.opacity="0";
+          secondCard.div.style.opacity="0";
+
           matchedPairs++;
 
           firstCard=null;
@@ -379,11 +365,9 @@ function revealCard(div,card){
 }
 
 function hideCard(div){
-
   div.dataset.flipped="false";
   div.innerHTML="";
   div.style.background="#444";
-
 }
 
 // ================================
@@ -410,13 +394,14 @@ function showCheck(){
   check.style.top="50%";
   check.style.left="50%";
   check.style.transform="translate(-50%,-50%)";
-  check.style.fontSize="120px";
+  check.style.fontSize="240px";
   check.style.color="#4CAF50";
   check.style.pointerEvents="none";
+  check.style.zIndex="2000";
 
   flashcard.appendChild(check);
-  check.style.zIndex="2000";
-  setTimeout(()=>check.remove(),400);
+
+  setTimeout(()=>check.remove(),800);
 
 }
 
@@ -429,21 +414,22 @@ function showBravo(){
   bravo.style.left="0";
   bravo.style.width="100%";
   bravo.style.height="100%";
-  bravo.style.background="rgba(0,0,0,0.85)";
+  bravo.style.background="rgba(0,0,0,0.9)";
   bravo.style.display="flex";
   bravo.style.alignItems="center";
   bravo.style.justifyContent="center";
-  bravo.style.fontSize="80px";
+  bravo.style.fontSize="120px";
   bravo.style.color="white";
+  bravo.style.fontWeight="bold";
+  bravo.style.zIndex="2000";
   bravo.textContent="🎉 BRAVO !";
 
   flashcard.appendChild(bravo);
-  bravo.style.zIndex="2000";
-  
+
   setTimeout(()=>{
     bravo.remove();
     exitMemory();
-  },2000);
+  },3500);
 
 }
 
@@ -470,7 +456,6 @@ function showImage(){
   teacherBtn.style.display="none";
 
   const img=document.querySelector('.big-image');
-
   img.onclick=closeCard;
 
   void img.offsetWidth;
@@ -494,7 +479,6 @@ function showWord(){
   wordDiv.style.transition="opacity 0.5s ease";
 
   void wordDiv.offsetWidth;
-
   wordDiv.style.opacity=1;
   wordDiv.onclick=closeCard;
 
