@@ -239,10 +239,10 @@ function startMemory(){
     div.style.alignItems = "center";
     div.style.justifyContent = "center";
     div.style.textAlign = "center";
-    div.style.padding = "14px";
+    div.style.padding = "8px"; // moins de marge pour agrandir le texte
     div.style.background = "#444";
     div.style.color = "white";
-    div.style.fontSize = `clamp(12px, ${cardSize/7}px, 26px)`;
+    div.style.fontSize = `clamp(14px, ${cardSize/6}px, 28px)`; // texte un peu plus grand
     div.style.fontWeight = "600";
     div.style.cursor = "pointer";
     div.style.borderRadius = "10px";
@@ -401,8 +401,8 @@ function showWord(){
   wordDiv.style.alignItems = "center";
   wordDiv.style.justifyContent = "center";
   wordDiv.style.textAlign = "center";
-  wordDiv.style.padding = "12px";
-  wordDiv.style.fontSize = "clamp(16px, 5vw, 60px)";
+  wordDiv.style.padding = "8px"; // moins de marge
+  wordDiv.style.fontSize = "clamp(18px, 6vw, 70px)"; // texte plus lisible
   wordDiv.style.lineHeight = "1.2";
   wordDiv.style.wordBreak = "break-word";
   wordDiv.style.overflowWrap = "break-word";
