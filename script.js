@@ -45,10 +45,21 @@ teacherCode.addEventListener("input", () => {
 });
 
 // ================================
+// BOUTON MELANGE DES CARTES
+// ================================
+const shuffleBtn = document.createElement('button');
+shuffleBtn.textContent = '🔀 Mélanger';
+shuffleBtn.style.marginLeft = '8px';
+shuffleBtn.onclick = () => {
+  currentThemeCards.sort(() => Math.random() - 0.5);
+  loadThumbnails();
+};
+themeSelect.parentNode.appendChild(shuffleBtn);
+
+// ================================
 // CHARGER LES SERIES
 // ================================
 async function loadThemes() {
-
   const { data: themes, error } = await supabaseClient
     .from('themes')
     .select('*')
@@ -67,24 +78,17 @@ async function loadThemes() {
   themeSelect.appendChild(placeholder);
 
   themes.forEach(theme => {
-
     const option = document.createElement('option');
     option.value = theme.id;
     option.textContent = theme.name;
-
     themeSelect.appendChild(option);
-
   });
-
 }
-
-themeSelect.onchange = loadTheme;
 
 // ================================
 // CHARGEMENT D’UNE SÉRIE
 // ================================
 async function loadTheme() {
-
   const themeId = themeSelect.value;
 
   thumbnails.innerHTML = '';
@@ -105,7 +109,6 @@ async function loadTheme() {
   }
 
   currentThemeCards = cards.map(card => {
-
     const imageUrl =
       supabaseClient
         .storage
@@ -113,39 +116,33 @@ async function loadTheme() {
         .getPublicUrl(card.image_url)
         .data.publicUrl;
 
-    let audioUrl = null;
+    const audioUrl = card.audio_url
+      ? supabaseClient.storage.from('cards').getPublicUrl(card.audio_url).data.publicUrl
+      : null;
 
-    if (card.audio_url) {
-
-      audioUrl =
-        supabaseClient
-          .storage
-          .from('cards')
-          .getPublicUrl(card.audio_url)
-          .data.publicUrl;
-
-    }
-
-    return {
-      word: card.word,
-      image: imageUrl,
-      audio: audioUrl
-    };
-
+    return { word: card.word, image: imageUrl, audio: audioUrl };
   });
 
-  currentThemeCards.forEach((card, index) => {
-
-    const img = document.createElement('img');
-
+  // Précharger toutes les images pour un affichage instantané
+  currentThemeCards.forEach(card => {
+    const img = new Image();
     img.src = card.image;
-
-    img.onclick = () => openCardAtIndex(index);
-
-    thumbnails.appendChild(img);
-
   });
 
+  loadThumbnails();
+}
+
+// ================================
+// CHARGER LES MINIATURES
+// ================================
+function loadThumbnails() {
+  thumbnails.innerHTML = '';
+  currentThemeCards.forEach((card, index) => {
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.onclick = () => openCardAtIndex(index);
+    thumbnails.appendChild(img);
+  });
 }
 
 // ================================
@@ -159,150 +156,96 @@ function openCardAtIndex(index) {
   updateArrows();
 }
 
-// Image
 function showImage() {
-
   if (!currentCard) return;
-
-  cardContent.innerHTML =
-    `<img src="${currentCard.image}" class="big-image">`;
-
+  cardContent.innerHTML = `<img src="${currentCard.image}" class="big-image">`;
   flashcard.classList.add('visible');
-
   teacherBtn.style.display = "none";
 
   const img = document.querySelector('.big-image');
-
   img.onclick = closeCard;
-
   void img.offsetWidth;
-
   img.classList.add('active');
-
   updateArrows();
 }
 
-// Mot
 function showWord() {
-
   if (!currentCard) return;
-
-  cardContent.innerHTML =
-    `<div class="word">${currentCard.word}</div>`;
-
+  cardContent.innerHTML = `<div class="word">${currentCard.word}</div>`;
   const wordDiv = cardContent.querySelector('.word');
-
   teacherBtn.style.display = "none";
-
   wordDiv.style.opacity = 0;
   wordDiv.style.transition = "opacity 0.5s ease";
-
   void wordDiv.offsetWidth;
-
   wordDiv.style.opacity = 1;
-
   wordDiv.onclick = closeCard;
-
   updateArrows();
 }
 
 function closeCard() {
-
   flashcard.classList.remove('visible');
-
   currentCard = null;
-
   teacherBtn.style.display = "block";
-
 }
 
 // ================================
 // FLÈCHES NAVIGATION
 // ================================
 function updateArrows() {
-
-  leftArrow.style.display =
-    currentIndex > 0 ? 'block' : 'none';
-
-  rightArrow.style.display =
-    currentIndex < currentThemeCards.length - 1
-      ? 'block'
-      : 'none';
-
+  leftArrow.style.display = currentIndex > 0 ? 'block' : 'none';
+  rightArrow.style.display = currentIndex < currentThemeCards.length - 1 ? 'block' : 'none';
 }
 
-leftArrow.onclick = () => {
-  if (currentIndex > 0) openCardAtIndex(currentIndex - 1);
-};
-
-rightArrow.onclick = () => {
-  if (currentIndex < currentThemeCards.length - 1)
-    openCardAtIndex(currentIndex + 1);
-};
+leftArrow.onclick = () => { if (currentIndex > 0) openCardAtIndex(currentIndex - 1); };
+rightArrow.onclick = () => { if (currentIndex < currentThemeCards.length - 1) openCardAtIndex(currentIndex + 1); };
 
 // ================================
 // BOUTONS
 // ================================
 document.getElementById('flipBtn').onclick = () => {
-
   if (!currentCard) return;
-
   showingWord = !showingWord;
-
-  showingWord
-    ? showWord()
-    : showImage();
-
+  showingWord ? showWord() : showImage();
 };
 
 document.getElementById('speakBtn').onclick = () => {
-
   if (!currentCard) return;
-
   if (currentCard.audio) {
-
     new Audio(currentCard.audio).play();
-
   } else {
-
     const u = new SpeechSynthesisUtterance(currentCard.word);
-
     u.lang = 'en-GB';
-
     u.rate = 0.7;
-
     speechSynthesis.cancel();
-
     speechSynthesis.speak(u);
-
   }
-
 };
 
 // ================================
 // BOUTON PLEIN ÉCRAN
 // ================================
 fullscreenBtn.onclick = () => {
-
-  const isFullscreen =
-    document.fullscreenElement ||
-    document.webkitFullscreenElement;
-
+  const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
   if (!isFullscreen) {
-
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen();
-    }
-
+    document.documentElement.requestFullscreen?.() || document.documentElement.webkitRequestFullscreen?.();
   } else {
-
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-
+    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
   }
-
 };
+
+// ================================
+// MISE À JOUR AUTOMATIQUE DES CARTES (SUPABASE REaltime)
+// ================================
+supabaseClient
+  .channel('realtime-cards')
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'cards' },
+    payload => {
+      if (themeSelect.value) loadTheme();
+    }
+  )
+  .subscribe();
 
 // ================================
 // INITIALISATION
