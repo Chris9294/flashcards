@@ -17,6 +17,9 @@ let memoryMode = false;
 let firstCard = null;
 let secondCard = null;
 
+let matchedPairs = 0;
+let totalPairs = 0;
+
 const themeSelect = document.getElementById('themeSelect');
 const thumbnails = document.getElementById('thumbnails');
 const flashcard = document.getElementById('flashcard');
@@ -62,6 +65,7 @@ shuffleBtn.style.background = "transparent";
 shuffleBtn.style.cursor = "pointer";
 
 shuffleBtn.onclick = () => {
+
   if (!currentThemeCards.length) return;
 
   currentThemeCards = currentThemeCards
@@ -70,6 +74,7 @@ shuffleBtn.onclick = () => {
     .map(o=>o.v);
 
   loadThumbnails();
+
 };
 
 themeSelect.parentNode.insertBefore(shuffleBtn, themeSelect.nextSibling);
@@ -92,9 +97,9 @@ memoryBtn.onclick = () => {
   memoryMode = !memoryMode;
   memoryBtn.style.opacity = memoryMode ? 0.5 : 1;
 
-  if(memoryMode) {
+  if(memoryMode){
     startMemory();
-  } else {
+  }else{
     flashcard.classList.remove('visible');
     loadThumbnails();
   }
@@ -106,7 +111,7 @@ themeSelect.parentNode.insertBefore(memoryBtn, shuffleBtn.nextSibling);
 // ================================
 // CHARGER LES SERIES
 // ================================
-async function loadThemes() {
+async function loadThemes(){
 
   const { data: themes } = await supabaseClient
   .from('themes')
@@ -121,10 +126,13 @@ async function loadThemes() {
   themeSelect.appendChild(placeholder);
 
   themes.forEach(theme => {
+
     const option = document.createElement('option');
     option.value = theme.id;
     option.textContent = theme.name;
+
     themeSelect.appendChild(option);
+
   });
 
 }
@@ -132,7 +140,7 @@ async function loadThemes() {
 // ================================
 // CHARGEMENT D’UNE SÉRIE
 // ================================
-async function loadTheme() {
+async function loadTheme(){
 
   const themeId = themeSelect.value;
 
@@ -173,25 +181,25 @@ async function loadTheme() {
 // ================================
 // MINIATURES
 // ================================
-function loadThumbnails() {
+function loadThumbnails(){
 
-  thumbnails.innerHTML = '';
+  thumbnails.innerHTML='';
 
   currentThemeCards.forEach((card,index)=>{
 
-    const img = document.createElement('img');
+    const img=document.createElement('img');
 
-    img.src = card.image;
+    img.src=card.image;
     img.style.opacity="0";
     img.style.transform='translateY(30px) scale(0.85)';
     img.style.display='inline-block';
     img.style.cursor='pointer';
 
-    img.onclick = () => openCardAtIndex(index);
+    img.onclick=()=>openCardAtIndex(index);
 
     thumbnails.appendChild(img);
 
-    img.onload = ()=>{
+    img.onload=()=>{
 
       setTimeout(()=>{
 
@@ -213,7 +221,7 @@ function loadThumbnails() {
 }
 
 // ================================
-// MEMORY IMAGE ↔ MOT (PLEIN ÉCRAN)
+// MEMORY
 // ================================
 function startMemory(){
 
@@ -228,6 +236,7 @@ function startMemory(){
 
   firstCard=null;
   secondCard=null;
+  matchedPairs=0;
 
   let memoryCards=[];
 
@@ -251,7 +260,23 @@ function startMemory(){
 
   });
 
+  totalPairs=currentThemeCards.length;
+
   memoryCards.sort(()=>Math.random()-0.5);
+
+  const quitBtn=document.createElement("button");
+  quitBtn.textContent="✖";
+  quitBtn.style.position="absolute";
+  quitBtn.style.top="10px";
+  quitBtn.style.right="10px";
+  quitBtn.style.fontSize="22px";
+  quitBtn.style.background="transparent";
+  quitBtn.style.border="none";
+  quitBtn.style.cursor="pointer";
+
+  quitBtn.onclick=exitMemory;
+
+  cardContent.appendChild(quitBtn);
 
   memoryCards.forEach(card=>{
 
@@ -273,7 +298,6 @@ function startMemory(){
     div.style.fontWeight="600";
     div.style.cursor="pointer";
     div.style.borderRadius="10px";
-    div.style.lineHeight="1.2";
 
     div.onclick=()=>{
 
@@ -293,8 +317,15 @@ function startMemory(){
 
         if(firstCard.card.pairId===secondCard.card.pairId){
 
+          showCheck();
+          matchedPairs++;
+
           firstCard=null;
           secondCard=null;
+
+          if(matchedPairs===totalPairs){
+            showBravo();
+          }
 
         }else{
 
@@ -331,6 +362,7 @@ function revealCard(div,card){
     img.style.maxWidth="90%";
     img.style.maxHeight="90%";
     img.style.objectFit="contain";
+
     div.appendChild(img);
 
   }else{
@@ -350,6 +382,66 @@ function hideCard(div){
   div.dataset.flipped="false";
   div.innerHTML="";
   div.style.background="#444";
+
+}
+
+// ================================
+// MEMORY UI
+// ================================
+function exitMemory(){
+
+  memoryMode=false;
+  memoryBtn.style.opacity=1;
+
+  flashcard.classList.remove('visible');
+  cardContent.innerHTML="";
+
+  loadThumbnails();
+
+}
+
+function showCheck(){
+
+  const check=document.createElement("div");
+
+  check.textContent="✔";
+  check.style.position="fixed";
+  check.style.top="50%";
+  check.style.left="50%";
+  check.style.transform="translate(-50%,-50%)";
+  check.style.fontSize="120px";
+  check.style.color="#4CAF50";
+  check.style.pointerEvents="none";
+
+  document.body.appendChild(check);
+
+  setTimeout(()=>check.remove(),400);
+
+}
+
+function showBravo(){
+
+  const bravo=document.createElement("div");
+
+  bravo.style.position="fixed";
+  bravo.style.top="0";
+  bravo.style.left="0";
+  bravo.style.width="100%";
+  bravo.style.height="100%";
+  bravo.style.background="rgba(0,0,0,0.85)";
+  bravo.style.display="flex";
+  bravo.style.alignItems="center";
+  bravo.style.justifyContent="center";
+  bravo.style.fontSize="80px";
+  bravo.style.color="white";
+  bravo.textContent="🎉 BRAVO !";
+
+  document.body.appendChild(bravo);
+
+  setTimeout(()=>{
+    bravo.remove();
+    exitMemory();
+  },2000);
 
 }
 
