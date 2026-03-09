@@ -65,11 +65,14 @@ shuffleBtn.style.background = "transparent";
 shuffleBtn.style.cursor = "pointer";
 
 shuffleBtn.onclick = () => {
-  if (!currentThemeCards.length) return;
+  // ne rien faire si aucune série sélectionnée ou tableau vide
+  if (!themeSelect.value || !currentThemeCards.length) return;
+
   currentThemeCards = currentThemeCards
     .map(v => ({v, r: Math.random()}))
     .sort((a,b)=>a.r-b.r)
     .map(o=>o.v);
+  
   loadThumbnails();
 };
 
@@ -89,8 +92,12 @@ memoryBtn.style.background = "transparent";
 memoryBtn.style.cursor = "pointer";
 
 memoryBtn.onclick = () => {
+  // ne rien faire si aucune série sélectionnée ou tableau vide
+  if (!themeSelect.value || !currentThemeCards.length) return;
+
   memoryMode = !memoryMode;
   memoryBtn.style.opacity = memoryMode ? 0.5 : 1;
+  
   if(memoryMode){
     startMemory();
   }else{
@@ -132,7 +139,12 @@ async function loadTheme(){
   const themeId = themeSelect.value;
   thumbnails.innerHTML = '';
   closeCard();
-  if (!themeId) return;
+
+  // si aucune série sélectionnée → vider le tableau
+  if (!themeId) {
+    currentThemeCards = [];
+    return;
+  }
 
   const { data: cards } = await supabaseClient
     .from('cards')
@@ -239,10 +251,10 @@ function startMemory(){
     div.style.alignItems = "center";
     div.style.justifyContent = "center";
     div.style.textAlign = "center";
-    div.style.padding = "8px"; // moins de marge pour agrandir le texte
+    div.style.padding = "8px";
     div.style.background = "#444";
     div.style.color = "white";
-    div.style.fontSize = `clamp(18px, ${cardSize/5}px, 32px)`; // texte un peu plus grand
+    div.style.fontSize = `clamp(18px, ${cardSize/5}px, 32px)`;
     div.style.fontWeight = "600";
     div.style.cursor = "pointer";
     div.style.borderRadius = "10px";
@@ -263,33 +275,27 @@ function startMemory(){
       }else{
         secondCard={div,card};
         if(firstCard.card.pairId===secondCard.card.pairId){
+          showCheck();
+          matchedPairs++;
 
-  showCheck();
-  matchedPairs++;
+          setTimeout(()=>{
+            firstCard.div.remove();
+            secondCard.div.remove();
+            firstCard=null;
+            secondCard=null;
 
-  // faire disparaître les cartes au lieu de les laisser visibles
-  setTimeout(()=>{
-    firstCard.div.remove();
-    secondCard.div.remove();
-
-    firstCard=null;
-    secondCard=null;
-
-    // si toutes les paires trouvées, bravo
-    if(matchedPairs===totalPairs){
-      showBravo();
-    }
-  },400); // léger délai pour voir le check
-
-} else {
-  setTimeout(()=>{
-    hideCard(firstCard.div);
-    hideCard(secondCard.div);
-
-    firstCard=null;
-    secondCard=null;
-  },1000);
-}
+            if(matchedPairs===totalPairs){
+              showBravo();
+            }
+          },400);
+        } else {
+          setTimeout(()=>{
+            hideCard(firstCard.div);
+            hideCard(secondCard.div);
+            firstCard=null;
+            secondCard=null;
+          },1000);
+        }
       }
     };
     cardContent.appendChild(div);
@@ -332,9 +338,7 @@ function exitMemory(){
   flashcard.classList.remove('visible');
   cardContent.innerHTML = "";
 
-  // RESTAURE LES FLÈCHES
   updateArrows();
-
   loadThumbnails();
 }
 
@@ -411,16 +415,17 @@ function showWord(){
   const wordDiv = cardContent.querySelector('.word');
   teacherBtn.style.display="none";
 
-  // Centrer le texte
   wordDiv.style.display = "flex";
   wordDiv.style.alignItems = "center";
   wordDiv.style.justifyContent = "center";
   wordDiv.style.textAlign = "center";
-  wordDiv.style.padding = "8px"; // moins de marge
-  wordDiv.style.fontSize = "clamp(18px, 6vw, 70px)"; // texte plus lisible
+  wordDiv.style.padding = "8px";
+  wordDiv.style.fontSize = "clamp(18px, 6vw, 70px)";
   wordDiv.style.lineHeight = "1.2";
   wordDiv.style.wordBreak = "break-word";
   wordDiv.style.overflowWrap = "break-word";
+  wordDiv.style.whiteSpace = "normal";
+  wordDiv.style.hyphens = "auto";
 
   wordDiv.style.opacity = 0;
   wordDiv.style.transition = "opacity 0.5s ease";
