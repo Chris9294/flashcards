@@ -187,266 +187,193 @@ function loadThumbnails(){
 // ================================
 // MEMORY
 // ================================
-let firstCard=null;
-let secondCard=null;
-let matchedPairs=0;
-let totalPairs=0;
-let memoryCards=[];
+function startMemory(){
+  flashcard.classList.add('visible');
 
-function startMemory(cards){
+  // MASQUER LES FLÈCHES
+  leftArrow.style.display = 'none';
+  rightArrow.style.display = 'none';
 
-cardContent.innerHTML="";
+  cardContent.innerHTML="";
+  cardContent.style.display="flex";
+  cardContent.style.flexWrap="wrap";
+  cardContent.style.justifyContent="center";
+  cardContent.style.alignItems="center";
+  cardContent.style.gap="12px";
 
-firstCard=null;
-secondCard=null;
-matchedPairs=0;
+  firstCard=null;
+  secondCard=null;
+  matchedPairs=0;
 
-memoryCards=[];
+  let memoryCards=[];
+  currentThemeCards.forEach((card,i)=>{
+    memoryCards.push({ type:"image", pairId:i, image:card.image, word:card.word, audio:card.audio });
+    memoryCards.push({ type:"word", pairId:i, image:card.image, word:card.word, audio:card.audio });
+  });
 
-cards.forEach((card,i)=>{
+  totalPairs=currentThemeCards.length;
+  memoryCards.sort(()=>Math.random()-0.5);
 
-let pairId=i;
+  const quitBtn=document.createElement("button");
+  quitBtn.textContent="✖";
+  quitBtn.style.position="absolute";
+  quitBtn.style.bottom="20px";
+  quitBtn.style.right="20px";
+  quitBtn.style.zIndex="1000";
+  quitBtn.style.fontSize="28px";
+  quitBtn.style.background="transparent";
+  quitBtn.style.border="none";
+  quitBtn.style.cursor="pointer";
+  quitBtn.onclick=exitMemory;
+  cardContent.appendChild(quitBtn);
 
-if(card.image){
-memoryCards.push({type:"image",value:card.image,pairId});
+  memoryCards.forEach(card=>{
+    const div=document.createElement("div");
+    div.className="memoryCard";
+    div.dataset.flipped="false";
+
+    const cardSize = 140;
+    div.style.width = cardSize + "px";
+    div.style.height = cardSize + "px";
+    div.style.display = "flex";
+    div.style.alignItems = "center";
+    div.style.justifyContent = "center";
+    div.style.textAlign = "center";
+    div.style.padding = "8px"; // moins de marge pour agrandir le texte
+    div.style.background = "#444";
+    div.style.color = "white";
+    div.style.fontSize = `clamp(14px, ${cardSize/6}px, 28px)`; // texte un peu plus grand
+    div.style.fontWeight = "600";
+    div.style.cursor = "pointer";
+    div.style.borderRadius = "10px";
+    div.style.lineHeight = "1.2";
+    div.style.overflowWrap = "break-word";
+    div.style.wordBreak = "break-word";
+
+    div.onclick=()=>{
+      if(div.dataset.flipped==="true" || secondCard) return;
+      div.dataset.flipped="true";
+      revealCard(div,card);
+
+      if(!firstCard){
+        firstCard={div,card};
+      }else{
+        secondCard={div,card};
+        if(firstCard.card.pairId===secondCard.card.pairId){
+
+  showCheck();
+  matchedPairs++;
+
+  // faire disparaître les cartes au lieu de les laisser visibles
+  setTimeout(()=>{
+    firstCard.div.remove();
+    secondCard.div.remove();
+
+    firstCard=null;
+    secondCard=null;
+
+    // si toutes les paires trouvées, bravo
+    if(matchedPairs===totalPairs){
+      showBravo();
+    }
+  },400); // léger délai pour voir le check
+
+} else {
+  setTimeout(()=>{
+    hideCard(firstCard.div);
+    hideCard(secondCard.div);
+
+    firstCard=null;
+    secondCard=null;
+  },1000);
+}
+      }
+    };
+    cardContent.appendChild(div);
+  });
 }
 
-if(card.word){
-memoryCards.push({type:"word",value:card.word,pairId});
-}
-
-if(card.audio){
-memoryCards.push({type:"audio",value:card.audio,pairId});
-}
-
-});
-
-memoryCards=memoryCards.slice(0,cards.length*2);
-
-totalPairs=cards.length;
-
-memoryCards.sort(()=>Math.random()-0.5);
-
-cardContent.style.display="flex";
-cardContent.style.flexDirection="column";
-cardContent.style.alignItems="center";
-cardContent.style.gap="12px";
-cardContent.style.position="relative";
-
-const cardsPerRow=4;
-const cardSize=140;
-
-for(let i=0;i<memoryCards.length;i+=cardsPerRow){
-
-const row=document.createElement("div");
-
-row.style.display="flex";
-row.style.justifyContent="center";
-row.style.gap="12px";
-row.style.width="100%";
-
-const slice=memoryCards.slice(i,i+cardsPerRow);
-
-slice.forEach(card=>{
-
-const div=document.createElement("div");
-
-div.className="memoryCard";
-div.dataset.flipped="false";
-
-div.style.width=cardSize+"px";
-div.style.height=cardSize+"px";
-div.style.display="flex";
-div.style.alignItems="center";
-div.style.justifyContent="center";
-div.style.textAlign="center";
-div.style.padding="8px";
-div.style.background="#444";
-div.style.color="white";
-div.style.fontSize=`clamp(14px, ${cardSize/6}px, 28px)`;
-div.style.fontWeight="600";
-div.style.cursor="pointer";
-div.style.borderRadius="10px";
-div.style.lineHeight="1.2";
-div.style.overflowWrap="break-word";
-div.style.wordBreak="break-word";
-
-div.onclick=()=>{
-
-if(div.dataset.flipped==="true"||secondCard) return;
-
-div.dataset.flipped="true";
-
-revealCard(div,card);
-
-if(!firstCard){
-
-firstCard={div,card};
-
-}else{
-
-secondCard={div,card};
-
-if(firstCard.card.pairId===secondCard.card.pairId){
-
-showCheck();
-
-matchedPairs++;
-
-setTimeout(()=>{
-
-firstCard.div.remove();
-secondCard.div.remove();
-
-firstCard=null;
-secondCard=null;
-
-if(matchedPairs===totalPairs){
-
-showBravo();
-
-}
-
-},500);
-
-}else{
-
-setTimeout(()=>{
-
-hideCard(firstCard.div);
-hideCard(secondCard.div);
-
-firstCard=null;
-secondCard=null;
-
-},900);
-
-}
-
-}
-
-};
-
-row.appendChild(div);
-
-});
-
-cardContent.appendChild(row);
-
-}
-
-createQuitButton();
-
-}
-
+// ================================
+// REVEAL / HIDE CARD
+// ================================
 function revealCard(div,card){
-
-div.innerHTML="";
-
-if(card.type==="image"){
-
-let img=document.createElement("img");
-img.src=card.value;
-img.style.maxWidth="100%";
-img.style.maxHeight="100%";
-div.appendChild(img);
-
-}
-
-if(card.type==="word"){
-
-div.innerText=card.value;
-
-}
-
-if(card.type==="audio"){
-
-div.innerHTML="🔊";
-
-let audio=new Audio(card.value);
-audio.play();
-
-}
-
+  div.innerHTML="";
+  if(card.type==="image"){
+    const img = document.createElement("img");
+    img.src = card.image;
+    img.style.maxWidth="90%";
+    img.style.maxHeight="90%";
+    img.style.objectFit="contain";
+    div.appendChild(img);
+  }else{
+    div.textContent = card.word;
+    if(card.audio){
+      new Audio(card.audio).play();
+    }
+  }
 }
 
 function hideCard(div){
-
-div.innerHTML="";
-div.dataset.flipped="false";
-
+  div.dataset.flipped="false";
+  div.innerHTML="";
+  div.style.background="#444";
 }
 
-function createQuitButton(){
+// ================================
+// MEMORY UI
+// ================================
+function exitMemory(){
+  memoryMode = false;
+  memoryBtn.style.opacity = 1;
 
-let btn=document.createElement("button");
+  flashcard.classList.remove('visible');
+  cardContent.innerHTML = "";
 
-btn.innerText="Quitter";
-btn.style.position="absolute";
-btn.style.top="10px";
-btn.style.right="10px";
-btn.style.zIndex="20";
+  // RESTAURE LES FLÈCHES
+  updateArrows();
 
-btn.onclick=()=>{
-
-showFlashcards();
-
-};
-
-cardContent.appendChild(btn);
-
+  loadThumbnails();
 }
 
+// ================================
+// CHECK & BRAVO
+// ================================
 function showCheck(){
-
-let check=document.createElement("div");
-
-check.innerText="✔️";
-
-check.style.position="absolute";
-check.style.fontSize="120px";
-check.style.zIndex="50";
-check.style.pointerEvents="none";
-
-check.style.left="50%";
-check.style.top="50%";
-check.style.transform="translate(-50%,-50%)";
-
-cardContent.appendChild(check);
-
-setTimeout(()=>{
-
-check.remove();
-
-},800);
-
+  const check = document.createElement("div");
+  check.textContent = "✔";
+  check.style.position = "fixed";
+  check.style.top = "50%";
+  check.style.left = "50%";
+  check.style.transform = "translate(-50%,-50%)";
+  check.style.fontSize = "240px";
+  check.style.color = "#4CAF50";
+  check.style.pointerEvents = "none";
+  check.style.zIndex = "2000";
+  flashcard.appendChild(check);
+  setTimeout(()=> check.remove(), 800);
 }
 
 function showBravo(){
-
-let bravo=document.createElement("div");
-
-bravo.innerHTML="🎉 Bravo ! 🎉";
-
-bravo.style.position="absolute";
-bravo.style.left="50%";
-bravo.style.top="50%";
-bravo.style.transform="translate(-50%,-50%)";
-
-bravo.style.fontSize="60px";
-bravo.style.background="white";
-bravo.style.padding="40px";
-bravo.style.borderRadius="20px";
-bravo.style.zIndex="100";
-
-cardContent.appendChild(bravo);
-
-setTimeout(()=>{
-
-showFlashcards();
-
-},2000);
-
+  const bravo = document.createElement("div");
+  bravo.style.position = "fixed";
+  bravo.style.top = "0";
+  bravo.style.left = "0";
+  bravo.style.width = "100%";
+  bravo.style.height = "100%";
+  bravo.style.background = "rgba(0,0,0,0.85)";
+  bravo.style.display = "flex";
+  bravo.style.alignItems = "center";
+  bravo.style.justifyContent = "center";
+  bravo.style.fontSize = "160px";
+  bravo.style.color = "white";
+  bravo.style.textAlign = "center";
+  bravo.textContent = "🎉 BRAVO !";
+  bravo.style.zIndex = "2000";
+  flashcard.appendChild(bravo);
+  setTimeout(()=>{
+    bravo.remove();
+    exitMemory();
+  },4000);
 }
 
 // ================================
