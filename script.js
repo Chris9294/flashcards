@@ -134,7 +134,7 @@ async function loadTheme() {
 }
 
 // ================================
-// AFFICHAGE MINIATURES AVEC ANIMATION
+// AFFICHAGE MINIATURES AVEC REBOND
 // ================================
 function loadThumbnails() {
   thumbnails.innerHTML = '';
@@ -143,18 +143,19 @@ function loadThumbnails() {
     const img = document.createElement('img');
     img.src = card.image;
     img.style.opacity = "0";
+    img.style.transform = 'translateY(20px)';
     img.style.display = 'inline-block';
-    img.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-    img.style.transform = 'translateY(10px)';
+    img.style.cursor = 'pointer';
     img.onclick = () => openCardAtIndex(index);
     thumbnails.appendChild(img);
 
-    // On déclenche l’animation après ajout au DOM
+    // Animation rebond en cascade
     img.onload = () => {
       setTimeout(() => {
+        img.style.transition = 'transform 0.5s cubic-bezier(.68,-0.55,.27,1.55), opacity 0.5s ease';
         img.style.opacity = '1';
         img.style.transform = 'translateY(0)';
-      }, 50 * index); // effet cascade
+      }, 60 * index); // effet cascade
     };
   });
 }
