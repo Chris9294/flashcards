@@ -134,17 +134,28 @@ async function loadTheme() {
 }
 
 // ================================
-// AFFICHAGE MINIATURES
+// AFFICHAGE MINIATURES AVEC ANIMATION
 // ================================
 function loadThumbnails() {
   thumbnails.innerHTML = '';
+
   currentThemeCards.forEach((card, index) => {
     const img = document.createElement('img');
     img.src = card.image;
-    img.style.opacity = "1";
+    img.style.opacity = "0";
     img.style.display = 'inline-block';
+    img.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+    img.style.transform = 'translateY(10px)';
     img.onclick = () => openCardAtIndex(index);
     thumbnails.appendChild(img);
+
+    // On déclenche l’animation après ajout au DOM
+    img.onload = () => {
+      setTimeout(() => {
+        img.style.opacity = '1';
+        img.style.transform = 'translateY(0)';
+      }, 50 * index); // effet cascade
+    };
   });
 }
 
