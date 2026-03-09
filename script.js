@@ -495,16 +495,28 @@ function showWord(){
 
   cardContent.innerHTML=`<div class="word">${currentCard.word}</div>`;
 
-  const wordDiv=cardContent.querySelector('.word');
+  const wordDiv = cardContent.querySelector('.word');
 
   teacherBtn.style.display="none";
 
-  wordDiv.style.opacity=0;
-  wordDiv.style.transition="opacity 0.5s ease";
+  // Styles pour centrer le texte et éviter qu’il touche les bords
+  wordDiv.style.display = "flex";
+  wordDiv.style.alignItems = "center";
+  wordDiv.style.justifyContent = "center";
+  wordDiv.style.textAlign = "center";
+  wordDiv.style.padding = "12px"; // padding pour que le texte ne touche pas les bords
+  wordDiv.style.fontSize = "clamp(16px, 5vw, 60px)"; // s’adapte à la taille de la carte
+  wordDiv.style.lineHeight = "1.2";
+  wordDiv.style.wordBreak = "break-word";
+  wordDiv.style.overflowWrap = "break-word";
+
+  wordDiv.style.opacity = 0;
+  wordDiv.style.transition = "opacity 0.5s ease";
 
   void wordDiv.offsetWidth;
-  wordDiv.style.opacity=1;
-  wordDiv.onclick=closeCard;
+
+  wordDiv.style.opacity = 1;
+  wordDiv.onclick = closeCard;
 
   updateArrows();
 
