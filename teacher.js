@@ -380,6 +380,9 @@ function renderCards() {
 
     div.appendChild(mediaRow);
 
+    const replaceAudioLabel=document.createElement('span'); replaceAudioLabel.textContent="Remplacer l'audio : "; replaceAudioLabel.style.fontSize="0.8em"; div.appendChild(replaceAudioLabel);
+    div.appendChild(audioInput);
+
     cardsList.appendChild(div);
 
   });
