@@ -19,20 +19,14 @@ async function loadThemes() {
     .select('*')
     .order('name');
 
-  if (error) {
-    console.error("Erreur chargement séries :", error);
-    alert("Erreur chargement séries");
-    return;
-  }
+  if (error) { console.error("Erreur chargement séries :", error); alert("Erreur chargement séries"); return; }
 
   const { data: cardsData } = await supabaseClient
     .from('cards')
     .select('theme_id');
 
   const counts = {};
-  cardsData.forEach(c => {
-    counts[c.theme_id] = (counts[c.theme_id] || 0) + 1;
-  });
+  cardsData.forEach(c => counts[c.theme_id] = (counts[c.theme_id] || 0) + 1);
 
   data.themes = themesData.map(t => ({
     id: t.id.toString(),
@@ -86,7 +80,6 @@ async function addTheme() {
 
   data.themes.push({ id: newTheme.id.toString(), name: newTheme.name, count: 0 });
   nameInput.value = '';
-
   loadThemes();
 }
 
@@ -99,19 +92,10 @@ async function deleteTheme() {
 
   const theme = data.themes.find(t => t.id === themeSelect.value);
   if (!theme) return;
-
   if (!confirm(`Supprimer la série "${theme.name}" ?`)) return;
 
-  const { error } = await supabaseClient
-    .from('themes')
-    .delete()
-    .eq('id', theme.id);
-
-  if (error) {
-    console.error("Erreur suppression série :", error);
-    alert("Erreur suppression série");
-    return;
-  }
+  const { error } = await supabaseClient.from('themes').delete().eq('id', theme.id);
+  if (error) { console.error("Erreur suppression série :", error); alert("Erreur suppression série"); return; }
 
   data.themes = data.themes.filter(t => t.id !== theme.id);
   loadThemes();
@@ -158,21 +142,12 @@ async function addCard() {
 
   const { error: cardError } = await supabaseClient
     .from('cards')
-    .insert([{
-      theme_id: themeId,
-      word,
-      image_url: imageName,
-      audio_url: audioName,
-      visible: true,
-      position
-    }]);
-
+    .insert([{ theme_id: themeId, word, image_url: imageName, audio_url: audioName, visible: true, position }]);
   if (cardError) { console.error("Erreur création carte:", cardError); alert("Erreur création carte"); return; }
 
   wordInput.value = '';
   imageInput.value = '';
   audioInput.value = '';
-
   document.querySelector('#imageInputWrapper .file-label').textContent = '🔎 Parcourir…';
   document.querySelector('#audioInputWrapper .file-label').textContent = '🔎 Parcourir…';
 
@@ -211,12 +186,8 @@ async function addAudioToCard(index, file) {
   const { error } = await supabaseClient.storage.from('cards').upload(audioName, file, { upsert: true });
   if (error) { console.error("Erreur upload audio :", error); alert("Erreur upload audio"); return; }
 
-  const { error: dbError } = await supabaseClient
-    .from('cards')
-    .update({ audio_url: audioName })
-    .eq('id', card.id);
-
-  if (dbError) { console.error("Erreur mise à jour audio dans la DB :", dbError); alert("Erreur mise à jour audio"); return; }
+  const { error: dbError } = await supabaseClient.from('cards').update({ audio_url: audioName }).eq('id', card.id);
+  if (dbError) { console.error("Erreur mise à jour audio :", dbError); alert("Erreur mise à jour audio"); return; }
 
   card.audio_url = audioName;
   renderCards();
@@ -262,12 +233,12 @@ function renderCards() {
     const upBtn = document.createElement('button');
     upBtn.textContent = '🔼';
     upBtn.disabled = index === 0;
-    upBtn.onclick = () => moveCard(card.id, card.position, 'up');
+    upBtn.onclick = () => moveCard(card.id, 'up');
 
     const downBtn = document.createElement('button');
     downBtn.textContent = '🔽';
     downBtn.disabled = index === data.cards.length - 1;
-    downBtn.onclick = () => moveCard(card.id, card.position, 'down');
+    downBtn.onclick = () => moveCard(card.id, 'down');
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '🗑️';
@@ -338,25 +309,31 @@ function renderCards() {
 }
 
 // ================================
-// DÉPLACER UNE CARTE
+// DÉPLACER UNE CARTE (corrigé)
 // ================================
-async function moveCard(cardId, position, direction) {
+async function moveCard(cardId, direction) {
   const themeId = document.getElementById('themeSelect').value;
   if (!themeId) return;
 
-  const targetPos = direction === 'up' ? position - 1 : position + 1;
-
-  const { data: targetCard } = await supabaseClient
+  const { data: cardsData } = await supabaseClient
     .from('cards')
-    .select('id')
+    .select('*')
     .eq('theme_id', themeId)
-    .eq('position', targetPos)
-    .single();
+    .order('position', { ascending: true });
 
-  if (!targetCard) return;
+  if (!cardsData || cardsData.length === 0) return;
 
-  await supabaseClient.from('cards').update({ position: targetPos }).eq('id', cardId);
-  await supabaseClient.from('cards').update({ position }).eq('id', targetCard.id);
+  const index = cardsData.findIndex(c => c.id === cardId);
+  if (index === -1) return;
+
+  const swapIndex = direction === 'up' ? index - 1 : index + 1;
+  if (swapIndex < 0 || swapIndex >= cardsData.length) return;
+
+  const currentCard = cardsData[index];
+  const targetCard = cardsData[swapIndex];
+
+  await supabaseClient.from('cards').update({ position: targetCard.position }).eq('id', currentCard.id);
+  await supabaseClient.from('cards').update({ position: currentCard.position }).eq('id', targetCard.id);
 
   loadCards(themeId);
 }
@@ -383,18 +360,13 @@ async function importZip(file, themeId) {
 
   zip.forEach((path, entry) => {
     if (entry.dir) return;
-
     const filename = path.split('/').pop();
     if (filename.startsWith("._") || filename.startsWith("__MACOSX")) return;
-
     const ext = filename.split('.').pop().toLowerCase();
     const name = filename.replace(/\.[^/.]+$/, "");
 
-    if (["jpg","jpeg","png","gif","webp"].includes(ext)) {
-      tasks.push(entry.async("blob").then(blob => images[name] = blob));
-    } else if (["mp3","wav","ogg","m4a"].includes(ext)) {
-      tasks.push(entry.async("blob").then(blob => audios[name] = blob));
-    }
+    if (["jpg","jpeg","png","gif","webp"].includes(ext)) tasks.push(entry.async("blob").then(blob => images[name] = blob));
+    else if (["mp3","wav","ogg","m4a"].includes(ext)) tasks.push(entry.async("blob").then(blob => audios[name] = blob));
   });
 
   await Promise.all(tasks);
@@ -412,7 +384,6 @@ async function importZip(file, themeId) {
     const imgFile = images[name];
     const imgExt = imgFile.type.split("/")[1];
     const imgName = `${Date.now()}_${name}.${imgExt}`;
-
     await supabaseClient.storage.from('cards').upload(imgName, imgFile);
 
     let audioName = null;
@@ -446,19 +417,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('addThemeBtn').addEventListener('click', addTheme);
   document.getElementById('deleteThemeBtn').addEventListener('click', deleteTheme);
   document.getElementById('themeSelect').addEventListener('change', e => loadCards(e.target.value));
-
-  document.getElementById("backToFlashcardsBtn").addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
+  document.getElementById("backToFlashcardsBtn").addEventListener("click", () => { window.location.href = "index.html"; });
 
   window.addCard = addCard;
-
   loadThemes();
 
   document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
     const label = input.nextElementSibling;
-    input.addEventListener('change', () => {
-      label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…';
-    });
+    input.addEventListener('change', () => { label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…'; });
   });
 });
