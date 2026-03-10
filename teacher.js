@@ -309,12 +309,13 @@ function renderCards() {
 }
 
 // ================================
-// DÉPLACER UNE CARTE (corrigé)
+// DÉPLACER UNE CARTE (optimisé pour positions consécutives)
 // ================================
 async function moveCard(cardId, direction) {
   const themeId = document.getElementById('themeSelect').value;
   if (!themeId) return;
 
+  // Récupérer toutes les cartes de la série triées par position
   const { data: cardsData } = await supabaseClient
     .from('cards')
     .select('*')
@@ -329,12 +330,22 @@ async function moveCard(cardId, direction) {
   const swapIndex = direction === 'up' ? index - 1 : index + 1;
   if (swapIndex < 0 || swapIndex >= cardsData.length) return;
 
-  const currentCard = cardsData[index];
-  const targetCard = cardsData[swapIndex];
+  // Échanger les cartes dans le tableau
+  [cardsData[index], cardsData[swapIndex]] = [cardsData[swapIndex], cardsData[index]];
 
-  await supabaseClient.from('cards').update({ position: targetCard.position }).eq('id', currentCard.id);
-  await supabaseClient.from('cards').update({ position: currentCard.position }).eq('id', targetCard.id);
+  // Réassigner des positions consécutives
+  for (let i = 0; i < cardsData.length; i++) {
+    cardsData[i].position = i + 1; // positions 1,2,3,...
+  }
 
+  // Mettre à jour toutes les cartes dans la DB en une seule boucle
+  for (const card of cardsData) {
+    await supabaseClient.from('cards')
+      .update({ position: card.position })
+      .eq('id', card.id);
+  }
+
+  // Recharger l'affichage
   loadCards(themeId);
 }
 
