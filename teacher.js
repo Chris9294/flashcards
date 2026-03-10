@@ -131,26 +131,18 @@ async function addCard() {
     if (audError) { console.error("Erreur upload audio:", audError); alert("Erreur upload audio"); return; }
   }
 
-  // → Nouvelle partie : recalculer la position consécutive
-  const { data: cardsData } = await supabaseClient
+  const { data: maxPosData } = await supabaseClient
     .from('cards')
     .select('position')
     .eq('theme_id', themeId)
-    .order('position', { ascending: true });
+    .order('position', { ascending: false })
+    .limit(1);
 
-  let nextPos = 1;
-  cardsData.forEach((c, i) => { c.position = i + 1; });
-  if (cardsData.length) nextPos = cardsData.length + 1;
+  const position = maxPosData.length ? maxPosData[0].position + 1 : 1;
 
-  const { error: cardError } = await supabaseClient.from('cards').insert([{
-    theme_id: themeId,
-    word,
-    image_url: imageName,
-    audio_url: audioName,
-    visible: true,
-    position: nextPos
-  }]);
-
+  const { error: cardError } = await supabaseClient
+    .from('cards')
+    .insert([{ theme_id: themeId, word, image_url: imageName, audio_url: audioName, visible: true, position }]);
   if (cardError) { console.error("Erreur création carte:", cardError); alert("Erreur création carte"); return; }
 
   wordInput.value = '';
@@ -360,6 +352,16 @@ async function moveCard(cardId, direction) {
 // ================================
 // IMPORT ZIP
 // ================================
+async function importZipFromInput() {
+  const input = document.getElementById("zipInput");
+  const themeId = document.getElementById("themeSelect").value;
+
+  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
+  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
+
+  await importZip(input.files[0], themeId);
+  input.value = "";
+}
 
 async function importZip(file, themeId) {
   const zip = await JSZip.loadAsync(file);
@@ -367,25 +369,19 @@ async function importZip(file, themeId) {
   const audios = {};
   const tasks = [];
 
-  // Extraire fichiers du zip
   zip.forEach((path, entry) => {
     if (entry.dir) return;
     const filename = path.split('/').pop();
     if (filename.startsWith("._") || filename.startsWith("__MACOSX")) return;
-
     const ext = filename.split('.').pop().toLowerCase();
     const name = filename.replace(/\.[^/.]+$/, "");
 
-    if (["jpg","jpeg","png","gif","webp"].includes(ext)) {
-      tasks.push(entry.async("blob").then(blob => images[name] = blob));
-    } else if (["mp3","wav","ogg","m4a"].includes(ext)) {
-      tasks.push(entry.async("blob").then(blob => audios[name] = blob));
-    }
+    if (["jpg","jpeg","png","gif","webp"].includes(ext)) tasks.push(entry.async("blob").then(blob => images[name] = blob));
+    else if (["mp3","wav","ogg","m4a"].includes(ext)) tasks.push(entry.async("blob").then(blob => audios[name] = blob));
   });
 
   await Promise.all(tasks);
 
-  // Récupérer la dernière position existante pour cette série
   const { data: maxPosData } = await supabaseClient
     .from('cards')
     .select('position')
@@ -393,8 +389,7 @@ async function importZip(file, themeId) {
     .order('position', { ascending: false })
     .limit(1);
 
-  // Initialiser nextPos à 0 si aucune carte existante
-  let nextPos = maxPosData.length ? maxPosData[0].position : 0;
+  let nextPos = maxPosData.length ? maxPosData[0].position + 1 : 1;
 
   for (const name in images) {
     const imgFile = images[name];
@@ -410,7 +405,6 @@ async function importZip(file, themeId) {
       await supabaseClient.storage.from('cards').upload(audioName, audFile);
     }
 
-    nextPos++; // <-- incrémenter ici pour garantir position unique
     await supabaseClient.from('cards').insert([{
       theme_id: themeId,
       word: name,
@@ -419,6 +413,8 @@ async function importZip(file, themeId) {
       visible: true,
       position: nextPos
     }]);
+
+    nextPos++;
   }
 
   await loadCards(themeId);
