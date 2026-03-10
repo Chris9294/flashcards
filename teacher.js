@@ -356,8 +356,14 @@ async function importZipFromInput() {
   const input = document.getElementById("zipInput");
   const themeId = document.getElementById("themeSelect").value;
 
-  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
-  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
+  if (!themeId) { 
+    alert("Veuillez sélectionner une série"); 
+    return; 
+  }
+  if (!input.files.length) { 
+    alert("Veuillez sélectionner un fichier ZIP"); 
+    return; 
+  }
 
   await importZip(input.files[0], themeId);
   input.value = "";
@@ -376,8 +382,10 @@ async function importZip(file, themeId) {
     const ext = filename.split('.').pop().toLowerCase();
     const name = filename.replace(/\.[^/.]+$/, "");
 
-    if (["jpg","jpeg","png","gif","webp"].includes(ext)) tasks.push(entry.async("blob").then(blob => images[name] = blob));
-    else if (["mp3","wav","ogg","m4a"].includes(ext)) tasks.push(entry.async("blob").then(blob => audios[name] = blob));
+    if (["jpg","jpeg","png","gif","webp"].includes(ext)) 
+      tasks.push(entry.async("blob").then(blob => images[name] = blob));
+    else if (["mp3","wav","ogg","m4a"].includes(ext)) 
+      tasks.push(entry.async("blob").then(blob => audios[name] = blob));
   });
 
   await Promise.all(tasks);
@@ -390,6 +398,7 @@ async function importZip(file, themeId) {
     .limit(1);
 
   let nextPos = maxPosData.length ? maxPosData[0].position + 1 : 1;
+  let addedCount = 0; // compteur pour le message
 
   for (const name in images) {
     const imgFile = images[name];
@@ -415,16 +424,17 @@ async function importZip(file, themeId) {
     }]);
 
     nextPos++;
+    addedCount++;
   }
 
   await loadCards(themeId);
   loadThemes();
 
- // --- petit message d'information ---
+  // --- petit message d'information ---
   const themeName = data.themes.find(t => t.id === themeId)?.name || "la série";
-  if (addedCount > 0) alert(`${addedCount} image${addedCount > 1 ? 's' : ''} ajoutée${addedCount > 1 ? 's' : ''} dans ${themeName}`);
+  if (addedCount > 0) 
+    alert(`${addedCount} image${addedCount > 1 ? 's' : ''} ajoutée${addedCount > 1 ? 's' : ''} dans ${themeName}`);
 }
-
 // ================================
 // INITIALISATION
 // ================================
