@@ -419,6 +419,10 @@ async function importZip(file, themeId) {
 
   await loadCards(themeId);
   loadThemes();
+
+ // --- petit message d'information ---
+  const themeName = data.themes.find(t => t.id === themeId)?.name || "la série";
+  if (addedCount > 0) alert(`${addedCount} image${addedCount > 1 ? 's' : ''} ajoutée${addedCount > 1 ? 's' : ''} dans ${themeName}`);
 }
 
 // ================================
