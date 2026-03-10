@@ -131,18 +131,26 @@ async function addCard() {
     if (audError) { console.error("Erreur upload audio:", audError); alert("Erreur upload audio"); return; }
   }
 
-  const { data: maxPosData } = await supabaseClient
+  // → Nouvelle partie : recalculer la position consécutive
+  const { data: cardsData } = await supabaseClient
     .from('cards')
     .select('position')
     .eq('theme_id', themeId)
-    .order('position', { ascending: false })
-    .limit(1);
+    .order('position', { ascending: true });
 
-  const position = maxPosData.length ? maxPosData[0].position + 1 : 1;
+  let nextPos = 1;
+  cardsData.forEach((c, i) => { c.position = i + 1; });
+  if (cardsData.length) nextPos = cardsData.length + 1;
 
-  const { error: cardError } = await supabaseClient
-    .from('cards')
-    .insert([{ theme_id: themeId, word, image_url: imageName, audio_url: audioName, visible: true, position }]);
+  const { error: cardError } = await supabaseClient.from('cards').insert([{
+    theme_id: themeId,
+    word,
+    image_url: imageName,
+    audio_url: audioName,
+    visible: true,
+    position: nextPos
+  }]);
+
   if (cardError) { console.error("Erreur création carte:", cardError); alert("Erreur création carte"); return; }
 
   wordInput.value = '';
@@ -352,16 +360,6 @@ async function moveCard(cardId, direction) {
 // ================================
 // IMPORT ZIP
 // ================================
-async function importZipFromInput() {
-  const input = document.getElementById("zipInput");
-  const themeId = document.getElementById("themeSelect").value;
-
-  if (!themeId) { alert("Veuillez sélectionner une série"); return; }
-  if (!input.files.length) { alert("Veuillez sélectionner un fichier ZIP"); return; }
-
-  await importZip(input.files[0], themeId);
-  input.value = "";
-}
 
 async function importZip(file, themeId) {
   const zip = await JSZip.loadAsync(file);
@@ -382,14 +380,14 @@ async function importZip(file, themeId) {
 
   await Promise.all(tasks);
 
-  const { data: maxPosData } = await supabaseClient
+  // → Nouvelle partie : recalculer la position consécutive avant insertion
+  const { data: cardsData } = await supabaseClient
     .from('cards')
     .select('position')
     .eq('theme_id', themeId)
-    .order('position', { ascending: false })
-    .limit(1);
+    .order('position', { ascending: true });
 
-  let nextPos = maxPosData.length ? maxPosData[0].position + 1 : 1;
+  let nextPos = cardsData.length ? cardsData.length + 1 : 1;
 
   for (const name in images) {
     const imgFile = images[name];
