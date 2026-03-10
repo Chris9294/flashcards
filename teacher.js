@@ -308,10 +308,6 @@ function renderCards() {
     audioInfo.appendChild(audioText);
     audioInfo.appendChild(playBtn);
 
-    const audioInput = document.createElement('input');
-    audioInput.type='file'; audioInput.accept='audio/*';
-    audioInput.onchange = () => addAudioToCard(index, audioInput.files[0]);
-
     const upBtn = document.createElement('button');
     upBtn.textContent = '🔼';
     upBtn.disabled = index === 0;
