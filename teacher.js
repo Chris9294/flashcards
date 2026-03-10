@@ -367,27 +367,34 @@ async function importZip(file, themeId) {
   const audios = {};
   const tasks = [];
 
+  // Extraire fichiers du zip
   zip.forEach((path, entry) => {
     if (entry.dir) return;
     const filename = path.split('/').pop();
     if (filename.startsWith("._") || filename.startsWith("__MACOSX")) return;
+
     const ext = filename.split('.').pop().toLowerCase();
     const name = filename.replace(/\.[^/.]+$/, "");
 
-    if (["jpg","jpeg","png","gif","webp"].includes(ext)) tasks.push(entry.async("blob").then(blob => images[name] = blob));
-    else if (["mp3","wav","ogg","m4a"].includes(ext)) tasks.push(entry.async("blob").then(blob => audios[name] = blob));
+    if (["jpg","jpeg","png","gif","webp"].includes(ext)) {
+      tasks.push(entry.async("blob").then(blob => images[name] = blob));
+    } else if (["mp3","wav","ogg","m4a"].includes(ext)) {
+      tasks.push(entry.async("blob").then(blob => audios[name] = blob));
+    }
   });
 
   await Promise.all(tasks);
 
-  // → Nouvelle partie : recalculer la position consécutive avant insertion
-  const { data: cardsData } = await supabaseClient
+  // Récupérer la dernière position existante pour cette série
+  const { data: maxPosData } = await supabaseClient
     .from('cards')
     .select('position')
     .eq('theme_id', themeId)
-    .order('position', { ascending: true });
+    .order('position', { ascending: false })
+    .limit(1);
 
-  let nextPos = cardsData.length ? cardsData.length + 1 : 1;
+  // Initialiser nextPos à 0 si aucune carte existante
+  let nextPos = maxPosData.length ? maxPosData[0].position : 0;
 
   for (const name in images) {
     const imgFile = images[name];
@@ -403,6 +410,7 @@ async function importZip(file, themeId) {
       await supabaseClient.storage.from('cards').upload(audioName, audFile);
     }
 
+    nextPos++; // <-- incrémenter ici pour garantir position unique
     await supabaseClient.from('cards').insert([{
       theme_id: themeId,
       word: name,
@@ -411,8 +419,6 @@ async function importZip(file, themeId) {
       visible: true,
       position: nextPos
     }]);
-
-    nextPos++;
   }
 
   await loadCards(themeId);
