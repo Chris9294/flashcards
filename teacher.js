@@ -11,47 +11,6 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 let data = { themes: [], cards: [] };
 
 // ================================
-// MENU OUTILS FLASHCARDS
-// ================================
-function createToolsDropdown() {
-  const container = document.getElementById('headerRight') || document.body; // conteneur du header
-
-  // Créer le select
-  const select = document.createElement('select');
-  select.style.marginLeft = 'auto';      // pousse à droite
-  select.style.fontWeight = 'bold';
-  select.title = "Outils pour créer des flashcards";
-
-  const placeholder = document.createElement('option');
-  placeholder.textContent = '🔧 Outils';
-  placeholder.disabled = true;
-  placeholder.selected = true;
-  select.appendChild(placeholder);
-
-  const tools = [
-    { name: "🎨 Générer des images IA", url: "https://firefly.adobe.com/" },
-    { name: "✂️ Supprimer le fond (Remove.bg)", url: "https://www.remove.bg/fr" },
-    { name: "🔊 Générer un audio TTS", url: "https://lazypy.ro/tts/?voice=en-gb&service=Google%20Translate&text=It%27s%20rainy&lang=English&g=A" }
-  ];
-
-  tools.forEach(tool => {
-    const option = document.createElement('option');
-    option.textContent = tool.name;
-    option.value = tool.url;
-    select.appendChild(option);
-  });
-
-  select.onchange = () => {
-    window.open(select.value, '_blank');
-    select.selectedIndex = 0; // revenir au placeholder
-  };
-
-  // Ajouter le select à droite
-  if (container.style.display !== 'flex') container.style.display = 'flex';
-  container.appendChild(select);
-}
-
-// ================================
 // CHARGER LES SÉRIES
 // ================================
 async function loadThemes() {
@@ -545,9 +504,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addCard = addCard;
   loadThemes();
 
-  // --- NOUVEAU : menu outils ---
-  createToolsDropdown();
-  
   document.querySelectorAll('.file-wrapper input[type="file"]').forEach(input => {
     const label = input.nextElementSibling;
     input.addEventListener('change', () => { label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…'; });
