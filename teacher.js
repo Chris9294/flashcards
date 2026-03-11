@@ -297,8 +297,18 @@ function renderCards() {
     div.appendChild(toggleBtn);
 
     // IMAGE
-    const img = document.createElement('img');
-    img.src = supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
+  const img = document.createElement('img');
+img.src = supabaseClient.storage.from('cards').getPublicUrl(card.image_url).data.publicUrl;
+img.style.cursor = "pointer";
+img.title = "✏️ Remplacer l'image";
+
+const imgInput = document.createElement('input');
+imgInput.type = "file";
+imgInput.accept = "image/*";
+imgInput.style.display = "none";
+imgInput.onchange = () => replaceImageOfCard(index, imgInput.files[0]);
+
+img.onclick = () => imgInput.click();
 
     const imageCol = document.createElement('div');
     imageCol.style.display = "flex";
@@ -368,6 +378,7 @@ function renderCards() {
     mediaRow.appendChild(audioCol);
 
     div.appendChild(mediaRow);
+    div.appendChild(imgInput);
 
     cardsList.appendChild(div);
   });
