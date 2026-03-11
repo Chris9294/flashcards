@@ -169,8 +169,20 @@ async function loadCards(themeId) {
 
   data.cards = cardsData;
 
-  const title = document.getElementById('cardsTitle');
-  title.textContent = `${data.cards.length} carte${data.cards.length > 1 ? 's' : ''} existante${data.cards.length > 1 ? 's' : ''}`;
+ const title = document.getElementById('cardsTitle');
+title.innerHTML = `${data.cards.length} carte${data.cards.length > 1 ? 's' : ''} existante${data.cards.length > 1 ? 's' : ''} `;
+
+const toggleAllBtn = document.createElement('button');
+toggleAllBtn.textContent = data.cards.every(c => c.visible) ? '🚫 Masquer toutes' : '👁️ Afficher toutes';
+toggleAllBtn.style.marginLeft = '10px';
+toggleAllBtn.onclick = async () => {
+  const newVisible = !data.cards.every(c => c.visible);
+  for (const card of data.cards) {
+    await supabaseClient.from('cards').update({ visible: newVisible }).eq('id', card.id);
+  }
+  loadCards(document.getElementById('themeSelect').value);
+};
+title.appendChild(toggleAllBtn);
 
   renderCards();
 }
