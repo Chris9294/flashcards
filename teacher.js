@@ -508,4 +508,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const label = input.nextElementSibling;
     input.addEventListener('change', () => { label.textContent = input.files.length > 0 ? input.files[0].name : 'Parcourir…'; });
   });
+   // ← Ici tu ajoutes la ligne pour créer le menu
+  createToolsDropdown();
 });
+function createToolsDropdown() {
+  const container = document.getElementById('toolsDropdownContainer');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  const select = document.createElement('select');
+  const placeholder = document.createElement('option');
+  placeholder.textContent = "Outils Flashcards";
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  select.appendChild(placeholder);
+
+  const tools = [
+    { name: "Générer image IA", url: "https://firefly.adobe.com/" },
+    { name: "Supprimer fond (Remove.bg)", url: "https://www.remove.bg/fr" },
+    { name: "Générer audio (Lazypy.ro)", url: "https://lazypy.ro/tts/?voice=en-gb&service=Google%20Translate&text=It%27s%20rainy&lang=English&g=A" }
+  ];
+
+  tools.forEach(tool => {
+    const option = document.createElement('option');
+    option.value = tool.url;
+    option.textContent = tool.name;
+    select.appendChild(option);
+  });
+
+  select.addEventListener('change', () => {
+    if (select.value) window.open(select.value, "_blank");
+    select.selectedIndex = 0;
+  });
+
+  container.appendChild(select);
+}
