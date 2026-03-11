@@ -81,33 +81,6 @@ async function addTheme() {
   data.themes.push({ id: newTheme.id.toString(), name: newTheme.name, count: 0 });
   nameInput.value = '';
   loadThemes();
-
-// --- LIENS UTILES FLASHCARDS ---
-const toolsDiv = document.createElement('div');
-toolsDiv.style.margin = '10px 0';
-toolsDiv.style.display = 'flex';
-toolsDiv.style.gap = '15px';
-
-// Fonction utilitaire pour créer un lien
-function createToolLink(text, url) {
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_blank';
-  a.textContent = text;
-  a.style.color = '#0066cc';
-  a.style.textDecoration = 'underline';
-  a.style.fontWeight = 'bold';
-  return a;
-}
-
-toolsDiv.appendChild(createToolLink("🎨 Générer des images IA", "https://firefly.adobe.com/"));
-toolsDiv.appendChild(createToolLink("✂️ Supprimer le fond (Remove.bg)", "https://www.remove.bg/fr"));
-toolsDiv.appendChild(createToolLink("🔊 Générer un audio TTS", "https://lazypy.ro/tts/?voice=en-gb&service=Google%20Translate&text=It%27s%20rainy&lang=English&g=A"));
-
-// Ajouter en haut de la page, juste avant le sélecteur de thème
-const container = document.getElementById('teacherContainer') || document.body;
-container.prepend(toolsDiv);
-  
 }
 
 // ================================
