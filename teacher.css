@@ -28,20 +28,19 @@ body {
 
 /* Bouton menu outils */
 .tools-btn {
-  background-color: #ff6f61; /* orange comme le texte "Carte" */
+  background-color: #ff6f61; /* orange */
   color: white;
   border: none;
   padding: 8px 12px;
   cursor: pointer;
-  border-radius: 6px;
-  font-size: 1em;
-  transition: transform 0.1s ease, background-color 0.2s ease;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .tools-btn:hover {
   transform: scale(1.05);
-  background-color: #ff5a4b; /* un peu plus foncé au survol */
-}
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 
 .tools-dropdown {
   position: absolute;
