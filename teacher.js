@@ -159,25 +159,17 @@ async function addCard() {
 // MENU OUTILS FLASHCARDS
 // ================================
 function createToolsDropdown() {
+
   const container = document.getElementById('toolsDropdownContainer');
   if (!container) return;
 
-  container.innerHTML = '';
   container.style.position = "relative";
-  container.style.display = "flex";
-  container.style.alignItems = "center";
-  container.style.gap = "10px";
 
-  // -------- Menu Outils --------
   const button = document.createElement("button");
   button.textContent = "🛠 Outils Flashcards";
-  button.style.padding = "5px 10px";
-  button.style.borderRadius = "6px";
-  button.style.border = "none";
-  button.style.backgroundColor = "#ffcc80";
-  button.style.cursor = "pointer";
 
   const menu = document.createElement("div");
+
   menu.style.position = "absolute";
   menu.style.right = "0";
   menu.style.top = "35px";
@@ -187,72 +179,67 @@ function createToolsDropdown() {
   menu.style.boxShadow = "0 4px 10px rgba(0,0,0,0.15)";
   menu.style.display = "none";
   menu.style.minWidth = "220px";
-  menu.style.zIndex = "1000";
 
   const tools = [
-    { name: "✂️ Supprimer fond (Remove.bg)", url: "https://www.remove.bg/fr" },
-    { name: "🔊 Générer audio (LazyPy TTS)", url: "https://lazypy.ro/tts/?voice=en-gb&service=Google%20Translate&text=It%27s%20rainy&lang=English&g=A" }
+
+    {
+      name: "🎨 Générer image IA (Adobe Firefly)",
+      url: "https://firefly.adobe.com/"
+    },
+
+    {
+      name: "✂️ Supprimer fond (Remove.bg)",
+      url: "https://www.remove.bg/fr"
+    },
+
+    {
+      name: "🔊 Générer audio (LazyPy TTS)",
+      url: "https://lazypy.ro/tts/?voice=en-gb&service=Google%20Translate&text=It%27s%20rainy&lang=English&g=A"
+    }
+
   ];
 
   tools.forEach(tool => {
+
     const item = document.createElement("div");
     item.textContent = tool.name;
+
     item.style.padding = "8px 10px";
     item.style.cursor = "pointer";
+
     item.onmouseover = () => item.style.background = "#fff3e0";
     item.onmouseout = () => item.style.background = "#fff";
+
     item.onclick = () => {
+
       window.open(tool.url, "_blank");
       menu.style.display = "none";
+
     };
+
     menu.appendChild(item);
+
   });
 
   button.onclick = () => {
-    menu.style.display = menu.style.display === "none" ? "block" : "none";
+
+    menu.style.display = menu.style.display === "none"
+      ? "block"
+      : "none";
+
   };
 
   document.addEventListener("click", e => {
-    if (!container.contains(e.target)) menu.style.display = "none";
+
+    if (!container.contains(e.target)) {
+      menu.style.display = "none";
+    }
+
   });
 
   container.appendChild(button);
   container.appendChild(menu);
 
-  // -------- Générateur de prompt Firefly --------
-  const fireflyContainer = document.createElement('div');
-  fireflyContainer.style.display = 'inline-flex';
-  fireflyContainer.style.alignItems = 'center';
-  fireflyContainer.style.gap = '5px';
-
-  const fireflyInput = document.createElement('input');
-  fireflyInput.type = 'text';
-  fireflyInput.placeholder = 'Sujet du clipart...';
-  fireflyInput.style.padding = '4px 6px';
-  fireflyInput.style.borderRadius = '6px';
-  fireflyInput.style.border = '1px solid #ccc';
-
-  const fireflyBtn = document.createElement('button');
-  fireflyBtn.textContent = '🎨 Firefly';
-  fireflyBtn.style.padding = '5px 8px';
-  fireflyBtn.style.borderRadius = '6px';
-  fireflyBtn.style.border = 'none';
-  fireflyBtn.style.backgroundColor = '#ffcc80';
-  fireflyBtn.style.cursor = 'pointer';
-
-  fireflyBtn.onclick = () => {
-    const prompt = fireflyInput.value.trim();
-    if (!prompt) {
-      alert('Saisis un sujet pour générer le clipart !');
-      return;
-    }
-    const url = `https://firefly.adobe.com/?prompt=${encodeURIComponent(prompt)}`;
-    window.open(url, '_blank');
-  };
-
-  fireflyContainer.appendChild(fireflyInput);
-  fireflyContainer.appendChild(fireflyBtn);
-  container.appendChild(fireflyContainer);
 }
 
 // ================================
@@ -611,5 +598,71 @@ document.addEventListener('DOMContentLoaded', () => {
    // ← Ici tu ajoutes la ligne pour créer le menu
   createToolsDropdown();
 });
+function createToolsDropdown() {
 
+  const container = document.getElementById('toolsDropdownContainer');
+  if (!container) return;
 
+  container.innerHTML = '';
+  container.style.position = "relative";
+
+  const button = document.createElement('button');
+  button.textContent = "🛠 Outils Flashcards";
+
+  const menu = document.createElement('div');
+  menu.style.position = "absolute";
+  menu.style.right = "0";
+  menu.style.top = "36px";
+  menu.style.background = "#fff";
+  menu.style.border = "1px solid #ffcc80";
+  menu.style.borderRadius = "8px";
+  menu.style.boxShadow = "0 4px 10px rgba(0,0,0,0.15)";
+  menu.style.display = "none";
+  menu.style.minWidth = "230px";
+  menu.style.zIndex = "1000";
+
+  const tools = [
+    {
+      name: "🎨 Générer image IA (Adobe Firefly)",
+      url: "https://firefly.adobe.com/"
+    },
+    {
+      name: "✂️ Supprimer fond (Remove.bg)",
+      url: "https://www.remove.bg/fr"
+    },
+    {
+      name: "🔊 Générer audio (LazyPy TTS)",
+      url: "https://lazypy.ro/tts/?voice=en-gb&service=Google%20Translate&text=It%27s%20rainy&lang=English&g=A"
+    }
+  ];
+
+  tools.forEach(tool => {
+
+    const item = document.createElement("div");
+    item.textContent = tool.name;
+    item.style.padding = "8px 10px";
+    item.style.cursor = "pointer";
+
+    item.onmouseover = () => item.style.background = "#fff3e0";
+    item.onmouseout = () => item.style.background = "#fff";
+
+    item.onclick = () => {
+      window.open(tool.url, "_blank");
+      menu.style.display = "none";
+    };
+
+    menu.appendChild(item);
+
+  });
+
+  button.onclick = () => {
+    menu.style.display = menu.style.display === "none" ? "block" : "none";
+  };
+
+  document.addEventListener("click", e => {
+    if (!container.contains(e.target)) menu.style.display = "none";
+  });
+
+  container.appendChild(button);
+  container.appendChild(menu);
+}
