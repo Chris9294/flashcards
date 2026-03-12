@@ -525,7 +525,7 @@ function createToolsDropdown() {
   select.appendChild(placeholder);
 
   const tools = [
-    { name: "Générer image IA", url: "https://firefly.adobe.com/" },
+    { name: "Générer image IA (Adobe Firefly)", url: "https://firefly.adobe.com/" },
     { name: "Supprimer fond (Remove.bg)", url: "https://www.remove.bg/fr" },
     { name: "Générer audio (Lazypy.ro)", url: "https://lazypy.ro/tts/?voice=en-gb&service=Google%20Translate&text=It%27s%20rainy&lang=English&g=A" }
   ];
