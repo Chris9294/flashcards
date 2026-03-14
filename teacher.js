@@ -626,6 +626,10 @@ function createToolsDropdown() {
       name: "🎨 Générer image IA (Adobe Firefly)",
       url: "https://firefly.adobe.com/"
     },
+     {
+      name: "🎨 Générer image IA (Canva)",
+      url: "https://www.canva.com/ai/"
+    },
     {
       name: "✂️ Supprimer fond (Remove.bg)",
       url: "https://www.remove.bg/fr"
