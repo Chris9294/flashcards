@@ -622,6 +622,10 @@ function createToolsDropdown() {
   menu.style.zIndex = "1000";
 
   const tools = [
+        {
+      name: "🎨 Cliparts gratuits (Clker.com)",
+      url: "https://www.clker.com/"
+    },
     {
       name: "🎨 Générer image IA (Adobe Firefly)",
       url: "https://firefly.adobe.com/"
