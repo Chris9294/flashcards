@@ -28,6 +28,7 @@ h1 {
   height: auto;
 
   animation: float 3s ease-in-out infinite;
+   filter: drop-shadow(0 10px 10px rgba(0,0,0,0.15));
 }
 body {
   padding-bottom: 200px;
