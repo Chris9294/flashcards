@@ -27,10 +27,6 @@ h1 {
   max-width: 40%;
   height: auto;
 }
-select, label {
-  position: relative;
-  z-index: 1001;
-}
 body {
   padding-bottom: 200px;
 }
