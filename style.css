@@ -7,7 +7,10 @@ body {
   background: #fff9f2;  /* fond jaune pâle uniforme */
   color: #333;
 }
-
+select, label {
+  position: relative;
+  z-index: 1001;
+}
 /* ==========================
    Titre principal simple
    ========================== */
@@ -27,10 +30,7 @@ h1 {
   height: auto;
 }
 
-select, label {
-  position: relative;
-  z-index: 1001;
-}
+
 
 body {
   padding-bottom: 200px;
