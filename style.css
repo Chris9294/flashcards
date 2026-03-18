@@ -19,7 +19,13 @@ h1 {
   text-shadow: 2px 2px 4px #aaa; /* léger relief */
   margin-bottom: 20px;
 }
-
+#heroImage {
+  display: block;
+  margin: 20px auto;
+  max-width: 300px;
+  width: 80%;
+  height: auto;
+}
 /* ==========================
    Miniatures en bas avec fond dégradé
    ========================== */
