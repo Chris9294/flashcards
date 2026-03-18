@@ -7,10 +7,7 @@ body {
   background: #fff9f2;  /* fond jaune pâle uniforme */
   color: #333;
 }
-select, label {
-  position: relative;
-  z-index: 1001;
-}
+
 /* ==========================
    Titre principal simple
    ========================== */
@@ -21,6 +18,10 @@ h1 {
   color: #ff6f61;        /* couleur vive */
   text-shadow: 2px 2px 4px #aaa; /* léger relief */
   margin-bottom: 20px;
+}
+select, label {
+  position: relative;
+  z-index: 1001;
 }
 #heroImage {
   display: block;
