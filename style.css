@@ -19,10 +19,7 @@ h1 {
   text-shadow: 2px 2px 4px #aaa; /* léger relief */
   margin-bottom: 20px;
 }
-select, label {
-  position: relative;
-  z-index: 1001;
-}
+
 #heroImage {
   display: block;
   margin: 15px auto;
@@ -30,9 +27,10 @@ select, label {
   max-width: 40%;
   height: auto;
 }
-
-
-
+select, label {
+  position: relative;
+  z-index: 1001;
+}
 body {
   padding-bottom: 200px;
 }
