@@ -43,7 +43,6 @@ async function loadThemes() {
 function refreshThemes() {
   const themeSelect = document.getElementById('themeSelect');
 
-  // 🔥 mémorise la sélection actuelle
   const currentValue = themeSelect.value;
 
   themeSelect.innerHTML = '';
@@ -52,23 +51,26 @@ function refreshThemes() {
   placeholder.value = '';
   placeholder.textContent = '— Choix de la série —';
   placeholder.disabled = true;
+
   themeSelect.appendChild(placeholder);
+
+  let hasSelected = false;
 
   data.themes.forEach(theme => {
     const option = document.createElement('option');
     option.value = theme.id;
     option.textContent = `${theme.name} (${theme.count})`;
 
-    // 🔥 restaure la sélection
-    if (theme.id === currentValue) {
+    if (theme.id === currentValue && currentValue !== '') {
       option.selected = true;
+      hasSelected = true;
     }
 
     themeSelect.appendChild(option);
   });
 
-  // si rien sélectionné → placeholder
-  if (!themeSelect.value) {
+  // 🔥 IMPORTANT : gestion du cas initial
+  if (!hasSelected) {
     placeholder.selected = true;
   }
 }
