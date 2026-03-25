@@ -42,21 +42,35 @@ async function loadThemes() {
 // ================================
 function refreshThemes() {
   const themeSelect = document.getElementById('themeSelect');
+
+  // 🔥 mémorise la sélection actuelle
+  const currentValue = themeSelect.value;
+
   themeSelect.innerHTML = '';
 
   const placeholder = document.createElement('option');
   placeholder.value = '';
   placeholder.textContent = '— Choix de la série —';
   placeholder.disabled = true;
-  placeholder.selected = true;
   themeSelect.appendChild(placeholder);
 
   data.themes.forEach(theme => {
     const option = document.createElement('option');
     option.value = theme.id;
     option.textContent = `${theme.name} (${theme.count})`;
+
+    // 🔥 restaure la sélection
+    if (theme.id === currentValue) {
+      option.selected = true;
+    }
+
     themeSelect.appendChild(option);
   });
+
+  // si rien sélectionné → placeholder
+  if (!themeSelect.value) {
+    placeholder.selected = true;
+  }
 }
 
 // ================================
