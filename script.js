@@ -128,7 +128,7 @@ themeSelect.parentNode.insertBefore(memoryBtn, shuffleBtn.nextSibling);
 // BOUTON WHAT'S MISSING ?
 // ================================
 const missingBtn = document.createElement('button');
-missingBtn.textContent = "👀";
+missingBtn.textContent = "🕵️";
 missingBtn.title = "What's missing?";
 missingBtn.style.marginLeft = "4px";
 missingBtn.style.fontSize = "16px";
