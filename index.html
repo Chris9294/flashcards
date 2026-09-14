@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<title>FlashCards!</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ==========================
+     Champ code enseignant
+     ========================== */
+  #teacherCode {
+    display: none;        /* caché par défaut */
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid #ffcc80;
+    font-size: 14px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* Conteneur bouton + champ */
+  #teacherContainer {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+
+<body>
+  <!-- Conteneur bouton + champ -->
+  <div id="teacherContainer">
+    <button id="teacherBtn" title="Interface enseignant">🎓</button>
+    <input
+      type="password"
+      id="teacherCode"
+      placeholder="Code enseignant"
+    />
+  </div>
+
+  <button id="fullscreenBtn" title="Plein écran">⛶</button>
+
+<div id="header">
+  <h1>FlashCards!</h1>
+
+  <div id="controls">
+    <label for="themeSelect"><strong>Choisis une série :</strong></label>
+    <select id="themeSelect"></select>
+  </div>
+
+  <img 
+    src="Flashbrain.png" 
+    alt="Illustration flashcards avec cerveau" 
+    id="heroImage"
+  />
+</div>
+
+  <!-- Flashcard plein écran -->
+  <div id="flashcard">
+    <div id="overlay"></div>
+    <div id="card">
+      <div id="cardContent"></div>
+    </div>
+
+    <!-- Boutons à droite -->
+    <div id="cardButtons">
+      <button id="flipBtn">🔄</button>
+      <button id="speakBtn">🔊</button>
+    </div>
+
+    <!-- Flèches navigation -->
+    <div id="leftArrow" class="navArrow" style="display:none;">&#8592;</div>
+    <div id="rightArrow" class="navArrow" style="display:none;">&#8594;</div>
+  </div>
+
+  <!-- Miniatures -->
+  <div id="thumbnails"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script src="script.js"></script>
+
+  <script>
+    const teacherBtn = document.getElementById("teacherBtn");
+    const teacherCode = document.getElementById("teacherCode");
+
+    // Affiche le champ à côté du bouton et focus
+    teacherBtn.addEventListener("click", () => {
+      teacherCode.style.display = "inline-block";
+      teacherCode.focus();
+      teacherCode.value = "";
+    });
+
+    // Vérification immédiate du code à la saisie
+    teacherCode.addEventListener("input", () => {
+      if (teacherCode.value === "1515") {
+        window.location.href = "./enseignant.html";
+      }
+    });
+  </script>
+</body>
+</html>
