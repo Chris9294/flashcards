@@ -37,6 +37,7 @@ const rightArrow = document.getElementById('rightArrow');
 const fullscreenBtn = document.getElementById("fullscreenBtn");
 const teacherBtn = document.getElementById("teacherBtn");
 const teacherCode = document.getElementById("teacherCode");
+const teacherContainer = document.getElementById("teacherContainer");
 
 // ================================
 // BOUTON INTERFACE ENSEIGNANT
@@ -54,6 +55,14 @@ teacherCode.addEventListener("input", () => {
     alert("Code incorrect");
     teacherCode.value = "";
     teacherCode.focus();
+  }
+});
+
+// Masquer le champ enseignant dès que l'utilisateur reprend l'interface élève
+document.addEventListener("click", (event) => {
+  if (teacherCode.style.display !== "none" && !teacherContainer.contains(event.target)) {
+    teacherCode.style.display = "none";
+    teacherCode.value = "";
   }
 });
 
@@ -119,7 +128,7 @@ themeSelect.parentNode.insertBefore(memoryBtn, shuffleBtn.nextSibling);
 // BOUTON WHAT'S MISSING ?
 // ================================
 const missingBtn = document.createElement('button');
-missingBtn.textContent = "❓";
+missingBtn.textContent = "👀";
 missingBtn.title = "What's missing?";
 missingBtn.style.marginLeft = "4px";
 missingBtn.style.fontSize = "16px";
