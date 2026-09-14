@@ -255,10 +255,10 @@ function startMemory(){
 
   cardContent.innerHTML="";
   cardContent.style.display="flex";
-  cardContent.style.flexWrap="wrap";
+  cardContent.style.flexWrap="nowrap";
   cardContent.style.justifyContent="center";
   cardContent.style.alignItems="center";
-  cardContent.style.gap="12px";
+  cardContent.style.gap="0";
 
   firstCard=null;
   secondCard=null;
@@ -272,6 +272,28 @@ function startMemory(){
 
   totalPairs=currentThemeCards.length;
   memoryCards.sort(()=>Math.random()-0.5);
+
+  const memoryGrid=document.createElement("div");
+  const memoryCardCount=memoryCards.length;
+  const memoryColumns=getMemoryColumns(memoryCardCount);
+  const memoryRows=Math.ceil(memoryCardCount/memoryColumns);
+  const memoryGap=12;
+  const memoryCardPadding=8;
+  const maxCardSize=140;
+  const availableWidth=Math.max(0, window.innerWidth-80);
+  const availableHeight=Math.max(0, window.innerHeight-80);
+  const memoryCardSize=Math.max(70, Math.min(
+    maxCardSize,
+    Math.floor((availableWidth-memoryGap*(memoryColumns-1))/memoryColumns)-memoryCardPadding*2,
+    Math.floor((availableHeight-memoryGap*(memoryRows-1))/memoryRows)-memoryCardPadding*2
+  ));
+
+  memoryGrid.style.display="grid";
+  memoryGrid.style.gridTemplateColumns=`repeat(${memoryColumns}, ${memoryCardSize+memoryCardPadding*2}px)`;
+  memoryGrid.style.gap=memoryGap+"px";
+  memoryGrid.style.justifyContent="center";
+  memoryGrid.style.alignContent="center";
+  cardContent.appendChild(memoryGrid);
 
   const quitBtn=document.createElement("button");
   quitBtn.textContent="✖";
@@ -291,7 +313,7 @@ function startMemory(){
     div.className="memoryCard";
     div.dataset.flipped="false";
 
-    const cardSize = 140;
+    const cardSize = memoryCardSize;
     div.style.width = cardSize + "px";
     div.style.height = cardSize + "px";
     div.style.display = "flex";
@@ -345,8 +367,31 @@ function startMemory(){
         }
       }
     };
-    cardContent.appendChild(div);
+    memoryGrid.appendChild(div);
   });
+}
+
+function getMemoryColumns(cardCount){
+  if(cardCount<=1) return 1;
+
+  const screenRatio=window.innerWidth/Math.max(window.innerHeight,1);
+  let bestColumns=cardCount;
+  let bestScore=Infinity;
+
+  for(let columns=1;columns<=cardCount;columns++){
+    if(cardCount%columns!==0) continue;
+
+    const rows=cardCount/columns;
+    const gridRatio=columns/rows;
+    const score=Math.abs(Math.log(gridRatio/screenRatio));
+
+    if(score<bestScore){
+      bestScore=score;
+      bestColumns=columns;
+    }
+  }
+
+  return bestColumns;
 }
 
 // ================================
