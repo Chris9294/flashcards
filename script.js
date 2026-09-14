@@ -446,14 +446,14 @@ function startMissingGame(){
   game.className = 'missing-game';
   game.innerHTML = `
     <div class="missing-game-header">
-      <div class="missing-game-title">Mémorise les cartes !</div>
-      <button class="missing-game-close" title="Quitter">✖</button>
+      <button class="missing-game-back" title="Back">← Back</button>
+      <div class="missing-game-title">Memorize the cards!</div>
     </div>
     <div class="missing-game-body">
       <div class="missing-game-grid-wrap">
         <div class="missing-game-grid"></div>
         <div class="missing-game-actions">
-          <button class="missing-game-primary">Je suis prêt !</button>
+          <button class="missing-game-primary">Random card</button>
         </div>
       </div>
       <aside class="missing-game-reveal" aria-live="polite">
@@ -464,8 +464,8 @@ function startMissingGame(){
 
   flashcard.appendChild(game);
 
-  game.querySelector('.missing-game-close').onclick = exitMissingGame;
-  game.querySelector('.missing-game-primary').onclick = hideMissingCard;
+  game.querySelector('.missing-game-back').onclick = exitMissingGame;
+  game.querySelector('.missing-game-primary').onclick = () => hideMissingCard();
 
   missingPhase = 'memorize';
   missingCard = null;
@@ -499,11 +499,21 @@ function renderMissingGrid(){
     img.alt = card.word;
 
     cardEl.appendChild(img);
+    cardEl.onclick = () => selectMissingCard(index);
     slot.appendChild(cardEl);
     grid.appendChild(slot);
   });
 
   requestAnimationFrame(updateMissingGameLayout);
+}
+
+
+function selectMissingCard(index){
+  if (missingPhase === 'memorize') {
+    hideMissingCard(index);
+  } else if (missingPhase === 'revealed') {
+    nextMissingRound(index);
+  }
 }
 
 function updateMissingGameLayout(){
@@ -541,15 +551,18 @@ function updateMissingGameLayout(){
   grid.style.setProperty('--missing-gap', `${gap}px`);
 }
 
-function hideMissingCard(){
+function hideMissingCard(selectedIndex = null){
   if (missingPhase !== 'memorize' || !currentThemeCards.length) return;
 
   const title = document.querySelector('#missingGame .missing-game-title');
   const primaryBtn = document.querySelector('#missingGame .missing-game-primary');
 
-  let nextIndex = Math.floor(Math.random() * currentThemeCards.length);
-  if (currentThemeCards.length > 1 && nextIndex === missingCardIndex) {
-    nextIndex = (nextIndex + 1) % currentThemeCards.length;
+  let nextIndex = selectedIndex;
+  if (nextIndex === null) {
+    nextIndex = Math.floor(Math.random() * currentThemeCards.length);
+    if (currentThemeCards.length > 1 && nextIndex === missingCardIndex) {
+      nextIndex = (nextIndex + 1) % currentThemeCards.length;
+    }
   }
 
   missingCardIndex = nextIndex;
@@ -571,7 +584,7 @@ function hideMissingCard(){
     slot.classList.add('missing-game-empty-slot');
 
     title.textContent = "What's missing?";
-    primaryBtn.textContent = 'Voir la réponse';
+    primaryBtn.textContent = 'Reveal answer';
     primaryBtn.disabled = false;
     primaryBtn.onclick = revealMissingCard;
     missingPhase = 'missing';
@@ -619,7 +632,7 @@ function revealMissingCard(){
 
   const textBtn = document.createElement('button');
   textBtn.textContent = '🔄';
-  textBtn.title = 'Afficher / masquer le texte';
+  textBtn.title = 'Show / hide text';
   textBtn.onclick = () => {
     const showWord = word.style.display === 'none';
     word.style.display = showWord ? 'flex' : 'none';
@@ -628,7 +641,7 @@ function revealMissingCard(){
 
   const audioBtn = document.createElement('button');
   audioBtn.textContent = '🔊';
-  audioBtn.title = 'Écouter';
+  audioBtn.title = 'Listen';
   audioBtn.onclick = () => playMissingCardAudio(missingCard);
 
   controls.appendChild(textBtn);
@@ -637,9 +650,9 @@ function revealMissingCard(){
   reveal.appendChild(word);
   reveal.appendChild(controls);
 
-  title.textContent = 'La carte manquante était…';
-  primaryBtn.textContent = 'Tour suivant';
-  primaryBtn.onclick = nextMissingRound;
+  title.textContent = 'The missing card was…';
+  primaryBtn.textContent = 'Random card';
+  primaryBtn.onclick = () => nextMissingRound();
   missingPhase = 'revealed';
 }
 
@@ -655,7 +668,7 @@ function playMissingCardAudio(card){
   }
 }
 
-function nextMissingRound(){
+function nextMissingRound(selectedIndex = null){
   if (missingPhase !== 'revealed') return;
 
   const title = document.querySelector('#missingGame .missing-game-title');
@@ -676,12 +689,14 @@ function nextMissingRound(){
     reveal.innerHTML = '<div class="missing-game-reveal-placeholder">?</div>';
   }
 
-  title.textContent = 'Mémorise les cartes !';
-  primaryBtn.textContent = 'Je suis prêt !';
-  primaryBtn.onclick = hideMissingCard;
+  title.textContent = 'Memorize the cards!';
+  primaryBtn.textContent = 'Random card';
+  primaryBtn.onclick = () => hideMissingCard();
 
   missingCard = null;
   missingPhase = 'memorize';
+
+  setTimeout(() => hideMissingCard(selectedIndex), 120);
 }
 
 function exitMissingGame(){

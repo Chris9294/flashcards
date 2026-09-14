@@ -357,14 +357,16 @@ body {
   color: #ff6f61;
 }
 
-.missing-game-close {
+.missing-game-back {
   position: absolute;
   top: 0;
-  right: 0;
-  padding: 8px;
+  left: 0;
+  padding: 8px 12px;
   border: none;
   background: transparent;
-  font-size: 28px;
+  font-family: inherit;
+  font-size: clamp(16px, 1.6vw, 22px);
+  font-weight: 700;
   cursor: pointer;
 }
 
@@ -415,6 +417,13 @@ body {
   background: #fff;
   box-shadow: 0 4px 12px rgba(0,0,0,0.14);
   transform-origin: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.missing-game-card:hover {
+  transform: scale(1.025);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
 }
 
 .missing-game-card img {
