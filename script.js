@@ -511,8 +511,6 @@ function renderMissingGrid(){
 function selectMissingCard(index){
   if (missingPhase === 'memorize') {
     hideMissingCard(index);
-  } else if (missingPhase === 'revealed') {
-    nextMissingRound(index);
   }
 }
 
@@ -651,8 +649,8 @@ function revealMissingCard(){
   reveal.appendChild(controls);
 
   title.textContent = 'The missing card was…';
-  primaryBtn.textContent = 'Random card';
-  primaryBtn.onclick = () => nextMissingRound();
+  primaryBtn.textContent = 'Next';
+  primaryBtn.onclick = nextMissingRound;
   missingPhase = 'revealed';
 }
 
@@ -668,7 +666,7 @@ function playMissingCardAudio(card){
   }
 }
 
-function nextMissingRound(selectedIndex = null){
+function nextMissingRound(){
   if (missingPhase !== 'revealed') return;
 
   const title = document.querySelector('#missingGame .missing-game-title');
@@ -694,9 +692,8 @@ function nextMissingRound(selectedIndex = null){
   primaryBtn.onclick = () => hideMissingCard();
 
   missingCard = null;
+  missingCardIndex = -1;
   missingPhase = 'memorize';
-
-  setTimeout(() => hideMissingCard(selectedIndex), 120);
 }
 
 function exitMissingGame(){
