@@ -277,7 +277,7 @@ function startMemory(){
   const memoryCardCount=memoryCards.length;
   const memoryGap=12;
   const memoryCardPadding=8;
-  const maxCardSize=140;
+  const maxCardSize=240;
 
   const availableWidth=Math.max(0, cardContent.clientWidth-40);
   const availableHeight=Math.max(0, cardContent.clientHeight-40);
@@ -329,7 +329,7 @@ function startMemory(){
     div.style.padding = "8px";
     div.style.background = "#444";
     div.style.color = "white";
-    div.style.fontSize = `clamp(18px, ${cardSize/5}px, 32px)`;
+    div.style.fontSize = `clamp(18px, ${cardSize/5}px, 44px)`;
     div.style.fontWeight = "600";
     div.style.cursor = "pointer";
     div.style.borderRadius = "10px";
@@ -387,9 +387,11 @@ function getMemoryLayout(
 ){
   let bestColumns=1;
   let bestCardSize=0;
+  let bestEmptyCells=Infinity;
 
   for(let columns=1;columns<=cardCount;columns++){
     const rows=Math.ceil(cardCount/columns);
+    const emptyCells=columns*rows-cardCount;
 
     const cardWidth=
       Math.floor(
@@ -407,9 +409,13 @@ function getMemoryLayout(
       cardHeight
     );
 
-    if(cardSize>bestCardSize){
+    if(
+      cardSize>bestCardSize ||
+      (cardSize===bestCardSize && emptyCells<bestEmptyCells)
+    ){
       bestCardSize=cardSize;
       bestColumns=columns;
+      bestEmptyCells=emptyCells;
     }
   }
 
