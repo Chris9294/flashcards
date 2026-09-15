@@ -271,7 +271,12 @@ function startMemory(){
   });
 
   totalPairs=currentThemeCards.length;
-  memoryCards.sort(()=>Math.random()-0.5);
+
+  // Mélanger automatiquement les cartes à chaque lancement du Memory
+  for(let i=memoryCards.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [memoryCards[i],memoryCards[j]]=[memoryCards[j],memoryCards[i]];
+  }
 
   const memoryGrid=document.createElement("div");
   const memoryCardCount=memoryCards.length;
