@@ -354,8 +354,6 @@ function startMemory(){
           matchedPairs++;
 
           setTimeout(()=>{
-            firstCard.div.remove();
-            secondCard.div.remove();
             firstCard=null;
             secondCard=null;
 
