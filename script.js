@@ -354,6 +354,18 @@ function startMemory(){
           matchedPairs++;
 
           setTimeout(()=>{
+            firstCard.div.innerHTML="";
+            firstCard.div.style.background="white";
+            firstCard.div.style.outline="2px dashed #c8c8c8";
+            firstCard.div.style.outlineOffset="-2px";
+            firstCard.div.style.cursor="default";
+
+            secondCard.div.innerHTML="";
+            secondCard.div.style.background="white";
+            secondCard.div.style.outline="2px dashed #c8c8c8";
+            secondCard.div.style.outlineOffset="-2px";
+            secondCard.div.style.cursor="default";
+
             firstCard=null;
             secondCard=null;
 
