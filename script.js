@@ -275,18 +275,24 @@ function startMemory(){
 
   const memoryGrid=document.createElement("div");
   const memoryCardCount=memoryCards.length;
-  const memoryColumns=getMemoryColumns(memoryCardCount);
-  const memoryRows=Math.ceil(memoryCardCount/memoryColumns);
   const memoryGap=12;
   const memoryCardPadding=8;
   const maxCardSize=140;
-  const availableWidth=Math.max(0, window.innerWidth-80);
-  const availableHeight=Math.max(0, window.innerHeight-80);
-  const memoryCardSize=Math.max(70, Math.min(
-    maxCardSize,
-    Math.floor((availableWidth-memoryGap*(memoryColumns-1))/memoryColumns)-memoryCardPadding*2,
-    Math.floor((availableHeight-memoryGap*(memoryRows-1))/memoryRows)-memoryCardPadding*2
-  ));
+
+  const availableWidth=Math.max(0, cardContent.clientWidth-40);
+  const availableHeight=Math.max(0, cardContent.clientHeight-40);
+
+  const memoryLayout=getMemoryLayout(
+    memoryCardCount,
+    availableWidth,
+    availableHeight,
+    memoryGap,
+    memoryCardPadding,
+    maxCardSize
+  );
+
+  const memoryColumns=memoryLayout.columns;
+  const memoryCardSize=memoryLayout.cardSize;
 
   memoryGrid.style.display="grid";
   memoryGrid.style.gridTemplateColumns=`repeat(${memoryColumns}, ${memoryCardSize+memoryCardPadding*2}px)`;
@@ -371,27 +377,46 @@ function startMemory(){
   });
 }
 
-function getMemoryColumns(cardCount){
-  if(cardCount<=1) return 1;
-
-  const screenRatio=window.innerWidth/Math.max(window.innerHeight,1);
-  let bestColumns=cardCount;
-  let bestScore=Infinity;
+function getMemoryLayout(
+  cardCount,
+  availableWidth,
+  availableHeight,
+  gap,
+  cardPadding,
+  maxCardSize
+){
+  let bestColumns=1;
+  let bestCardSize=0;
 
   for(let columns=1;columns<=cardCount;columns++){
-    if(cardCount%columns!==0) continue;
+    const rows=Math.ceil(cardCount/columns);
 
-    const rows=cardCount/columns;
-    const gridRatio=columns/rows;
-    const score=Math.abs(Math.log(gridRatio/screenRatio));
+    const cardWidth=
+      Math.floor(
+        (availableWidth-gap*(columns-1))/columns
+      )-cardPadding*2;
 
-    if(score<bestScore){
-      bestScore=score;
+    const cardHeight=
+      Math.floor(
+        (availableHeight-gap*(rows-1))/rows
+      )-cardPadding*2;
+
+    const cardSize=Math.min(
+      maxCardSize,
+      cardWidth,
+      cardHeight
+    );
+
+    if(cardSize>bestCardSize){
+      bestCardSize=cardSize;
       bestColumns=columns;
     }
   }
 
-  return bestColumns;
+  return {
+    columns:bestColumns,
+    cardSize:Math.max(20,bestCardSize)
+  };
 }
 
 // ================================
